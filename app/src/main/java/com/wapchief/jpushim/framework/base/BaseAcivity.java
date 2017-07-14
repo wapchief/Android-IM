@@ -1,11 +1,13 @@
 package com.wapchief.jpushim.framework.base;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -17,6 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.wapchief.jpushim.R;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by Wu on 2017/4/13 0013 上午 10:58.
@@ -31,10 +35,15 @@ public abstract class BaseAcivity extends FragmentActivity implements View.OnCli
     private static final List<BaseAcivity> mActivities = new LinkedList<BaseAcivity>();
 
     Context mContext;
+    //加载中
+    private ProgressDialog progressDialog;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(rootContentView());
+        ButterKnife.bind(this);
         mContext = BaseAcivity.this;
         initView();
         initData();
@@ -156,5 +165,49 @@ public abstract class BaseAcivity extends FragmentActivity implements View.OnCli
     public void showLongToast(Activity activity,String s){
         Toast toast=Toast.makeText(activity,s,Toast.LENGTH_LONG);
         toast.show();
+    }
+
+    /*加载中的进度条*/
+    public void showProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+        progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage("正在加载......");
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        try {
+            progressDialog.show();
+        } catch (WindowManager.BadTokenException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /*自定义消息的加载进度条*/
+    public void showProgressDialog(String msg) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
+        progressDialog = new ProgressDialog(mContext);
+        progressDialog.setMessage(msg);
+        progressDialog.setCancelable(true);
+        progressDialog.setCanceledOnTouchOutside(false);
+        try {
+            progressDialog.show();
+        } catch (WindowManager.BadTokenException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /**
+     * 隐藏正在加载的进度条
+     *
+     */
+    public void dismissProgressDialog() {
+        if (null != progressDialog && progressDialog.isShowing() == true) {
+            progressDialog.dismiss();
+        }
     }
 }

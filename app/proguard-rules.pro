@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+#------------------------极光短信混淆------------------------
+-keep class cn.jpush.sms.SMSSDK {*;}
+-keep class cn.jpush.sms.listener.** {*;}

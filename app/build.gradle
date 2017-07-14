@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
-
+apply plugin: 'com.jakewharton.butterknife'
 android {
     compileSdkVersion 24
     buildToolsVersion "25.0.2"
 
     defaultConfig {
         applicationId "com.wapchief.jpushim"
-        minSdkVersion 24
+        minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -38,7 +38,7 @@ greendao {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.bigkoo:svprogresshud:1.0.6'
     //极光
@@ -47,5 +47,9 @@ dependencies {
     compile files('libs/jmessage-android_v2.1.1.jar')
     //数据库框架
     compile 'org.greenrobot:greendao:3.2.0'
-
+    //数据库升级辅助类
+    compile 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
+    compile files('libs/jsms_android-1.1.0.jar')
+    compile 'com.jakewharton:butterknife:8.7.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
 }

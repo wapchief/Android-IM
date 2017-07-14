@@ -1,34 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="12dp">
 
     <EditText
         android:id="@+id/login_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="请输入用户名"/>
+        android:hint="请输入用户名" />
+
     <EditText
         android:id="@+id/login_passWord"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="请输入密码"
-        android:digits="1234567890"
-        />
+        android:hint="请输入密码" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/login_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="100dp"
+            android:hint="请输入验证码" />
+
+        <Button
+
+            android:id="@+id/login_code_bt"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/login_code"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="获取验证码" />
+    </RelativeLayout>
 
     <Button
         android:id="@+id/login_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="提交注册"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:text="提交注册" />
 
     <Button
         android:id="@+id/login_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="已有账号？直接登录。"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:text="已有账号？直接登录。" />
 
 </LinearLayout>
