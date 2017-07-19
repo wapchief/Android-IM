@@ -2,9 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.jakewharton.butterknife'
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
+    aaptOptions {
+        cruncherEnabled = false
+        useNewCruncher = false
+
+    }
     defaultConfig {
         applicationId "com.wapchief.jpushim"
         minSdkVersion 14
@@ -13,9 +18,9 @@ android {
         versionName "1.0"
 
         manifestPlaceholders = [
-                JPUSH_PKGNAME : applicationId,
+                JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "b47a37f342eba5f9fbcd1961", //JPush上注册的包名对应的appkey.
-                JPUSH_CHANNEL : "developer-default", //暂时填写默认值即可.
+                JPUSH_CHANNEL: "developer-default", //暂时填写默认值即可.
         ]
     }
 
@@ -34,11 +39,11 @@ greendao {
     //targetGenDirTest：设置生成单元测试目录
     //generateTests：设置自动生成单元测试用例
 }
-
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:design:25.0.0'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.bigkoo:svprogresshud:1.0.6'
     //极光
@@ -52,4 +57,14 @@ dependencies {
     compile files('libs/jsms_android-1.1.0.jar')
     compile 'com.jakewharton:butterknife:8.7.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
+
+    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
+    //RecyclerView
+    compile 'com.android.support:recyclerview-v7:25.0.0'
+    //RecyclerViewHeader
+    compile 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
+    //下拉刷新库
+    compile 'in.srain.cube:ultra-ptr:1.0.11'
 }

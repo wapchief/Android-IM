@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/side_bar1"
+            android:icon="@mipmap/icon_user"
+            android:title="列表1"/>
+        <item android:id="@+id/side_bar2"
+            android:icon="@mipmap/icon_user"
+            android:title="列表2"/>
+        <item android:id="@+id/side_bar3"
+            android:icon="@mipmap/icon_user"
+            android:title="列表3"/>
+        <item android:id="@+id/side_bar4"
+            android:icon="@mipmap/icon_user"
+            android:title="列表4"/>
+    </group>
+</menu>

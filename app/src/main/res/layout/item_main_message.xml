@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingBottom="10dp"
+    android:paddingLeft="15dp"
+    android:paddingTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp">
+
+        <ImageView
+            android:id="@+id/item_main_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_user" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:paddingRight="15dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="8dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/item_main_username"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="八怪不姓丑"/>
+            <TextView
+                android:id="@+id/item_main_content"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:textSize="14sp"
+                android:text="用户1:今天天气不错～"
+                android:textColor="#66000000"
+                android:gravity="center_vertical"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_main_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#66000000"
+            android:textSize="12sp"
+            android:text="下午4:20"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</LinearLayout>

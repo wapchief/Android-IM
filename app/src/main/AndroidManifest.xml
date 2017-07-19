@@ -41,14 +41,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.wapchief.jpushim.activity.LoginActivity">
+
+        </activity>
+        <activity android:name=".activity.UserActivty"/>
+
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-
-
 
             <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->

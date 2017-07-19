@@ -1,5 +1,6 @@
 package com.wapchief.jpushim.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
@@ -65,7 +66,6 @@ public class LoginActivity extends BaseAcivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.login_code_bt:
-                showToast(this, "112221");
                 startCount();
                 SMSSDK.getInstance().getSmsCodeAsyn(loginUsername.getText().toString(), "1", new SmscodeListener() {
                     @Override
@@ -101,10 +101,12 @@ public class LoginActivity extends BaseAcivity {
                 break;
             case R.id.login_ok:
                 //登陆
+                showProgressDialog("正在登陆...");
                 JMessageClient.login(loginUsername.getText().toString(), loginPassWord.getText().toString(), new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
                         Log.e("s=======2:",i+"，"+ s);
+                        dismissProgressDialog();
                         switch (i){
                             case 801003:
                                 showToast(LoginActivity.this,"用户名不存在");
@@ -119,6 +121,9 @@ public class LoginActivity extends BaseAcivity {
                                 showToast(LoginActivity.this,"登陆成功");
                                 sharedPrefHelper.setUserId(loginUsername.getText().toString());
                                 sharedPrefHelper.setUserPW(loginPassWord.getText().toString());
+                                Intent intent = new Intent(LoginActivity.this
+                                        , UserActivty.class);
+                                startActivity(intent);
                                 break;
                         }
 
