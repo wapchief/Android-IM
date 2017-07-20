@@ -1,6 +1,9 @@
 package com.wapchief.jpushim;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -11,8 +14,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,11 +28,13 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.flyco.tablayout.utils.UnreadMsgUtils;
 import com.flyco.tablayout.widget.MsgView;
+import com.wapchief.jpushim.activity.UserActivty;
 import com.wapchief.jpushim.entity.TabEntity;
 import com.wapchief.jpushim.fragment.FragmentFactory;
 import com.wapchief.jpushim.framework.base.BaseAcivity;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 import com.wapchief.jpushim.framework.utils.UIUtils;
+import com.wapchief.jpushim.greendao.model.User;
 
 import java.util.ArrayList;
 
@@ -56,6 +63,9 @@ public class MainActivity extends BaseAcivity {
     @BindView(R.id.title_options_tv)
     TextView mTitleOptionsTv;
 
+    private LinearLayout nav_header_ll;
+    private TextView nav_header_name;
+
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private String[] mTitles = {"消息", "联系人", "动态"};
@@ -77,6 +87,21 @@ public class MainActivity extends BaseAcivity {
         initSideDrawer();
         initTab();
         initPageAdapter();
+        initNVHeader();
+    }
+
+    /*初始化NavigationView头部控件*/
+    private void initNVHeader() {
+        View headerView = mMainNv.getHeaderView(0);
+        nav_header_ll = (LinearLayout) headerView.findViewById(R.id.nav_header_ll);
+        nav_header_name = (TextView) headerView.findViewById(R.id.nav_header_name);
+        nav_header_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, UserActivty.class);
+                startActivity(intent);
+            }
+        });
     }
 
     /*初始化tab标签*/
@@ -180,10 +205,28 @@ public class MainActivity extends BaseAcivity {
                 }
                 break;
             case R.id.title_options_img:
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setItems(new String[]{"创建群组","添加好友/群"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        showToast(MainActivity.this, "" + i);
+
+                    }
+                }).create();
+                dialog.show();
+                Window window = dialog.getWindow();
+                WindowManager.LayoutParams params = window.getAttributes();
+                window.setGravity(Gravity.RIGHT | Gravity.TOP);
+                params.width = UIUtils.dip2px(this,200);
+                params.y = UIUtils.dip2px(this,55);
+                dialog.getWindow().setAttributes(params);
+
+
                 break;
         }
     }
 
+    /*初始化Pager*/
     private void initPageAdapter() {
         mMainRootTab.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -223,7 +266,7 @@ public class MainActivity extends BaseAcivity {
     }
 
     /*设置title变化*/
-    private void titleChange(int position){
+    private void titleChange(int position) {
         switch (position) {
             case 0:
                 mTitleBarTitle.setText("消息");

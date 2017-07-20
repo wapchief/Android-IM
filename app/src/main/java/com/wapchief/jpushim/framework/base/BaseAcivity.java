@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.wapchief.jpushim.R;
+import com.wapchief.jpushim.framework.system.SystemStatusManager;
 
 import butterknife.ButterKnife;
 
@@ -44,6 +45,7 @@ public abstract class BaseAcivity extends FragmentActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(rootContentView());
         ButterKnife.bind(this);
+        new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
         mContext = BaseAcivity.this;
         initView();
         initData();

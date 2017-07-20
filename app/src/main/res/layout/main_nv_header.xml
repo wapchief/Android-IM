@@ -6,6 +6,7 @@
     android:background="@drawable/shape_titlebar"
     android:paddingBottom="18dp">
     <LinearLayout
+        android:id="@+id/nav_header_ll"
         android:layout_marginTop="80dp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -13,11 +14,13 @@
         android:gravity="center_vertical">
 
         <com.wapchief.jpushim.view.CircleImageView
+            android:id="@+id/nav_header_img"
             android:layout_width="36dp"
             android:src="@mipmap/icon_user"
             android:layout_height="36dp" />
 
         <TextView
+            android:id="@+id/nav_header_name"
             android:layout_width="wrap_content"
             android:background="#00000000"
             android:textColor="@android:color/white"

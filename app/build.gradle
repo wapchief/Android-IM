@@ -12,7 +12,7 @@ android {
     }
     defaultConfig {
         applicationId "com.wapchief.jpushim"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -67,4 +67,11 @@ dependencies {
     compile 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
     //下拉刷新库
     compile 'in.srain.cube:ultra-ptr:1.0.11'
+    //极光消息列表
+    compile 'cn.jiguang.imui:messagelist:0.4.3'
+    //极光对话输入
+    compile 'cn.jiguang.imui:chatinput:0.4.3'
+    //图片加载
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
 }

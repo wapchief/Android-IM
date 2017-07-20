@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="messages_array">
+        　　
+        <item>今天中午吃什么？</item>
+        <item>美团外卖</item>
+        <item>今天上班吗？</item>
+        <item>Yes</item>
+        <item>周末去哪里玩？</item>
+        <item>家里蹲。。。</item>
+        <item>😯</item>
+        　　
+    </string-array>
+</resources>

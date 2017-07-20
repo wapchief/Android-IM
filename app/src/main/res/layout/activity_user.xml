@@ -1,11 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-<TextView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/user_name"/>
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:fitsSystemWindows="true"
+    android:paddingRight="15dp">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/user_id"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical" />
+        <TextView
+            android:id="@+id/user_userName"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical" />
+        <TextView
+            android:id="@+id/user_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/user_birthday"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical" />
+        <TextView
+            android:id="@+id/user_gender"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="3dp"
+            android:background="@android:color/white"
+            android:gravity="center_vertical" />
+
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

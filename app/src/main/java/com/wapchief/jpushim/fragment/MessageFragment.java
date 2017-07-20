@@ -1,5 +1,6 @@
 package com.wapchief.jpushim.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,23 +8,20 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
-import com.wapchief.jpushim.MessageRecyclerAdapter;
+import com.wapchief.jpushim.activity.ChatMsgActivity;
+import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.entity.MessageBean;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,7 +71,10 @@ public class MessageFragment extends Fragment {
         adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getActivity(),":"+position,Toast.LENGTH_SHORT).show();
+                if (view!=null) {
+                    Intent intent = new Intent(getActivity(), ChatMsgActivity.class);
+                    startActivity(intent);
+                }
             }
 
             @Override

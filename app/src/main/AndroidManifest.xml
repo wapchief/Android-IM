@@ -40,12 +40,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.wapchief.jpushim.activity.LoginActivity">
-
-        </activity>
-        <activity android:name=".activity.UserActivty"/>
-
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -53,8 +48,19 @@
             </intent-filter>
 
         </activity>
+        <activity android:name="com.wapchief.jpushim.activity.LoginActivity">
 
-            <!--***********************极光配置***********************-->
+        </activity>
+        <activity android:name=".activity.UserActivty"/>
+
+        <activity android:name=".MainActivity">
+
+
+        </activity>
+        <activity android:name=".activity.ChatMsgActivity"/>
+
+
+        <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->
         <service

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseAcivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
@@ -41,6 +42,7 @@ public class LoginActivity extends BaseAcivity {
     Button loginOk;
     private int time = 60;
     SharedPrefHelper sharedPrefHelper;
+
     @Override
     protected int setContentView() {
         return R.layout.activity_login;
@@ -84,16 +86,19 @@ public class LoginActivity extends BaseAcivity {
                 JMessageClient.register(loginUsername.getText().toString(), loginPassWord.getText().toString(), new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
-                        Log.e("s=======1:",i+"，"+ s);
-                        switch (i){
+                        Log.e("s=======1:", i + "，" + s);
+                        switch (i) {
                             case 898001:
-                                showToast(LoginActivity.this,"用户名已存在");
+                                showToast(LoginActivity.this, "用户名已存在");
                                 break;
                             case 871301:
-                                showToast(LoginActivity.this,"密码格式错误");
+                                showToast(LoginActivity.this, "密码格式错误");
                                 break;
                             case 871304:
-                                showToast(LoginActivity.this,"密码错误");
+                                showToast(LoginActivity.this, "密码错误");
+                                break;
+                            default:
+                                showToast(LoginActivity.this, s);
                                 break;
                         }
                     }
@@ -105,24 +110,24 @@ public class LoginActivity extends BaseAcivity {
                 JMessageClient.login(loginUsername.getText().toString(), loginPassWord.getText().toString(), new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
-                        Log.e("s=======2:",i+"，"+ s);
+                        Log.e("s=======2:", i + "，" + s);
                         dismissProgressDialog();
-                        switch (i){
+                        switch (i) {
                             case 801003:
-                                showToast(LoginActivity.this,"用户名不存在");
+                                showToast(LoginActivity.this, "用户名不存在");
                                 break;
                             case 871301:
-                                showToast(LoginActivity.this,"密码格式错误");
+                                showToast(LoginActivity.this, "密码格式错误");
                                 break;
                             case 801004:
-                                showToast(LoginActivity.this,"密码错误");
+                                showToast(LoginActivity.this, "密码错误");
                                 break;
                             default:
-                                showToast(LoginActivity.this,"登陆成功");
+                                showToast(LoginActivity.this, "登陆成功");
                                 sharedPrefHelper.setUserId(loginUsername.getText().toString());
                                 sharedPrefHelper.setUserPW(loginPassWord.getText().toString());
                                 Intent intent = new Intent(LoginActivity.this
-                                        , UserActivty.class);
+                                        , MainActivity.class);
                                 startActivity(intent);
                                 break;
                         }
