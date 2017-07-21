@@ -3,16 +3,31 @@
 
     <group android:checkableBehavior="single">
         <item android:id="@+id/side_bar1"
-            android:icon="@mipmap/icon_user"
-            android:title="列表1"/>
+            android:icon="@mipmap/my_github"
+            android:title="Github"/>
         <item android:id="@+id/side_bar2"
-            android:icon="@mipmap/icon_user"
-            android:title="列表2"/>
+            android:icon="@mipmap/my_csdn"
+            android:title="CSDN"/>
         <item android:id="@+id/side_bar3"
-            android:icon="@mipmap/icon_user"
-            android:title="列表3"/>
+            android:icon="@mipmap/my_jianshu"
+            android:title="简书"/>
         <item android:id="@+id/side_bar4"
             android:icon="@mipmap/icon_user"
-            android:title="列表4"/>
+            android:title="github.io"/>
+
+
     </group>
+
+    <item android:title="更多：">
+    <menu>
+        <item
+            android:id="@+id/side_bar5"
+            android:icon="@drawable/icon_user"
+            android:title="设置" />
+        <item
+            android:id="@+id/side_bar6"
+            android:icon="@drawable/icon_user"
+            android:title="关于" />
+    </menu>
+    </item>
 </menu>

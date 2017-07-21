@@ -19,4 +19,5 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/main_nv_header"
         app:menu="@menu/side_bar_main_meun"/>
+
 </android.support.v4.widget.DrawerLayout>

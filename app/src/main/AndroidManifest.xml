@@ -58,7 +58,7 @@
 
         </activity>
         <activity android:name=".activity.ChatMsgActivity"/>
-
+        <activity android:name=".activity.WebViewActivity"/>
 
         <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->

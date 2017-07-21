@@ -10,4 +10,11 @@
     <style name="TabLayoutTextStyle">
     <item name="android:textSize">12sp</item>
     </style>
+
+
+    <style name="menu_labels_style">
+        <item name="android:textColor">@color/colorTheme</item>
+    </style>
+
+
 </resources>

@@ -29,6 +29,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.flyco.tablayout.utils.UnreadMsgUtils;
 import com.flyco.tablayout.widget.MsgView;
 import com.wapchief.jpushim.activity.UserActivty;
+import com.wapchief.jpushim.activity.WebViewActivity;
 import com.wapchief.jpushim.entity.TabEntity;
 import com.wapchief.jpushim.fragment.FragmentFactory;
 import com.wapchief.jpushim.framework.base.BaseAcivity;
@@ -92,6 +93,8 @@ public class MainActivity extends BaseAcivity {
 
     /*初始化NavigationView头部控件*/
     private void initNVHeader() {
+//        mMainNv.setItemTextColor(getResources().getColorStateList(R.drawable.nav_select_tv,null));
+        mMainNv.setItemIconTintList(null);
         View headerView = mMainNv.getHeaderView(0);
         nav_header_ll = (LinearLayout) headerView.findViewById(R.id.nav_header_ll);
         nav_header_name = (TextView) headerView.findViewById(R.id.nav_header_name);
@@ -168,15 +171,27 @@ public class MainActivity extends BaseAcivity {
         mMainNv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                int id = item.getItemId();
-                if (id == R.id.side_bar1) {
-
-                } else if (id == R.id.side_bar2) {
-
-                } else if (id == R.id.side_bar3) {
-
-                } else if (id == R.id.side_bar4) {
-
+                switch (item.getItemId()){
+                    case R.id.side_bar1:
+                        Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+                        intent.putExtra("URL", "https://github.com/wapchief");
+                        startActivity(intent);
+                        break;
+                    case R.id.side_bar2:
+                        Intent intent1 = new Intent(MainActivity.this, WebViewActivity.class);
+                        intent1.putExtra("URL", "http://blog.csdn.net/wapchief");
+                        startActivity(intent1);
+                        break;
+                    case R.id.side_bar3:
+                        Intent intent2 = new Intent(MainActivity.this, WebViewActivity.class);
+                        intent2.putExtra("URL", "http://www.jianshu.com/users/9f0bedd0835c");
+                        startActivity(intent2);
+                        break;
+                    case R.id.side_bar4:
+                        Intent intent3 = new Intent(MainActivity.this, WebViewActivity.class);
+                        intent3.putExtra("URL", "http://wapchief.github.io");
+                        startActivity(intent3);
+                        break;
                 }
 
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.side_main);
