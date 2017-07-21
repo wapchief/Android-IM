@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.wapchief.jpushim.R;
-import com.wapchief.jpushim.framework.base.BaseAcivity;
+import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.view.MyFloatingActionButton;
 
 import butterknife.BindView;
@@ -23,7 +22,7 @@ import butterknife.OnClick;
  * Created by wapchief on 2017/7/20.
  */
 
-public class WebViewActivity extends BaseAcivity {
+public class WebViewActivity extends BaseActivity {
     @BindView(R.id.web_progress)
     ProgressBar mWebProgress;
     @BindView(R.id.web_view)

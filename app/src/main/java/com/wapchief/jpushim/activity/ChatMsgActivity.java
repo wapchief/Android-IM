@@ -6,12 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.inputmethodservice.KeyboardView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -20,13 +18,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MyMessage;
-import com.wapchief.jpushim.framework.base.BaseAcivity;
+import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.utils.UIUtils;
 
@@ -44,13 +41,12 @@ import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
-import cn.jpush.im.android.tasks.GetChatMsgTaskMng;
 
 /**
  * Created by wapchief on 2017/7/19.
  */
 
-public class ChatMsgActivity extends BaseAcivity {
+public class ChatMsgActivity extends BaseActivity {
     @BindView(R.id.title_bar_back)
     ImageView mTitleBarBack;
     @BindView(R.id.title_bar_title)

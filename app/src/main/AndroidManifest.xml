@@ -40,6 +40,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <!--加载登陆状态-->
         <activity android:name=".activity.LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,17 +49,20 @@
             </intent-filter>
 
         </activity>
-        <activity android:name="com.wapchief.jpushim.activity.LoginActivity">
-
-        </activity>
+        <!--登陆-->
+        <activity android:name=".activity.LoginActivity"/>
+        <!--用户中心-->
         <activity android:name=".activity.UserActivty"/>
-
-        <activity android:name=".MainActivity">
-
-
-        </activity>
+        <!--首页-->
+        <activity android:name=".MainActivity"/>
+        <!--会话窗-->
         <activity android:name=".activity.ChatMsgActivity"/>
+        <!--WebView-->
         <activity android:name=".activity.WebViewActivity"/>
+        <!--关于-->
+        <activity android:name=".activity.AboutActivity"/>
+        <!--设置-->
+        <activity android:name=".activity.SettingActivity"/>
 
         <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->

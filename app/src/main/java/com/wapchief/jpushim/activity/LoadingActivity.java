@@ -5,14 +5,14 @@ import android.os.Handler;
 
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
-import com.wapchief.jpushim.framework.base.BaseAcivity;
+import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
 /**
  * Created by wapchief on 2017/7/19.
  */
 
-public class LoadingActivity extends BaseAcivity {
+public class LoadingActivity extends BaseActivity {
     private SharedPrefHelper helper;
     @Override
     protected int setContentView() {

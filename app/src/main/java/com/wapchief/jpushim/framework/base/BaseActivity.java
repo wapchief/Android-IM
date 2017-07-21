@@ -27,13 +27,13 @@ import butterknife.ButterKnife;
  * Created by Wu on 2017/4/13 0013 上午 10:58.
  * 描述：
  */
-public abstract class BaseAcivity extends FragmentActivity implements View.OnClickListener{
+public abstract class BaseActivity extends FragmentActivity implements View.OnClickListener{
 
     //记录处于前台的Activity
-    private static BaseAcivity mForegroundActivity = null;
+    private static BaseActivity mForegroundActivity = null;
 
     //记录所有活动的Activity
-    private static final List<BaseAcivity> mActivities = new LinkedList<BaseAcivity>();
+    private static final List<BaseActivity> mActivities = new LinkedList<BaseActivity>();
 
     Context mContext;
     //加载中
@@ -46,7 +46,7 @@ public abstract class BaseAcivity extends FragmentActivity implements View.OnCli
         setContentView(rootContentView());
         ButterKnife.bind(this);
         new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
-        mContext = BaseAcivity.this;
+        mContext = BaseActivity.this;
         initView();
         initData();
     }
@@ -140,11 +140,11 @@ public abstract class BaseAcivity extends FragmentActivity implements View.OnCli
      * 关闭所有activity
      */
     public static void finishAll() {
-        List<BaseAcivity> copy;
+        List<BaseActivity> copy;
         synchronized (mActivities) {
-            copy = new ArrayList<BaseAcivity>(mActivities);
+            copy = new ArrayList<BaseActivity>(mActivities);
         }
-        for (BaseAcivity activity : copy) {
+        for (BaseActivity activity : copy) {
             activity.finish();
         }
     }

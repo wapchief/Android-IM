@@ -8,11 +8,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
-import com.wapchief.jpushim.framework.base.BaseAcivity;
+import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
 import butterknife.BindView;
@@ -26,7 +25,7 @@ import cn.jpush.sms.listener.SmscodeListener;
  * Created by wapchief on 2017/5/8 0008 下午 3:39.
  * 描述：注册
  */
-public class LoginActivity extends BaseAcivity {
+public class LoginActivity extends BaseActivity {
 
     @BindView(R.id.login_username)
     EditText loginUsername;

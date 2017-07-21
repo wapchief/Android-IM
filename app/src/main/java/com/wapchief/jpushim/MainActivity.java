@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -28,14 +27,15 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.flyco.tablayout.utils.UnreadMsgUtils;
 import com.flyco.tablayout.widget.MsgView;
+import com.wapchief.jpushim.activity.AboutActivity;
+import com.wapchief.jpushim.activity.SettingActivity;
 import com.wapchief.jpushim.activity.UserActivty;
 import com.wapchief.jpushim.activity.WebViewActivity;
 import com.wapchief.jpushim.entity.TabEntity;
 import com.wapchief.jpushim.fragment.FragmentFactory;
-import com.wapchief.jpushim.framework.base.BaseAcivity;
+import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 import com.wapchief.jpushim.framework.utils.UIUtils;
-import com.wapchief.jpushim.greendao.model.User;
 
 import java.util.ArrayList;
 
@@ -43,7 +43,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseAcivity {
+public class MainActivity extends BaseActivity {
 
     @BindView(R.id.title_bar_back)
     ImageView mTitleBarBack;
@@ -191,6 +191,14 @@ public class MainActivity extends BaseAcivity {
                         Intent intent3 = new Intent(MainActivity.this, WebViewActivity.class);
                         intent3.putExtra("URL", "http://wapchief.github.io");
                         startActivity(intent3);
+                        break;
+                    case R.id.side_bar5:
+                        Intent intent4 = new Intent(MainActivity.this, SettingActivity.class);
+                        startActivity(intent4);
+                        break;
+                    case R.id.side_bar6:
+                        Intent intent5 = new Intent(MainActivity.this, AboutActivity.class);
+                        startActivity(intent5);
                         break;
                 }
 

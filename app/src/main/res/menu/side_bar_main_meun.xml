@@ -22,11 +22,11 @@
     <menu>
         <item
             android:id="@+id/side_bar5"
-            android:icon="@drawable/icon_user"
+            android:icon="@mipmap/icon_setting"
             android:title="设置" />
         <item
             android:id="@+id/side_bar6"
-            android:icon="@drawable/icon_user"
+            android:icon="@mipmap/icon_about"
             android:title="关于" />
     </menu>
     </item>

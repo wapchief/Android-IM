@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.wapchief.jpushim.R;
-import com.wapchief.jpushim.framework.base.BaseAcivity;
+import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
 import butterknife.BindView;
@@ -17,7 +17,7 @@ import cn.jpush.im.android.api.model.UserInfo;
  * Created by wapchief on 2017/7/14.
  */
 
-public class UserActivty extends BaseAcivity {
+public class UserActivty extends BaseActivity {
 
     SharedPrefHelper helper;
     @BindView(R.id.user_id)

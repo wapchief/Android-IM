@@ -1,15 +1,16 @@
 package com.wapchief.jpushim.activity;
 
+import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 
 /**
- * Created by wapchief on 2017/7/20.
+ * Created by wapchief on 2017/7/21.
  */
 
-public class MsgVideoActivity extends BaseActivity {
+public class AboutActivity extends BaseActivity{
     @Override
     protected int setContentView() {
-        return 0;
+        return R.layout.activity_about;
     }
 
     @Override
