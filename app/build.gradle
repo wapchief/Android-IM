@@ -73,5 +73,7 @@ dependencies {
     compile 'cn.jiguang.imui:chatinput:0.4.3'
     //图片加载
     compile 'com.squareup.picasso:picasso:2.5.2'
+    //switchButton
+    compile 'com.kyleduo.switchbutton:library:1.4.6'
 
 }

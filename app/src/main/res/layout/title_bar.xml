@@ -24,6 +24,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
+                android:layout_centerVertical="true"
                 android:src="@mipmap/icon_user" />
         </RelativeLayout>
 
