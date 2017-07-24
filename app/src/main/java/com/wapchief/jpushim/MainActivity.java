@@ -28,6 +28,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.flyco.tablayout.utils.UnreadMsgUtils;
 import com.flyco.tablayout.widget.MsgView;
 import com.wapchief.jpushim.activity.AboutActivity;
+import com.wapchief.jpushim.activity.AddFriendsActivity;
 import com.wapchief.jpushim.activity.SettingActivity;
 import com.wapchief.jpushim.activity.UserActivty;
 import com.wapchief.jpushim.activity.WebViewActivity;
@@ -232,8 +233,13 @@ public class MainActivity extends BaseActivity {
                         .setItems(new String[]{"创建群组","添加好友/群"}, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        showToast(MainActivity.this, "" + i);
+                        if (i==1) {
+                            Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);
+                            startActivity(intent);
+                        }else {
+                            showToast(MainActivity.this, "暂未开放" );
 
+                        }
                     }
                 }).create();
                 dialog.show();

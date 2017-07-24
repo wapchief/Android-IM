@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tl="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+    <include layout="@layout/title_bar"/>
+    <com.flyco.tablayout.SegmentTabLayout
+        android:id="@+id/add_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        tl:tl_bar_color="#ffffff"
+        tl:tl_indicator_color="@color/colorTheme"
+        tl:tl_indicator_corner_radius="5dp"
+        tl:tl_tab_width="80dp"/>
+
+    <EditText
+        android:id="@+id/add_search"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:drawableLeft="@mipmap/icon_search"
+        android:hint="搜联系人"
+        android:textSize="14sp"
+        android:paddingLeft="15dp"/>
+
+    <Button
+        android:id="@+id/add_commit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="搜索"
+        android:background="@drawable/shape_search"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"/>
+</LinearLayout>

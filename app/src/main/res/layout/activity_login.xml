@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:padding="15dp"
         android:orientation="vertical">
     <EditText
@@ -62,4 +62,19 @@
         android:layout_gravity="center"
         android:text="直接登录!" />
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:textColor="@color/colorText"
+        android:textSize="14sp"
+        android:background="@android:color/white"
+        android:text="
+注意！
+账号只能是以字母或者数字开头。支持字母、数字、下划线、英文点、减号、 @，
+长度4位及以上"
+        />
 </LinearLayout>

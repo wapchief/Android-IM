@@ -98,7 +98,7 @@ public class LoginActivity extends BaseActivity {
                 JMessageClient.register(loginUsername.getText().toString(), loginPassWord.getText().toString(), new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
-                        Log.e("s=======1:", i + "，" + s);
+//                        Log.e("s=======1:", i + "，" + s);
                         switch (i) {
                             case 898001:
                                 showToast(LoginActivity.this, "用户名已存在");

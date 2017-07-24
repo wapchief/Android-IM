@@ -12,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
+import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.ChatMsgActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
-import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.entity.MessageBean;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -33,6 +36,8 @@ import butterknife.Unbinder;
 
 public class MessageFragment extends Fragment {
 
+    @BindView(R.id.fragment_main_group)
+    RelativeLayout mFragmentMainGroup;
     private List<MessageBean> data = new ArrayList<>();
 
     @BindView(R.id.fragment_main_rv)
@@ -66,12 +71,13 @@ public class MessageFragment extends Fragment {
         initGroup();
         onClickItem();
     }
+
     /*监听item*/
     private void onClickItem() {
         adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if (view!=null) {
+                if (view != null) {
                     Intent intent = new Intent(getActivity(), ChatMsgActivity.class);
                     startActivity(intent);
                 }
@@ -104,20 +110,31 @@ public class MessageFragment extends Fragment {
         mFragmentMainHeader.attachTo(mFragmentMainRv);
 
     }
+
     private void initDataBean() {
 
         for (int i = 0; i < 10; i++) {
             MessageBean bean = new MessageBean();
-            bean.setContent( "用户" + i);
-            bean.setTitle("八怪不姓丑"+i);
-            bean.setTime("下午11:"+i+i);
+            bean.setContent("用户" + i);
+            bean.setTitle("八怪不姓丑" + i);
+            bean.setTime("下午11:" + i + i);
             data.add(bean);
         }
         adapter.notifyDataSetChanged();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    @OnClick({R.id.fragment_main_group})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.fragment_main_group:
+                Toast.makeText(getActivity(),"暂未开放，敬请期待",Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
