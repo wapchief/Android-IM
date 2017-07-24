@@ -28,7 +28,7 @@ public class LoadingActivity extends BaseActivity {
 
             @Override
             public void run() {
-                if (helper.getUserId().equals("")) {
+                if (helper.getUserPW().equals("")) {
                     Intent intent = new Intent(LoadingActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();

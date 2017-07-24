@@ -49,7 +49,6 @@ dependencies {
     //极光
     compile 'cn.jiguang.sdk:jpush:3.0.3'
     compile 'cn.jiguang.sdk:jcore:1.1.1'
-    compile files('libs/jmessage-android_v2.1.1.jar')
     //数据库框架
     compile 'org.greenrobot:greendao:3.2.0'
     //数据库升级辅助类
@@ -57,7 +56,6 @@ dependencies {
     compile files('libs/jsms_android-1.1.0.jar')
     compile 'com.jakewharton:butterknife:8.7.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
-
     compile 'com.android.support:support-v4:25.0.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
@@ -75,5 +73,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     //switchButton
     compile 'com.kyleduo.switchbutton:library:1.4.6'
-
+    compile files('libs/jmessage-android_v2.2.0.jar')
 }

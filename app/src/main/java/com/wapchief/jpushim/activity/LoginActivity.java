@@ -2,12 +2,15 @@ package com.wapchief.jpushim.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
@@ -15,6 +18,7 @@ import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
@@ -39,6 +43,12 @@ public class LoginActivity extends BaseActivity {
     Button loginSubmit;
     @BindView(R.id.login_ok)
     Button loginOk;
+    @BindView(R.id.title_bar_back)
+    ImageView mTitleBarBack;
+    @BindView(R.id.title_bar_title)
+    TextView mTitleBarTitle;
+    @BindView(R.id.title_options_img)
+    ImageView mTitleOptionsImg;
     private int time = 60;
     SharedPrefHelper sharedPrefHelper;
 
@@ -56,6 +66,9 @@ public class LoginActivity extends BaseActivity {
         if (!sharedPrefHelper.getUserId().equals("")) {
             loginPassWord.setText(sharedPrefHelper.getUserPW());
         }
+        mTitleBarBack.setVisibility(View.GONE);
+        mTitleOptionsImg.setVisibility(View.GONE);
+        mTitleBarTitle.setText("注册登陆");
     }
 
     @Override
@@ -109,7 +122,7 @@ public class LoginActivity extends BaseActivity {
                 JMessageClient.login(loginUsername.getText().toString(), loginPassWord.getText().toString(), new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
-                        Log.e("s=======2:", i + "，" + s);
+//                        Log.e("s=======2:", i + "，" + s);
                         dismissProgressDialog();
                         switch (i) {
                             case 801003:
@@ -134,6 +147,7 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
                 break;
+
         }
     }
 
@@ -184,5 +198,12 @@ public class LoginActivity extends BaseActivity {
         }
     };
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 
 }

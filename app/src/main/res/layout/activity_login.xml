@@ -3,9 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    android:padding="12dp">
+    android:fitsSystemWindows="true">
 
+    <include layout="@layout/title_bar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:orientation="vertical">
     <EditText
         android:id="@+id/login_username"
         android:layout_width="match_parent"
@@ -47,13 +53,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="提交注册,并登陆" />
+        android:text="注册并登陆" />
 
     <Button
         android:id="@+id/login_ok"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="已有账号？直接登录。" />
-
+        android:text="直接登录!" />
+    </LinearLayout>
 </LinearLayout>

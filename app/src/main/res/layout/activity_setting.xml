@@ -16,6 +16,7 @@
         android:layout_height="45dp"
         android:gravity="center_vertical"
         android:paddingLeft="15dp"
+        android:visibility="gone"
         android:background="@android:color/white"
         android:paddingRight="15dp">
 
@@ -23,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
-            android:text="开启通知"
+            android:text="开启状态栏"
             android:textColor="#000000"
             android:textSize="16sp"/>
 
@@ -33,7 +34,86 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"/>
+
+
     </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:background="@android:color/white"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="开启震动"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/setting_push_vib"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:background="@android:color/white"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="开启提示音"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/setting_push_music"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:visibility="gone"
+            android:background="@android:color/white"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="开启呼吸灯"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/setting_push_led"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+
+
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="45dp"
@@ -71,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="消息漫游"
+                android:text="消息漫游(默认开启)"
                 android:textColor="#000000"
                 android:textSize="16sp"/>
 
@@ -81,6 +161,27 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"/>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/setting_exit"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:background="@android:color/white"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="退出当前帐号"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
         </RelativeLayout>
     </LinearLayout>
 </FrameLayout>

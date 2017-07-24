@@ -43,4 +43,38 @@ public class SharedPrefHelper {
         return sharedPreferences.getString("userPW", "");
     }
 
+
+    /*漫游开启状态*/
+    public void setRoaming(boolean flag) {
+        sharedPreferences.edit().putBoolean("roaming", flag).commit();
+    }
+
+    public boolean getRoaming() {
+        return sharedPreferences.getBoolean("roaming", false);
+    }
+    /*推送开启状态*/
+    public void setPush(boolean flag) {
+        sharedPreferences.edit().putBoolean("push", flag).commit();
+    }
+
+    public boolean getMusic() {
+        return sharedPreferences.getBoolean("push_music", false);
+    }
+
+    /*声音推送开启状态*/
+    public void setMusic(boolean flag) {
+        sharedPreferences.edit().putBoolean("push_music", flag).commit();
+    }
+
+    public boolean getPush() {
+        return sharedPreferences.getBoolean("push", false);
+    }
+    /*震动开启状态*/
+    public void setVib(boolean flag) {
+        sharedPreferences.edit().putBoolean("push_vib", flag).commit();
+    }
+
+    public boolean getVib() {
+        return sharedPreferences.getBoolean("push_vib", false);
+    }
 }
