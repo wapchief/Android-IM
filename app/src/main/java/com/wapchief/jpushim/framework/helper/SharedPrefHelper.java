@@ -43,6 +43,14 @@ public class SharedPrefHelper {
         return sharedPreferences.getString("userPW", "");
     }
 
+    /*昵称*/
+    public void setNakeName(String guestId) {
+        sharedPreferences.edit().putString("userNakeName", guestId).commit();
+    }
+
+    public String getNakeName() {
+        return sharedPreferences.getString("userNakeName", "");
+    }
 
     /*漫游开启状态*/
     public void setRoaming(boolean flag) {

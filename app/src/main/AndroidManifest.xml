@@ -65,6 +65,8 @@
         <activity android:name=".activity.SettingActivity"/>
         <!--添加好友／群-->
         <activity android:name=".activity.AddFriendsActivity"/>
+        <!--请求内容-->
+        <activity android:name=".activity.AddFriendMsgActivity"/>
         <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->

@@ -22,8 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
-import cn.jpush.sms.SMSSDK;
-import cn.jpush.sms.listener.SmscodeListener;
 
 /**
  * Created by wapchief on 2017/5/8 0008 下午 3:39.
@@ -81,17 +79,17 @@ public class LoginActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.login_code_bt:
                 startCount();
-                SMSSDK.getInstance().getSmsCodeAsyn(loginUsername.getText().toString(), "1", new SmscodeListener() {
-                    @Override
-                    public void getCodeSuccess(String s) {
-                        loginCode.setText(s);
-                    }
-
-                    @Override
-                    public void getCodeFail(int i, String s) {
-                        showToast(LoginActivity.this, s);
-                    }
-                });
+//                SMSSDK.getInstance().getSmsCodeAsyn(loginUsername.getText().toString(), "1", new SmscodeListener() {
+//                    @Override
+//                    public void getCodeSuccess(String s) {
+//                        loginCode.setText(s);
+//                    }
+//
+//                    @Override
+//                    public void getCodeFail(int i, String s) {
+//                        showToast(LoginActivity.this, s);
+//                    }
+//                });
                 break;
             case R.id.login_submit:
                 //注册

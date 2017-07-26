@@ -35,6 +35,7 @@ import com.wapchief.jpushim.activity.WebViewActivity;
 import com.wapchief.jpushim.entity.TabEntity;
 import com.wapchief.jpushim.fragment.FragmentFactory;
 import com.wapchief.jpushim.framework.base.BaseActivity;
+import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 import com.wapchief.jpushim.framework.utils.UIUtils;
 
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
 
 public class MainActivity extends BaseActivity {
 
@@ -64,9 +66,9 @@ public class MainActivity extends BaseActivity {
     CommonTabLayout mMainRootTab;
     @BindView(R.id.title_options_tv)
     TextView mTitleOptionsTv;
-
+    //NavigationViewHeader
     private LinearLayout nav_header_ll;
-    private TextView nav_header_name;
+    private TextView nav_header_name,nav_header_id;
 
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
@@ -74,6 +76,7 @@ public class MainActivity extends BaseActivity {
     private int[] tabIconGray = new int[]{R.mipmap.icon_tab_message_gray, R.mipmap.icon_tab_im_gray, R.mipmap.icon_tab_d_gray};
     private int[] tabIcon = new int[]{R.mipmap.icon_tab_message, R.mipmap.icon_tab_im, R.mipmap.icon_tab_d};
 
+    private SharedPrefHelper helper;
     @Override
     protected int setContentView() {
         return R.layout.activity_main;
@@ -84,6 +87,7 @@ public class MainActivity extends BaseActivity {
     protected void initView() {
         //状态栏
         new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
+        helper = SharedPrefHelper.getInstance();
         //设置NavigationView
         initNaView();
         initSideDrawer();
@@ -99,6 +103,8 @@ public class MainActivity extends BaseActivity {
         View headerView = mMainNv.getHeaderView(0);
         nav_header_ll = (LinearLayout) headerView.findViewById(R.id.nav_header_ll);
         nav_header_name = (TextView) headerView.findViewById(R.id.nav_header_name);
+        nav_header_id =(TextView) headerView.findViewById(R.id.nav_header_id);
+        nav_header_id.setText("ID:  "+helper.getUserId());
         nav_header_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,7 +132,7 @@ public class MainActivity extends BaseActivity {
         mMainRootVp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
         //未读消息标签
-        mMainRootTab.showMsg(0, 100);
+        mMainRootTab.showMsg(0, 1+JMessageClient.getAllUnReadMsgCount());
         mMainRootTab.setMsgMargin(0, -6, 5);
 
         //设置未读消息红点

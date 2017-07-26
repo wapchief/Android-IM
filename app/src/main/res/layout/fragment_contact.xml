@@ -1,11 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="FragmentContact"/>
+        android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fm_contact_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:id="@+id/fm_contact_no"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text="还没有添加好友！点击去添加！"/>
+    </RelativeLayout>
 </LinearLayout>

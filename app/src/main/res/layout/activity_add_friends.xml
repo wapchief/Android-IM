@@ -18,6 +18,10 @@
         tl:tl_indicator_corner_radius="5dp"
         tl:tl_tab_width="80dp"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#66000000"/>
     <EditText
         android:id="@+id/add_search"
         android:layout_width="match_parent"
@@ -27,8 +31,18 @@
         android:drawableLeft="@mipmap/icon_search"
         android:hint="搜联系人"
         android:textSize="14sp"
+        android:maxLines="1"
         android:paddingLeft="15dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#66000000"/>
 
+    <ListView
+        android:id="@+id/add_lv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ListView>
     <Button
         android:id="@+id/add_commit"
         android:layout_width="wrap_content"

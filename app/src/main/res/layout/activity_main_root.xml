@@ -9,7 +9,7 @@
     android:layout_height="match_parent">
 
     <include layout="@layout/title_bar"/>
-
+    <include layout="@layout/title_search"/>
     <android.support.v4.view.ViewPager
         android:id="@+id/main_root_vp"
         android:layout_width="match_parent"
