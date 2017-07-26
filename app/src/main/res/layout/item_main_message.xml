@@ -59,5 +59,17 @@
             android:text="下午4:20"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"/>
+
+        <Button
+            android:id="@+id/item_main_bt"
+            android:visibility="gone"
+            android:layout_width="50dp"
+            android:layout_height="24dp"
+            android:text="添加"
+            android:textColor="@android:color/black"
+            android:background="@drawable/shape_button_lines"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
     </RelativeLayout>
 </LinearLayout>

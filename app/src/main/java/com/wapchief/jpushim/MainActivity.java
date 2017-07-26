@@ -38,6 +38,7 @@ import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 import com.wapchief.jpushim.framework.utils.UIUtils;
+import com.wapchief.jpushim.view.MyAlertDialog;
 
 import java.util.ArrayList;
 
@@ -223,7 +224,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.title_bar_back, R.id.title_options_img})
+    @OnClick({R.id.title_bar_back, R.id.title_options_img,R.id.title_options_tv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_bar_back:
@@ -235,28 +236,44 @@ public class MainActivity extends BaseActivity {
                 }
                 break;
             case R.id.title_options_img:
-                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setItems(new String[]{"创建群组","添加好友/群"}, new DialogInterface.OnClickListener() {
+                MyAlertDialog dialog = new MyAlertDialog(
+                        MainActivity.this, new String[]{"创建群组", "添加好友／群"},
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                switch (i){
+                                    case 0:
+                                        showToast(MainActivity.this, "暂未开放" );
+                                        break;
+                                    case 1:
+                                        Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);
+                                        startActivity(intent);
+                                        break;
+                                }
+                            }
+                        });
+                dialog.initDialog();
+                dialog.dialogSize(200,0,0,55);
+                break;
+            case R.id.title_options_tv:
+                MyAlertDialog dialog1 = new MyAlertDialog(
+                        MainActivity.this, new String[]{"创建群组", "添加好友／群"},
+                        new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (i==1) {
-                            Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);
-                            startActivity(intent);
-                        }else {
-                            showToast(MainActivity.this, "暂未开放" );
-
+                        switch (i){
+                            case 0:
+                                showToast(MainActivity.this, "暂未开放" );
+                                break;
+                            case 1:
+                                Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);
+                                startActivity(intent);
+                                break;
                         }
                     }
-                }).create();
-                dialog.show();
-                Window window = dialog.getWindow();
-                WindowManager.LayoutParams params = window.getAttributes();
-                window.setGravity(Gravity.RIGHT | Gravity.TOP);
-                params.width = UIUtils.dip2px(this,200);
-                params.y = UIUtils.dip2px(this,55);
-                dialog.getWindow().setAttributes(params);
-
-
+                });
+                dialog1.initDialog();
+                dialog1.dialogSize(200,0,0,55);
                 break;
         }
     }

@@ -4,10 +4,35 @@ import android.widget.TextView;
 
 /**
  * Created by apple on 2017/6/23.
+ * type:
+ * 1 好友推荐
  */
 
 public class MessageBean {
+    public int type;
     public int img;
+    public String title;
+    public String content;
+    public String time;
+
+    @Override
+    public String toString() {
+        return "MessageBean{" +
+                "type=" + type +
+                ", img=" + img +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", time='" + time + '\'' +
+                '}';
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public int getImg() {
         return img;
@@ -39,19 +64,5 @@ public class MessageBean {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public String title;
-    public String content;
-    public String time;
-
-    @Override
-    public String toString() {
-        return "MainBean{" +
-                "img='" + img + '\'' +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", time='" + time + '\'' +
-                '}';
     }
 }

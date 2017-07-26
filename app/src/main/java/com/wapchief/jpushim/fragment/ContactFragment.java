@@ -1,6 +1,5 @@
 package com.wapchief.jpushim.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,14 +11,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.AddFriendsActivity;
+import com.wapchief.jpushim.activity.PullMsgListActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
-import com.wapchief.jpushim.view.MyProgressDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +44,8 @@ public class ContactFragment extends Fragment {
     Unbinder unbinder;
     @BindView(R.id.fm_contact_no)
     TextView mFmContactNo;
+    @BindView(R.id.fm_contact_msg)
+    RelativeLayout mFmContactMsg;
     private List<MessageBean> data = new ArrayList<>();
     private MessageRecyclerAdapter adapter;
 
@@ -66,6 +67,22 @@ public class ContactFragment extends Fragment {
         mFmContactRv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         mFmContactRv.setAdapter(adapter);
         initGetList();
+        initItemOnClick();
+    }
+
+    /*监听item*/
+    private void initItemOnClick() {
+        adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        });
     }
 
     /*获取好友列表*/
@@ -98,30 +115,18 @@ public class ContactFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick(R.id.fm_contact_no)
-    public void onViewClicked() {
-        Intent intent = new Intent(getActivity(), AddFriendsActivity.class);
-        startActivity(intent);
-
+    @OnClick({R.id.fm_contact_no,R.id.fm_contact_msg})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.fm_contact_no:
+                Intent intent = new Intent(getActivity(), AddFriendsActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.fm_contact_msg:
+                startActivity(new Intent(getActivity(),PullMsgListActivity.class));
+                break;
+        }
     }
-
-
-//    /*自定义消息的加载进度条*/
-//    public void showProgressDialog(String msg) {
-//        if (progressDialog != null && progressDialog.isShowing()) {
-//            progressDialog.dismiss();
-//            progressDialog = null;
-//        }
-//        progressDialog = new ProgressDialog(getActivity());
-//        progressDialog.setMessage(msg);
-//        progressDialog.setCancelable(true);
-//        progressDialog.setCanceledOnTouchOutside(false);
-//        try {
-//            progressDialog.show();
-//        } catch (WindowManager.BadTokenException exception) {
-//            exception.printStackTrace();
-//        }
-//    }
 
 
 }

@@ -3,7 +3,6 @@
     xmlns:cube_ptr="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
     cube_ptr:ptr_duration_to_close="300"
     cube_ptr:ptr_duration_to_close_header="2000"
     cube_ptr:ptr_keep_header_when_refresh="true"
@@ -29,14 +28,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="#3368B9F8">
 
 
                 <RelativeLayout
                     android:id="@+id/fragment_main_group"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#3368B9F8">
+                    android:layout_height="wrap_content">
 
                     <include layout="@layout/item_main_message" />
                 </RelativeLayout>

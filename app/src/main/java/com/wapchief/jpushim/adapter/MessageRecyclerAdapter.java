@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +23,14 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private Context context;
     private List<MessageBean> data=new ArrayList<MessageBean>();
 
+
+    public void addList(List<MessageBean> newList) {
+        if (null != newList && newList.size() > 0) {
+            data.addAll(newList);
+            notifyDataSetChanged();
+        }
+
+    }
     public MessageRecyclerAdapter(List<MessageBean> data, Context context) {
         this.data = data;
         this.context = context;
@@ -75,6 +84,9 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ((ItemViewHolder) holder).title.setText(data.get(position).title);
                 ((ItemViewHolder) holder).time.setText(data.get(position).time);
 //            ((ItemViewHolder) holder).title.setText(data.get(position).title);
+                if (data.get(position).type == 1) {
+                    ((ItemViewHolder) holder).button.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
@@ -84,6 +96,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
         TextView title,time,content;
         ImageView img;
+        Button button;
 
         public ItemViewHolder(View view) {
             super(view);
@@ -91,6 +104,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             time = (TextView) view.findViewById(R.id.item_main_time);
             content = (TextView) view.findViewById(R.id.item_main_content);
             img = (ImageView) view.findViewById(R.id.item_main_img);
+            button = (Button) view.findViewById(R.id.item_main_bt);
         }
     }
 
