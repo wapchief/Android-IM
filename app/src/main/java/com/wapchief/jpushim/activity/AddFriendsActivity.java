@@ -236,6 +236,7 @@ public class AddFriendsActivity extends BaseActivity {
                     @Override
                     public void gotResult(int i, String s, UserInfo userInfo) {
                         if (i==0){
+                            initQuery();
                             Intent intent = new Intent(AddFriendsActivity.this, AddFriendMsgActivity.class);
                             intent.putExtra("ID", name);
                             intent.putExtra("NAME", userInfo.getNickname());

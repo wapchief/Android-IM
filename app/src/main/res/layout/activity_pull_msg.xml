@@ -1,38 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
-    <include layout="@layout/title_bar"/>
+    <include layout="@layout/title_bar" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:textSize="12sp"
-        android:textColor="@color/colorText"
-        android:text="好友通知"
+        android:gravity="center_vertical"
         android:paddingLeft="12dp"
-        android:gravity="center_vertical"/>
+        android:text="好友通知"
+        android:textColor="@color/colorText"
+        android:textSize="12sp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pull_msg_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:textSize="12sp"
-        android:textColor="@color/colorText"
-        android:text="好友推荐"
+        android:gravity="center_vertical"
         android:paddingLeft="12dp"
-        android:gravity="center_vertical"/>
+        android:text="好友推荐"
+        android:textColor="@color/colorText"
+        android:textSize="12sp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pull_msg_rv2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/white">
 
     </android.support.v7.widget.RecyclerView>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/pull_msg_push"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_gravity="center_horizontal"
+            android:drawableRight="@mipmap/icon_right"
+            android:gravity="center_vertical"
+            android:text="添加更多朋友"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
 </LinearLayout>

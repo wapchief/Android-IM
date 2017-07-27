@@ -1,6 +1,7 @@
 package com.wapchief.jpushim.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wapchief.jpushim.R;
+import com.wapchief.jpushim.activity.AddFriendMsgActivity;
 import com.wapchief.jpushim.entity.MessageBean;
+import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +24,8 @@ import java.util.List;
 
 public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
-    private List<MessageBean> data=new ArrayList<MessageBean>();
-
+    private List<MessageBean> data = new ArrayList<MessageBean>();
+    private SharedPrefHelper helper;
 
     public void addList(List<MessageBean> newList) {
         if (null != newList && newList.size() > 0) {
@@ -31,9 +34,16 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
 
     }
+
+    public void clear() {
+        data.clear();
+        notifyDataSetChanged();
+    }
+
     public MessageRecyclerAdapter(List<MessageBean> data, Context context) {
         this.data = data;
         this.context = context;
+        helper = SharedPrefHelper.getInstance();
     }
 
 
@@ -51,8 +61,8 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        if(null != data && data.size()>0){
-            return data.size() ;
+        if (null != data && data.size() > 0) {
+            return data.size();
         }
         return 0;
     }
@@ -60,15 +70,15 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_main_message, parent, false);
-            return new ItemViewHolder(view);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_main_message, parent, false);
+        return new ItemViewHolder(view);
 
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
-                //监听回调
+            //监听回调
             if (onItemClickListener != null) {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -83,10 +93,20 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ((ItemViewHolder) holder).content.setText(data.get(position).content);
                 ((ItemViewHolder) holder).title.setText(data.get(position).title);
                 ((ItemViewHolder) holder).time.setText(data.get(position).time);
-//            ((ItemViewHolder) holder).title.setText(data.get(position).title);
                 if (data.get(position).type == 1) {
                     ((ItemViewHolder) holder).button.setVisibility(View.VISIBLE);
                 }
+                ((ItemViewHolder) holder).button.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent(context, AddFriendMsgActivity.class);
+                                intent.putExtra("ID", data.get(position).getContent());
+                                intent.putExtra("NAME", data.get(position).getTitle());
+//                        intent.putExtra("ICON", userInfo.getAvatar());
+                                context.startActivity(intent);
+                            }
+                        });
             }
         }
     }
@@ -94,7 +114,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     //展示的item
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-        TextView title,time,content;
+        TextView title, time, content;
         ImageView img;
         Button button;
 

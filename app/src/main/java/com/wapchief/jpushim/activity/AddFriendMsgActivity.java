@@ -107,7 +107,8 @@ public class AddFriendMsgActivity extends BaseActivity {
                             if (i==0){
                                 showToast(AddFriendMsgActivity.this, "发送成功");
                             }else {
-                                showToast(AddFriendMsgActivity.this, "发送失败");
+                                showToast(AddFriendMsgActivity.this, "发送失败:"+s);
+                                Log.e("id====", getIntent().getStringExtra("ID"));
                             }
                         }
                     });
