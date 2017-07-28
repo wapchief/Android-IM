@@ -23,6 +23,8 @@ import java.util.List;
 
 import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 
 /**
@@ -102,6 +104,13 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ((ItemViewHolder) holder).time.setText(data.get(position).time);
                 //好友推荐
                 if (data.get(position).type == 1) {
+                    if (data.get(position).getFriends()){
+                        ((ItemViewHolder) holder).button.setText("已添加");
+                        ((ItemViewHolder) holder).button.setEnabled(false);
+                    }else {
+                        ((ItemViewHolder) holder).button.setText("添加");
+                        ((ItemViewHolder) holder).button.setEnabled(true);
+                    }
                     ((ItemViewHolder) holder).button.setVisibility(View.VISIBLE);
                     ((ItemViewHolder) holder).button.setOnClickListener(
                             new View.OnClickListener() {
@@ -117,8 +126,23 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 }
                 //好友验证
                 if (data.get(position).type==2){
-                    ((ItemViewHolder) holder).button.setText("同意");
-                    ((ItemViewHolder) holder).button.setVisibility(View.VISIBLE);
+
+                    JMessageClient.getUserInfo(data.get(position).getUserName(), new GetUserInfoCallback() {
+                        @Override
+                        public void gotResult(int i, String s, UserInfo userInfo) {
+                            if (i==0 ){
+                                if (userInfo.isFriend()) {
+                                    ((ItemViewHolder) holder).button.setText("已同意");
+                                    ((ItemViewHolder) holder).button.setEnabled(false);
+                                }else {
+                                    ((ItemViewHolder) holder).button.setText("同意");
+                                    ((ItemViewHolder) holder).button.setEnabled(true);
+                                }
+                                ((ItemViewHolder) holder).button.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+
                     ((ItemViewHolder) holder).button.setOnClickListener(
                             new View.OnClickListener() {
                                 @Override

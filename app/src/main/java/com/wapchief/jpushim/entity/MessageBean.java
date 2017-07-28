@@ -15,6 +15,7 @@ public class MessageBean {
     public String content;
     public String time;
     public String userName;
+    public Boolean isFriends;
 
     @Override
     public String toString() {
@@ -25,6 +26,7 @@ public class MessageBean {
                 ", content='" + content + '\'' +
                 ", time='" + time + '\'' +
                 ", userName='" + userName + '\'' +
+                ", isFriends=" + isFriends +
                 '}';
     }
 
@@ -74,5 +76,13 @@ public class MessageBean {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Boolean getFriends() {
+        return isFriends;
+    }
+
+    public void setFriends(Boolean friends) {
+        isFriends = friends;
     }
 }

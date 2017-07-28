@@ -23,6 +23,7 @@ import com.wapchief.jpushim.greendao.model.RequestList;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -111,6 +112,7 @@ public class PullMsgListActivity extends BaseActivity {
         for (int i = 0; i < id.length; i++) {
             dataAdapter2(id[i]);
         }
+        dismissProgressDialog();
     }
 
     /*加载推荐好友数据*/
@@ -122,10 +124,13 @@ public class PullMsgListActivity extends BaseActivity {
 //                Log.e("userinfoMsg", s + " ," + userInfo.getUserID() + "  ," + userInfo.getNickname());
                 bean.setTitle(userInfo.getNickname());
                 bean.setContent(userInfo.getUserName() + "");
+                bean.setUserName(userInfo.getUserName());
                 bean.setType(1);
-                list2.add(bean);
+                bean.setFriends(userInfo.isFriend());
 //                Log.e("bean1===", bean.getTitle() + "  ," + bean.getContent());
                 TYPE_BUTTON = 1;
+                list2.add(bean);
+                Collections.reverse(list2);
                 adapter2.notifyDataSetChanged();
 
             }

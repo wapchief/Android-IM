@@ -21,6 +21,7 @@ import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -103,8 +104,8 @@ public class ContactFragment extends Fragment {
                         bean.setContent(list.get(j).getAvatar());
                         bean.setTime(list.get(j).getUserID() + "");
                         data.add(bean);
+                        Collections.reverse(data);
                         adapter.notifyDataSetChanged();
-
                     }
 
                 } else {
