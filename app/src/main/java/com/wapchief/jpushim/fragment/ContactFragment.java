@@ -90,21 +90,28 @@ public class ContactFragment extends Fragment {
         ContactManager.getFriendList(new GetUserInfoListCallback() {
             @Override
             public void gotResult(int i, String s, List<UserInfo> list) {
-                Log.e("userinfolist", i + "    ,s:" + s + "   ," + list
-                        .size());
-                if (list.size() == 0) {
-                    mFmContactNo.setVisibility(View.VISIBLE);
-                    mFmContactRv.setVisibility(View.GONE);
-                } else {
-                    mFmContactRv.setVisibility(View.VISIBLE);
+
+                if (i==0) {
+
                     mFmContactNo.setVisibility(View.GONE);
-                    MessageBean bean = new MessageBean();
-                    bean.setTitle(list.get(i).getNickname());
-                    bean.setContent(list.get(i).getAvatar());
-                    bean.setTime(list.get(i).getUserID() + "");
-                    data.add(bean);
+                    mFmContactRv.setVisibility(View.VISIBLE);
+                    for (int j=0;j<list.size();j++) {
+                        Log.e("userinfolist====", i + "    ,s:" + s + "   ," + list
+                                .get(j).getNickname());
+                        MessageBean bean = new MessageBean();
+                        bean.setTitle(list.get(j).getNickname());
+                        bean.setContent(list.get(j).getAvatar());
+                        bean.setTime(list.get(j).getUserID() + "");
+                        data.add(bean);
+                        adapter.notifyDataSetChanged();
+
+                    }
+
+                } else {
+                    mFmContactRv.setVisibility(View.GONE);
+                    mFmContactNo.setVisibility(View.VISIBLE);
+
                 }
-                adapter.notifyDataSetChanged();
             }
         });
     }

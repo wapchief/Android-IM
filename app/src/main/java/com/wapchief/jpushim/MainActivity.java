@@ -12,8 +12,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
@@ -35,17 +38,29 @@ import com.wapchief.jpushim.activity.WebViewActivity;
 import com.wapchief.jpushim.entity.TabEntity;
 import com.wapchief.jpushim.fragment.FragmentFactory;
 import com.wapchief.jpushim.framework.base.BaseActivity;
+import com.wapchief.jpushim.framework.helper.GreenDaoHelper;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 import com.wapchief.jpushim.framework.utils.UIUtils;
+import com.wapchief.jpushim.greendao.RequestListDao;
+import com.wapchief.jpushim.greendao.SearchAddDao;
+import com.wapchief.jpushim.greendao.model.RequestList;
+import com.wapchief.jpushim.greendao.model.SearchAdd;
 import com.wapchief.jpushim.view.MyAlertDialog;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.eventbus.EventBus;
 
 public class MainActivity extends BaseActivity {
 
@@ -70,14 +85,15 @@ public class MainActivity extends BaseActivity {
     //NavigationViewHeader
     private LinearLayout nav_header_ll;
     private TextView nav_header_name,nav_header_id;
-
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private String[] mTitles = {"消息", "联系人", "动态"};
     private int[] tabIconGray = new int[]{R.mipmap.icon_tab_message_gray, R.mipmap.icon_tab_im_gray, R.mipmap.icon_tab_d_gray};
     private int[] tabIcon = new int[]{R.mipmap.icon_tab_message, R.mipmap.icon_tab_im, R.mipmap.icon_tab_d};
-
     private SharedPrefHelper helper;
+    private GreenDaoHelper daoHelper;
+    private RequestListDao dao;
+
     @Override
     protected int setContentView() {
         return R.layout.activity_main;
@@ -86,6 +102,10 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        EventBus.getDefault().register(this);
+        JMessageClient.registerEventReceiver(this);
+        daoHelper = new GreenDaoHelper(this);
+        dao = daoHelper.initDao().getRequestListDao();
         //状态栏
         new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
         helper = SharedPrefHelper.getInstance();
@@ -97,6 +117,33 @@ public class MainActivity extends BaseActivity {
         initNVHeader();
     }
 
+    /*接收好友请求通知*/
+    public void onEventMainThread(final ContactNotifyEvent event) {
+//        if (event.getType().equals("invite_received")){
+            //设置未读消息红点
+            mMainRootTab.showDot(1);
+            MsgView rtv_2_2 = mMainRootTab.getMsgView(1);
+            if (rtv_2_2 != null) {
+                //设置小红点大小和位置
+                UnreadMsgUtils.setSize(rtv_2_2, UIUtils.dip2px(this, 7.5f));
+            }
+            //删除已经存在重复的搜索历史.如果来自同一个人的请求，保存最新
+            List<RequestList> list = dao.queryBuilder()
+                    .where(RequestListDao.Properties.UserName.eq(event.getFromUsername())).build().list();
+            dao.deleteInTx(list);
+            //添加
+             JMessageClient.getUserInfo(event.getFromUsername(), new GetUserInfoCallback() {
+                 @Override
+                 public void gotResult(int i, String s, UserInfo userInfo) {
+                     if (i==0)
+                     dao.insert(new RequestList(null, event.getReason().toString(),event.getFromUsername().toString(),userInfo.getNickname(),""));
+                     Log.e("dao=插入数据成功:", event.getFromUsername()+","+userInfo.getNickname()+","+event.getReason().toString());
+                 }
+             });
+//        }
+        Log.e("bean===", event.getFromUsername() + "," + event.getReason()+","+event.getType());
+    }
+
     /*初始化NavigationView头部控件*/
     private void initNVHeader() {
 //        mMainNv.setItemTextColor(getResources().getColorStateList(R.drawable.nav_select_tv,null));
@@ -104,6 +151,7 @@ public class MainActivity extends BaseActivity {
         View headerView = mMainNv.getHeaderView(0);
         nav_header_ll = (LinearLayout) headerView.findViewById(R.id.nav_header_ll);
         nav_header_name = (TextView) headerView.findViewById(R.id.nav_header_name);
+        nav_header_name.setText(helper.getNakeName());
         nav_header_id =(TextView) headerView.findViewById(R.id.nav_header_id);
         nav_header_id.setText("ID:  "+helper.getUserId());
         nav_header_ll.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +161,7 @@ public class MainActivity extends BaseActivity {
                 startActivity(intent);
             }
         });
+
     }
 
     /*初始化tab标签*/
@@ -136,13 +185,7 @@ public class MainActivity extends BaseActivity {
         mMainRootTab.showMsg(0, 1+JMessageClient.getAllUnReadMsgCount());
         mMainRootTab.setMsgMargin(0, -6, 5);
 
-        //设置未读消息红点
-        mMainRootTab.showDot(2);
-        MsgView rtv_2_2 = mMainRootTab.getMsgView(2);
-        if (rtv_2_2 != null) {
-            //设置小红点大小和位置
-            UnreadMsgUtils.setSize(rtv_2_2, UIUtils.dip2px(this, 7.5f));
-        }
+
     }
 
 
@@ -360,6 +403,45 @@ public class MainActivity extends BaseActivity {
             Fragment fragment = FragmentFactory.createFragment(position);
             return fragment;
 
+        }
+    }
+
+    /**
+     * 单击回退
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitBy2Click();
+        }
+        return false;
+    }
+
+    /**
+     * 双击退出
+     */
+    private static Boolean isExit = false;
+
+    private void exitBy2Click() {
+        Timer tExit = null;
+        if (isExit == false) {
+            isExit = true; // 准备退出
+            showLongToast(this,"再按一次退出程序");
+            tExit = new Timer();
+            tExit.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    isExit = false; // 取消退出
+                }
+            }, 2000); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+
+        } else {
+            finish();
+            System.exit(0);
         }
     }
 

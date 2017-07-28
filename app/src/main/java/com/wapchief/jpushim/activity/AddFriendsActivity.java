@@ -212,31 +212,11 @@ public class AddFriendsActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.add_commit:
-//                if (helper.getUserId().equals("1001")) {
-//                    showProgressDialog("正在同意申请...");
-//                    ContactManager.acceptInvitation("1000", "", new BasicCallback() {
-//                        @Override
-//                        public void gotResult(int i, String s) {
-//                            dismissProgressDialog();
-//                            showToast(AddFriendsActivity.this, s);
-//                            Log.e("acceptInvitation", s);
-//                        }
-//                    });
-//                }else {
-//                    showProgressDialog("正在发送申请...");
-//                    ContactManager.sendInvitationRequest(name,"","为啥加我", new BasicCallback() {
-//                        @Override
-//                        public void gotResult(int i, String s) {
-//                            dismissProgressDialog();
-//                            Log.e("sendin==", s);
-//                        }
-//                    });
-//                }
                 JMessageClient.getUserInfo(name, new GetUserInfoCallback() {
                     @Override
                     public void gotResult(int i, String s, UserInfo userInfo) {
                         if (i==0){
-                            initQuery();
+                            initInsert();
                             Intent intent = new Intent(AddFriendsActivity.this, AddFriendMsgActivity.class);
                             intent.putExtra("ID", name);
                             intent.putExtra("NAME", userInfo.getNickname());

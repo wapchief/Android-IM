@@ -2,10 +2,13 @@ package com.wapchief.jpushim.framework.base;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +25,12 @@ import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 
 import butterknife.ButterKnife;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.event.BaseNotificationEvent;
+import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
+import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.eventbus.EventBus;
 
 /**
  * Created by Wu on 2017/4/13 0013 上午 10:58.
@@ -39,7 +48,6 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     //加载中
     private ProgressDialog progressDialog;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +61,13 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
 
     @Override
     public void onClick(View view) {
+    }
+    @Override
+    protected void onDestroy() {
+        //销毁
+        JMessageClient.unRegisterEventReceiver(this);
+        super.onDestroy();
+
     }
 
     /**
@@ -88,6 +103,7 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
             return View.inflate(this, R.layout.page_default, null);
         }
     }
+
 
     @Override
     protected void onResume() {

@@ -12,6 +12,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.eventbus.EventBus;
 
 import static cn.jpush.im.android.api.JMessageClient.FLAG_NOTIFY_SILENCE;
 import static cn.jpush.im.android.api.JMessageClient.NOTI_MODE_DEFAULT;
@@ -51,6 +52,7 @@ public class BaseApplication extends Application {
         setupDatabase();
         //通知管理,通知栏开启，其他关闭
         JMessageClient.setNotificationFlag(FLAG_NOTIFY_SILENCE);
+
         //推送状态
         initJPush2();
 

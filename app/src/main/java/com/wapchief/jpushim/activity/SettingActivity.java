@@ -203,6 +203,7 @@ public class SettingActivity extends BaseActivity {
             case R.id.setting_exit:
                 JMessageClient.logout();
                 helper.setUserPW("");
+                helper.setNakeName("");
                 Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;

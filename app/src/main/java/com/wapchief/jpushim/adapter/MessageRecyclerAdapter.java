@@ -2,6 +2,8 @@ package com.wapchief.jpushim.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.AddFriendMsgActivity;
@@ -17,6 +20,10 @@ import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.jpush.im.android.api.ContactManager;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -93,20 +100,43 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ((ItemViewHolder) holder).content.setText(data.get(position).content);
                 ((ItemViewHolder) holder).title.setText(data.get(position).title);
                 ((ItemViewHolder) holder).time.setText(data.get(position).time);
+                //好友推荐
                 if (data.get(position).type == 1) {
                     ((ItemViewHolder) holder).button.setVisibility(View.VISIBLE);
-                }
-                ((ItemViewHolder) holder).button.setOnClickListener(
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Intent intent = new Intent(context, AddFriendMsgActivity.class);
-                                intent.putExtra("ID", data.get(position).getContent());
-                                intent.putExtra("NAME", data.get(position).getTitle());
+                    ((ItemViewHolder) holder).button.setOnClickListener(
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Intent intent = new Intent(context, AddFriendMsgActivity.class);
+                                    intent.putExtra("ID", data.get(position).getContent());
+                                    intent.putExtra("NAME", data.get(position).getTitle());
 //                        intent.putExtra("ICON", userInfo.getAvatar());
-                                context.startActivity(intent);
-                            }
-                        });
+                                    context.startActivity(intent);
+                                }
+                            });
+                }
+                //好友验证
+                if (data.get(position).type==2){
+                    ((ItemViewHolder) holder).button.setText("同意");
+                    ((ItemViewHolder) holder).button.setVisibility(View.VISIBLE);
+                    ((ItemViewHolder) holder).button.setOnClickListener(
+                            new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    ContactManager.acceptInvitation(data.get(position).getUserName(), "", new BasicCallback() {
+                                        @Override
+                                        public void gotResult(int i, String s) {
+                                            if (i==0){
+                                                ((ItemViewHolder) holder).button.setText("已添加");
+                                            }else {
+                                                Toast.makeText(context,"验证失败："+s,Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                }
+
             }
         }
     }

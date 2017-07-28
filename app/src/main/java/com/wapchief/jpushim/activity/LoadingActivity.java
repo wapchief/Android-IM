@@ -10,6 +10,7 @@ import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 
@@ -67,8 +68,10 @@ public class LoadingActivity extends BaseActivity {
         JMessageClient.getUserInfo(helper.getUserId(), new GetUserInfoCallback() {
             @Override
             public void gotResult(int i, String s, UserInfo userInfo) {
-                if (i==0)
+                if (i==0) {
                     helper.setNakeName(userInfo.getNickname());
+                    helper.setUserId(userInfo.getUserName());
+                }
             }
         });
     }

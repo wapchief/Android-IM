@@ -14,6 +14,7 @@ public class MessageBean {
     public String title;
     public String content;
     public String time;
+    public String userName;
 
     @Override
     public String toString() {
@@ -23,6 +24,7 @@ public class MessageBean {
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", time='" + time + '\'' +
+                ", userName='" + userName + '\'' +
                 '}';
     }
 
@@ -64,5 +66,13 @@ public class MessageBean {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }
