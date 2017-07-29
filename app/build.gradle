@@ -80,4 +80,6 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     //switchButton
     compile 'com.kyleduo.switchbutton:library:1.4.6'
+    //圆形头像控件
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }

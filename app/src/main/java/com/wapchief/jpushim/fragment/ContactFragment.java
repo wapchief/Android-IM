@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.AddFriendsActivity;
 import com.wapchief.jpushim.activity.PullMsgListActivity;
+import com.wapchief.jpushim.activity.UserInfoActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
 
@@ -103,6 +104,8 @@ public class ContactFragment extends Fragment {
                         bean.setTitle(list.get(j).getNickname());
                         bean.setContent(list.get(j).getAvatar());
                         bean.setTime(list.get(j).getUserID() + "");
+                        bean.setUserName(list.get(j).getUserName());
+                        bean.setType(3);
                         data.add(bean);
                         Collections.reverse(data);
                         adapter.notifyDataSetChanged();

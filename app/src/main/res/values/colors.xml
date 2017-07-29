@@ -7,6 +7,6 @@
     <color name="colorText">#66000000</color>
     <color name="color_shape_start">#5D8DF6</color>
     <color name="color_shape_end">#60B7F8</color>
-
+    <color name="color_transparent">#00000000</color>
     <color name="color_shape_right">#5CBAF7</color>
 </resources>

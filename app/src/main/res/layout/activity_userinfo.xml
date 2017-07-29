@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:id="@+id/userinfo_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="325dp"
+                android:paddingBottom="5dp">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="275dp"
+                    android:scaleType="fitXY"
+                    android:src="@mipmap/userinfo_bg"/>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/userinfo_avatar"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="2dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:src="@mipmap/icon_user"/>
+            </RelativeLayout>
+            <TextView
+                android:id="@+id/userinfo_nikename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingBottom="5dp"
+                android:text="Pony"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"/>
+            <TextView
+                android:id="@+id/userinfo_signature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="个性签名：我是Pony"
+                android:maxLines="3"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:textSize="12sp"
+                android:drawableRight="@mipmap/icon_right" />
+            
+                <TextView
+                    android:id="@+id/userinfo_username"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:textSize="14sp"
+                    android:drawablePadding="20dp"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:drawableLeft="@mipmap/icon_qq"/>
+
+                <TextView
+                    android:id="@+id/userinfo_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:textSize="14sp"
+                    android:drawablePadding="20dp"
+                    android:text="男"
+                    android:textColor="@android:color/black"
+                    android:drawableLeft="@mipmap/icon_tab_im_gray"/>
+
+                <TextView
+                    android:id="@+id/userinfo_birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:textSize="14sp"
+                    android:drawablePadding="20dp"
+                    android:text="6月23日"
+                    android:textColor="@android:color/black"
+                    android:drawableLeft="@mipmap/icon_birthday"/>
+
+                <TextView
+                    android:id="@+id/userinfo_region"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:textSize="14sp"
+                    android:drawablePadding="20dp"
+                    android:text="北京-朝阳"
+                    android:textColor="@android:color/black"
+                    android:drawableLeft="@mipmap/icon_address"/>
+
+                <TextView
+                    android:id="@+id/userinfo_mtime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="8dp"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="8dp"
+                    android:textSize="14sp"
+                    android:drawablePadding="20dp"
+                    android:text="上次更新：2017-08-01"
+                    android:textColor="@android:color/black"
+                    android:drawableLeft="@mipmap/icon_time"/>
+
+                <ImageView
+                    android:id="@+id/userinfo_fill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:src="@mipmap/bg_fill"
+                    android:scaleType="fitXY"/>
+            </LinearLayout>
+        </ScrollView>
+        <include layout="@layout/title_bar" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray" />
+    <include layout="@layout/bottom_bar"/>
+</LinearLayout>

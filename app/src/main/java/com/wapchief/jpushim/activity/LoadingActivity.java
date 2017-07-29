@@ -2,6 +2,7 @@ package com.wapchief.jpushim.activity;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
@@ -43,6 +44,7 @@ public class LoadingActivity extends BaseActivity {
                         @Override
                         public void gotResult(int i, String s) {
                             if (i==0){
+                                showLongToast(LoadingActivity.this,"登陆成功");
                                 initUserInfo();
                                 startActivity(new Intent(getApplication(), MainActivity.class));
                                 LoadingActivity.this.finish();

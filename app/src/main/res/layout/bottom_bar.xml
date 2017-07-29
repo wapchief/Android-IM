@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="50dp"
+android:orientation="horizontal">
+
+<RelativeLayout
+    android:id="@+id/bottom_bar_left"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:paddingBottom="5dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="8dp"
+    android:paddingTop="5dp">
+
+    <TextView
+        android:id="@+id/bottom_bar_tv1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_button_lines"
+        android:gravity="center"
+        android:text="加好友"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+</RelativeLayout>
+
+<RelativeLayout
+    android:id="@+id/bottom_bar_right"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:paddingBottom="5dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="15dp"
+    android:paddingTop="5dp">
+
+    <TextView
+        android:id="@+id/bottom_bar_tv2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_button_lines2"
+        android:gravity="center"
+        android:text="发消息"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+</RelativeLayout>
+</LinearLayout>

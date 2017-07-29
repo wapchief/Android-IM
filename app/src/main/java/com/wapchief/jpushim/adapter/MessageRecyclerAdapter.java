@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.AddFriendMsgActivity;
+import com.wapchief.jpushim.activity.UserInfoActivity;
 import com.wapchief.jpushim.entity.MessageBean;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
@@ -94,6 +95,13 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     public void onClick(View v) {
                         int index = holder.getLayoutPosition();
                         onItemClickListener.onItemClick(holder.itemView, index);
+                        //好友列表
+                        if (data.get(position).type==3 || String.valueOf(data.get(position).type).equals("")) {
+                            Intent intent = new Intent(context, UserInfoActivity.class);
+                            intent.putExtra("USERNAME", data.get(position).getUserName());
+                            context.startActivity(intent);
+                        }
+
                     }
                 });
 

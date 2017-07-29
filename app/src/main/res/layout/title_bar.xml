@@ -6,6 +6,7 @@
     android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/title_bar_left"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
@@ -48,6 +49,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/title_bar_right"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
