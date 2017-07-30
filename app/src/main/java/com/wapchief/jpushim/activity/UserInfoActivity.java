@@ -104,7 +104,11 @@ public class UserInfoActivity extends BaseActivity {
                     mUserinfoMtime.setText(userInfo.getmTime() + "");
                     mUserinfoNikename.setText(userInfo.getNickname() + "");
                     mUserinfoUsername.setText(userInfo.getUserName() + "");
-                    mUserinfoSignature.setText("签名：" + userInfo.getSignature());
+                    if(userInfo.getSignature().equals("")){
+                        mUserinfoSignature.setText("签名：说点儿什么吧～");
+                    }else {
+                        mUserinfoSignature.setText("签名：" + userInfo.getSignature());
+                    }
                     mUserinfoRegion.setText(userInfo.getRegion() + "");
                 } else {
                 }
