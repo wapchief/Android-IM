@@ -14,6 +14,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/fragment_main_none"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="没有会话消息！去选择好友创建一个吧"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_main_rv"
             android:layout_width="match_parent"

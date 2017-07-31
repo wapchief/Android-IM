@@ -104,7 +104,13 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                     }
                 });
-
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        onItemClickListener.onItemLongClick(holder.itemView, position);
+                        return false;
+                    }
+                });
             }
             if (!data.equals("")) {
                 ((ItemViewHolder) holder).content.setText(data.get(position).content);

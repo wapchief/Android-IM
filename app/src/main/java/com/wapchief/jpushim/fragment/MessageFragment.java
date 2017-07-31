@@ -1,5 +1,6 @@
 package com.wapchief.jpushim.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,7 @@ import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.ChatMsgActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
+import com.wapchief.jpushim.view.MyAlertDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.Conversation;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -38,6 +43,8 @@ public class MessageFragment extends Fragment {
 
     @BindView(R.id.fragment_main_group)
     RelativeLayout mFragmentMainGroup;
+    @BindView(R.id.fragment_main_none)
+    TextView mFragmentMainNone;
     private List<MessageBean> data = new ArrayList<>();
 
     @BindView(R.id.fragment_main_rv)
@@ -54,7 +61,8 @@ public class MessageFragment extends Fragment {
     TextView mItemMainContent;
     @BindView(R.id.item_main_time)
     TextView mItemMainTime;
-
+    private int groupID=0;
+    MessageBean bean;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -67,9 +75,23 @@ public class MessageFragment extends Fragment {
 
     private void initView() {
         initData();
-        initDataBean();
+//        initDataBean();
         initGroup();
         onClickItem();
+    }
+//
+//    @Override
+//    public void onHiddenChanged(boolean hidden) {
+//        super.onHiddenChanged(hidden);
+//        if (hidden)
+//    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        data.clear();
+        initDataBean();
+
     }
 
     /*监听item*/
@@ -79,12 +101,32 @@ public class MessageFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 if (view != null) {
                     Intent intent = new Intent(getActivity(), ChatMsgActivity.class);
+                    intent.putExtra("USERNAME", data.get(position).getMsgID());
+                    intent.putExtra("NAKENAME", data.get(position).getTitle());
                     startActivity(intent);
                 }
             }
 
             @Override
-            public void onItemLongClick(View view, int position) {
+            public void onItemLongClick(View view, final int position) {
+                String[] strings = {"删除会话"};
+                MyAlertDialog dialog=new MyAlertDialog(getActivity(), strings,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if (i==0){
+                                    if (JMessageClient.deleteSingleConversation(data.get(position).getMsgID())==true){
+                                        Toast.makeText(getActivity(),"删除成功",Toast.LENGTH_SHORT).show();
+                                        data.clear();
+
+                                        initDataBean();
+                                    }else {
+                                        Toast.makeText(getActivity(),"删除失败",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+                dialog.initDialog();
 
             }
         });
@@ -112,12 +154,25 @@ public class MessageFragment extends Fragment {
     }
 
     private void initDataBean() {
+        List<Conversation> list = new ArrayList<>();
+        list = JMessageClient.getConversationList();
+        Log.e("list====", list.size()+"");
+        if (list.size()==0){
+            mFragmentMainNone.setVisibility(View.VISIBLE);
+            mFragmentMainRv.setVisibility(View.GONE);
+            return;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            bean = new MessageBean();
+            try {
+                bean.setContent(list.get(i).getLatestMessage().getContent() + "");
+            }catch (Exception e){
+                bean.setContent("最近没有消息！");
 
-        for (int i = 0; i < 10; i++) {
-            MessageBean bean = new MessageBean();
-            bean.setContent("用户" + i);
-            bean.setTitle("八怪不姓丑" + i);
-            bean.setTime("下午11:" + i + i);
+            }
+            bean.setMsgID(list.get(i).getTargetId());
+            bean.setTitle(list.get(i).getTitle());
+            bean.setTime(list.get(i).getType()+"");
             data.add(bean);
         }
         adapter.notifyDataSetChanged();
@@ -133,7 +188,7 @@ public class MessageFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.fragment_main_group:
-                Toast.makeText(getActivity(),"暂未开放，敬请期待",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "暂未开放，敬请期待", Toast.LENGTH_SHORT).show();
                 break;
         }
     }

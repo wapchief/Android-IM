@@ -71,6 +71,8 @@
         <activity android:name=".activity.PullMsgListActivity"/>
         <!--查看用户资料-->
         <activity android:name=".activity.UserInfoActivity"/>
+        <!--编辑个人资料-->
+        <activity android:name=".activity.EditUserInfoActivity"/>
         <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->

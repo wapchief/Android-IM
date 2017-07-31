@@ -11,6 +11,7 @@ import android.widget.TextView;
 public class MessageBean {
     public int type;
     public int img;
+    public String msgID;
     public String title;
     public String content;
     public String time;
@@ -22,6 +23,7 @@ public class MessageBean {
         return "MessageBean{" +
                 "type=" + type +
                 ", img=" + img +
+                ", msgID=" + msgID +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", time='" + time + '\'' +
@@ -44,6 +46,14 @@ public class MessageBean {
 
     public void setImg(int img) {
         this.img = img;
+    }
+
+    public String getMsgID() {
+        return msgID;
+    }
+
+    public void setMsgID(String msgID) {
+        this.msgID = msgID;
     }
 
     public String getTitle() {

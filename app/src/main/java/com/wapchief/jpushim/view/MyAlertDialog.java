@@ -35,11 +35,13 @@ public class MyAlertDialog {
 
     }
 
-    public void dialogSize(int width,int whight,int x,int y){
+    public void dialogSize(int width,int hight,int x,int y){
         Window window = dialog.getWindow();
         WindowManager.LayoutParams params = window.getAttributes();
         window.setGravity(Gravity.RIGHT | Gravity.TOP);
         params.width = UIUtils.dip2px(context, width);
+        params.height=UIUtils.dip2px(context, hight);
+        params.x = UIUtils.dip2px(context, x);
         params.y = UIUtils.dip2px(context, y);
         dialog.getWindow().setAttributes(params);
     }

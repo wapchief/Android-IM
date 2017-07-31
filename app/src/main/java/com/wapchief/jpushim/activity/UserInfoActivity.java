@@ -1,6 +1,7 @@
 package com.wapchief.jpushim.activity;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.UserInfo;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -88,7 +90,6 @@ public class UserInfoActivity extends BaseActivity {
         initBar();
         initUserInfo(getIntent().getStringExtra("USERNAME"));
         initScroll();
-
     }
 
     /*获取用户资料*/
@@ -152,26 +153,8 @@ public class UserInfoActivity extends BaseActivity {
         mTitleOptionsTv.setText("更多");
         mTitleOptionsTv.setVisibility(View.VISIBLE);
         mTitleBarTitle.setText("");
-//        mBottomBarLeft.setVisibility(View.GONE);
+        mBottomBarLeft.setVisibility(View.GONE);
         userName = getIntent().getStringExtra("USERNAME");
-        Log.e("userName===", "=" + userName + ",id:" + helper.getUserId());
-        if (Integer.valueOf(helper.getUserId()) == 10000) {
-            mUserinfoFill.setVisibility(View.VISIBLE);
-//            mUserinfoAvatar.setImageDrawable(getResources().getDrawable(R.mipmap.user_avatar));
-            Picasso.with(this)
-                    .load("http://tva1.sinaimg.cn/crop.0.0.480.480.180/81db8b19jw8eonah1rbnmj20dc0dcaag.jpg")
-                    .into(mUserinfoAvatar);
-            mUserinfoNikename.setText("♫清水长流成溪♪");
-            mUserinfoUsername.setText("408372509");
-            mUserinfoSignature.setText("爱对了是爱情，爱错了是青春......");
-            mUserinfoRegion.setText("福建-漳州");
-            mBottomBarLeft.setVisibility(View.VISIBLE);
-            mBottomBarTv1.setText("QQ电话");
-            mUserinfoGender.setText("男？  24岁  巨蟹座  福建-漳州");
-            mUserinfoBirthday.setText("学校");
-            mUserinfoRegion.setVisibility(View.GONE);
-            mUserinfoMtime.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -195,6 +178,14 @@ public class UserInfoActivity extends BaseActivity {
             case R.id.title_options_tv:
                 break;
             case R.id.bottom_bar_tv2:
+                /*创建会话*/
+                Conversation.createSingleConversation(getIntent().getStringExtra("USERNAME"), "");
+                Intent intent = new Intent(UserInfoActivity.this, ChatMsgActivity.class);
+                intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                startActivity(intent);
+//                JMessageClient.c
+
+
                 break;
         }
     }
