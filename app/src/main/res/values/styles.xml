@@ -3,9 +3,11 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/color_shape_start</item>
+        <item name="colorPrimaryDark">@color/color_shape_start</item>
+        <item name="colorAccent">@color/color_shape_end</item>
+        <!--隐藏标题栏-->
+         <!--<item name="android:windowFullscreen">true</item>-->
     </style>
     <style name="TabLayoutTextStyle">
     <item name="android:textSize">12sp</item>
@@ -16,5 +18,11 @@
         <item name="android:textColor">@color/colorTheme</item>
     </style>
 
-
+    <style name="dialog_animal"
+        parent="android:style/Theme.Dialog">
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

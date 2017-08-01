@@ -1,6 +1,213 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:orientation="vertical"
+    android:layout_weight="1">
+    <include layout="@layout/title_bar"/>
 
+
+    <View
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="100dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="头像"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/edit_user_avatar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:drawableRight="@mipmap/icon_right"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="100dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="签名"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:id="@+id/edit_user_signature"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:hint="填写个性签名"
+            android:background="@null"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:drawableRight="@mipmap/icon_right"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+
+    <View
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="100dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="昵称"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:id="@+id/edit_user_nackName"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:hint="填写昵称"
+            android:background="@null"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:drawableRight="@mipmap/icon_right"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="100dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="性别"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/edit_user_gender"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:background="@null"
+            android:textSize="16sp"
+            android:text="男"
+            android:textColor="@android:color/black"
+            android:drawableRight="@mipmap/icon_right"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="100dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="生日"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/edit_user_birthday"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:background="@null"
+            android:textSize="16sp"
+            android:text="1993-7-2"
+            android:textColor="@android:color/black"
+            android:drawableRight="@mipmap/icon_right"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:background="@android:color/white">
+        <TextView
+            android:layout_width="100dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="地址"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/edit_user_address"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingRight="15dp"
+            android:background="@null"
+            android:textSize="16sp"
+            android:text="北京-朝阳"
+            android:textColor="@android:color/black"
+            android:drawableRight="@mipmap/icon_right"/>
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+</LinearLayout>
+    <include layout="@layout/bottom_bar"/>
 </LinearLayout>

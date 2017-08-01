@@ -1,6 +1,7 @@
 package com.wapchief.jpushim.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +14,8 @@ import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.utils.StringUtils;
+import com.wapchief.jpushim.framework.utils.TimeUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,27 +75,14 @@ public class UserActivty extends BaseActivity {
     protected void initView() {
         helper = SharedPrefHelper.getInstance();
         initBar();
-        JMessageClient.getUserInfo(helper.getUserId(), new GetUserInfoCallback() {
-            @Override
-            public void gotResult(int i, String s, UserInfo userInfo) {
-                avatar = userInfo.getAvatar();
-                mUserinfoBirthday.setText(userInfo.getBirthday()+"");
-                mUserinfoGender.setText(userInfo.getGender()+"");
-                mUserinfoNikename.setText(userInfo.getNickname()+"");
-                mUserinfoUsername.setText(userInfo.getUserName()+"");
-                mUserinfoMtime.setText(userInfo.getmTime()+"");
-                mUserinfoRegion.setText(userInfo.getRegion()+"");
-                mUserinfoSignature.setText(userInfo.getSignature()+"");
-            }
-        });
-        try {
-            Picasso.with(this)
-                    .load(avatar)
-                    .into(mUserinfoAvatar);
-        }catch (Exception e){
-            Log.e("eeeeeeee", e.getMessage());
-        }
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
     }
 
     private void initBar() {
@@ -105,7 +95,26 @@ public class UserActivty extends BaseActivity {
 
     @Override
     protected void initData() {
+        mUserinfoNikename.setText(JMessageClient.getMyInfo().getNickname()+"");
+        mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",JMessageClient.getMyInfo().getBirthday()));
+        mUserinfoGender.setText(StringUtils.constant2String(JMessageClient.getMyInfo().getGender() + ""));
+        if (StringUtils.isNull(JMessageClient.getMyInfo().getSignature())){
+            mUserinfoSignature.setText("签名：暂未设置签名");
+        }else {
+            mUserinfoSignature.setText(JMessageClient.getMyInfo().getSignature() + "");
+        }
+        mUserinfoRegion.setText(JMessageClient.getMyInfo().getRegion()+"");
+        mUserinfoUsername.setText(JMessageClient.getMyInfo().getUserName()+"");
+        mUserinfoMtime.setText("上次更新："+TimeUtils.ms2date("yyyy-MM-dd hh-mm",JMessageClient.getMyInfo().getmTime()));
 
+        avatar=JMessageClient.getMyInfo().getAvatar()+"";
+        if (StringUtils.isNull(avatar)) {
+            mUserinfoAvatar.setImageDrawable(getResources().getDrawable(R.mipmap.icon_user));
+        }else {
+            Picasso.with(this)
+                    .load(avatar)
+                    .into(mUserinfoAvatar);
+        }
     }
 
     @Override
