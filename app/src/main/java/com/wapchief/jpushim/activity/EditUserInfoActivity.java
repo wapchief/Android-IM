@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +102,7 @@ public class EditUserInfoActivity extends BaseActivity {
     protected void initData() {
         mEditUserNackName.setText(JMessageClient.getMyInfo().getNickname()+"");
         mEditUserBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",JMessageClient.getMyInfo().getBirthday()));
-        mEditUserGender.setText(StringUtils.constant2String(JMessageClient.getMyInfo().getGender() + ""));
+        mEditUserGender.setText(StringUtils.constant2String(JMessageClient.getMyInfo().getGender().name()));
         mEditUserSignature.setText(JMessageClient.getMyInfo().getSignature()+"");
         mEditUserAddress.setText(JMessageClient.getMyInfo().getAddress()+"");
 
@@ -134,7 +135,6 @@ public class EditUserInfoActivity extends BaseActivity {
                 break;
             case R.id.bottom_bar_tv2:
                 userInfo.setAddress(mEditUserAddress.getText()+"");
-                userInfo.setRegion(mEditUserAddress.getText()+"");
                 userInfo.setGender(UserInfo.Gender.valueOf(StringUtils.string2contant(mEditUserGender.getText().toString())));
                 userInfo.setBirthday(TimeUtils.date2ms("yyyy-MM-dd",mEditUserBirthday.getText().toString()));
                 userInfo.setSignature(mEditUserSignature.getText()+"");
@@ -154,21 +154,7 @@ public class EditUserInfoActivity extends BaseActivity {
         }
     }
 
-    /*性别选择器*/
-    private void initPickViewGender() {
-        final ArrayList<String> options = new ArrayList<>();
-        options.add("男");
-        options.add("女");
-        options.add("未知");
-        mOptionsPickerView = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
-            @Override
-            public void onOptionsSelect(int i, int i1, int i2, View view) {
-                mEditUserGender.setText(options.get(i));
-            }
-        }).build();
-        mOptionsPickerView.setPicker(options);
-        mOptionsPickerView.show();
-    }
+
 
     /*头像选择器*/
     private void showHeadDialog() {
@@ -209,6 +195,21 @@ public class EditUserInfoActivity extends BaseActivity {
 
             }
         });
+    }
+    /*性别选择器*/
+    private void initPickViewGender() {
+        final ArrayList<String> options = new ArrayList<>();
+        options.add("男");
+        options.add("女");
+        options.add("未知");
+        mOptionsPickerView = new OptionsPickerView.Builder(this, new OptionsPickerView.OnOptionsSelectListener() {
+            @Override
+            public void onOptionsSelect(int i, int i1, int i2, View view) {
+                mEditUserGender.setText(options.get(i));
+            }
+        }).build();
+        mOptionsPickerView.setPicker(options);
+        mOptionsPickerView.show();
     }
     /*日期选择期*/
     public void initTimePickView(){

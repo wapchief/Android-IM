@@ -97,7 +97,7 @@ public class UserActivty extends BaseActivity {
     protected void initData() {
         mUserinfoNikename.setText(JMessageClient.getMyInfo().getNickname()+"");
         mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",JMessageClient.getMyInfo().getBirthday()));
-        mUserinfoGender.setText(StringUtils.constant2String(JMessageClient.getMyInfo().getGender() + ""));
+        mUserinfoGender.setText(StringUtils.constant2String(JMessageClient.getMyInfo().getGender().name()));
         if (StringUtils.isNull(JMessageClient.getMyInfo().getSignature())){
             mUserinfoSignature.setText("签名：暂未设置签名");
         }else {

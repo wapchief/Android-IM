@@ -40,9 +40,9 @@ public class StringUtils {
      */
     public static String string2contant(String s){
 
-        if (s=="男"){
+        if (s=="男"||s.equals("男")){
             return "male";
-        }else if (s=="女"){
+        }else if (s=="女"||s.equals("女")){
             return "female";
         }else {
             return "unknown";
