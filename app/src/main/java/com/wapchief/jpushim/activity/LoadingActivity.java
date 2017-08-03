@@ -49,7 +49,7 @@ public class LoadingActivity extends BaseActivity {
                                 startActivity(new Intent(getApplication(), MainActivity.class));
                                 LoadingActivity.this.finish();
                             }else {
-                                startActivity(new Intent(LoadingActivity.this,LoadingActivity.class));
+                                startActivity(new Intent(LoadingActivity.this,LoginActivity.class));
                                 showToast(LoadingActivity.this, "登陆失败:"+s);
                             }
                         }

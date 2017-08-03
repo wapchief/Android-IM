@@ -57,6 +57,10 @@ dependencies {
     compile 'cn.jiguang.sdk:jpush:3.0.3'
     compile 'cn.jiguang.sdk:jcore:1.1.3'
     compile 'cn.jiguang.sdk:jmessage:2.2.0'
+    //极光消息列表
+    compile 'cn.jiguang.imui:messagelist:0.4.3'
+    //极光对话输入
+    compile 'cn.jiguang.imui:chatinput:0.4.3'
     //数据库框架
     compile 'org.greenrobot:greendao:3.2.0'
     //数据库升级辅助类
@@ -73,10 +77,6 @@ dependencies {
     compile 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
     //下拉刷新库
     compile 'in.srain.cube:ultra-ptr:1.0.11'
-    //极光消息列表
-    compile 'cn.jiguang.imui:messagelist:0.4.3'
-    //极光对话输入
-    compile 'cn.jiguang.imui:chatinput:0.4.3'
     //图片加载
     compile 'com.squareup.picasso:picasso:2.5.2'
     //switchButton
