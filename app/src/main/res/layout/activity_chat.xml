@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/chat_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f3f3f3"
+    android:orientation="vertical"
     android:fitsSystemWindows="true">
 
     <include layout="@layout/title_bar"/>
 
     <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/chat_input"
-        android:layout_below="@+id/title">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <cn.jiguang.imui.messages.MessageList
             android:id="@+id/msg_list"
@@ -38,8 +39,27 @@
 
     <cn.jiguang.imui.chatinput.ChatInputView
         android:id="@+id/chat_input"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
-
-</RelativeLayout>
+        android:layout_height="wrap_content"/>
+    
+    <LinearLayout
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true">
+        <EditText
+            android:id="@+id/chat_et"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/chat_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送"/>
+    </LinearLayout>
+</LinearLayout>
