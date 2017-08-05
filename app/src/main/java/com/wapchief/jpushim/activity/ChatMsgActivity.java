@@ -14,9 +14,10 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -25,7 +26,9 @@ import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MyMessage;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.framework.utils.UIUtils;
+import com.wapchief.jpushim.view.MyAlertDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,11 +39,19 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.jiguang.imui.chatinput.ChatInputView;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.content.MessageContent;
+import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.enums.MessageDirect;
+import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.api.BasicCallback;
 
 /**
  * Created by wapchief on 2017/7/19.
@@ -63,7 +74,11 @@ public class ChatMsgActivity extends BaseActivity {
     @BindView(R.id.chat_input)
     ChatInputView mChatInput;
     @BindView(R.id.chat_view)
-    RelativeLayout mChatView;
+    LinearLayout mChatView;
+    @BindView(R.id.chat_et)
+    EditText mChatEt;
+    @BindView(R.id.chat_send)
+    Button mChatSend;
     private SharedPrefHelper helper;
 
     // 状态栏的高度
@@ -77,6 +92,12 @@ public class ChatMsgActivity extends BaseActivity {
     private List<MyMessage> mData;
     private ImageLoader imageLoader;
     private ImageView imageView;
+    private String userName = "";
+    private String msgID = "";
+    private int position;
+    List<Message> messages;
+    List<Conversation> conversations;
+    Conversation conversation;
     @Override
     protected int setContentView() {
         return R.layout.activity_chat;
@@ -86,8 +107,15 @@ public class ChatMsgActivity extends BaseActivity {
     protected void initView() {
         helper = SharedPrefHelper.getInstance();
         mContext = ChatMsgActivity.this;
+//        initKeyBoard();
+        conversations = JMessageClient.getConversationList();
+        userName = getIntent().getStringExtra("USERNAME");
+        msgID = getIntent().getStringExtra("MSGID");
+        //position从上个页面传递的会话位置
+        position= getIntent().getIntExtra("position",0);
+        conversation = conversations.get(position);
+        Log.e("conver", conversation.getAllMessage().size() + "   ," + conversation.getAllMessage());
         mData = getMessages();
-        initKeyBoard();
         initTitleBar();
         initMsgAdapter();
         View view = View.inflate(mContext, R.layout.item_receive_photo, null);
@@ -100,27 +128,30 @@ public class ChatMsgActivity extends BaseActivity {
     //初始化消息列表
     private List<MyMessage> getMessages() {
         List<MyMessage> list = new ArrayList<>();
-        Resources res = getResources();
-        String[] messages = res.getStringArray(R.array.messages_array);
-        for (int i = 0; i < messages.length; i++) {
+        for (int i = 0; i < conversation.getAllMessage().size(); i++) {
             MyMessage message;
-            if (i % 2 == 0) {
-                message = new MyMessage(messages[i], IMessage.MessageType.RECEIVE_TEXT);
-                message.setUserInfo(new DefaultUser(helper.getUserId(), "DeadPool", "R.drawable.ironman"));
-            } else {
-                message = new MyMessage(messages[i], IMessage.MessageType.SEND_TEXT);
-                message.setUserInfo(new DefaultUser("1", "IronMan", "R.drawable.ironman"));
+            if (conversation.getAllMessage().get(i).getDirect()== MessageDirect.send){
+                message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.SEND_TEXT);
+                message.setUserInfo(new DefaultUser(userName, "IronMan", "R.drawable.ironman"));
+            }else {
+                message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.RECEIVE_TEXT);
+                message.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", "R.drawable.ironman"));
+
             }
-            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+            message.setPosition(i);
+            message.setMsgID(conversation.getAllMessage().get(i).getId());
+            message.setTimeString(TimeUtils.ms2date("MM-dd HH:mm",conversation.getAllMessage().get(i).getCreateTime()));
             list.add(message);
+
         }
         Collections.reverse(list);
         return list;
     }
+
     //初始化adapter
     private void initMsgAdapter() {
         //加载头像图片的方法
-            imageLoader=new ImageLoader() {
+        imageLoader = new ImageLoader() {
             @Override
             public void loadAvatarImage(ImageView imageView, String s) {
                 Picasso.with(getApplicationContext())
@@ -160,7 +191,7 @@ public class ChatMsgActivity extends BaseActivity {
                         startActivity(intent);
                     }
                 } else {
-                    showToast(ChatMsgActivity.this,"点击了消息");
+                    showToast(ChatMsgActivity.this, "点击了消息");
                 }
             }
         });
@@ -168,29 +199,30 @@ public class ChatMsgActivity extends BaseActivity {
         //长按消息
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
             @Override
-            public void onMessageLongClick(MyMessage message) {
-//                showToast(ChatMsgActivity.this,"长按:"+message.getMsgId());
-//                mMsgList.getTranslationY()
-                Log.e("yyyyyyy",""+mMsgList.getScaleY()+","+mMsgList.getTranslationY());
-                AlertDialog dialog = new AlertDialog.Builder(mContext)
-                        .setItems(new String[]{"复制","转发","删除"}, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                showToast(ChatMsgActivity.this, "" + i);
-
+            public void onMessageLongClick(final MyMessage message) {
+                Log.e("yyyyyyy", "" + mMsgList.getId() + "," +message.getPosition());
+                MyAlertDialog dialog = new MyAlertDialog(ChatMsgActivity.this,
+                        new String[]{"复制", "转发", "删除"}
+                        , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (i==2){
+                            if (conversation.deleteMessage(message.getMsgID())){
+                                mData.remove(message.getPosition());
+                                mAdapter.notifyDataSetChanged();
                             }
-                        }).create();
-                dialog.show();
-                Window window = dialog.getWindow();
-                WindowManager.LayoutParams params = window.getAttributes();
-//                window.setGravity(Gravity.RIGHT | Gravity.TOP);
-                params.width = UIUtils.dip2px(mContext,120);
-                params.y = UIUtils.dip2px(mContext,55);
-                dialog.getWindow().setAttributes(params);
+                        }
+                    }
+                });
+
+                dialog.initDialog();
+
+            }
+
 
 //                message.
                 // do something
-            }
+
         });
 
         //点击头像
@@ -239,15 +271,23 @@ public class ChatMsgActivity extends BaseActivity {
             }
         }, 1000);
     }
+
     private void initKeyBoard() {
 //        statusBarHeight = getStatusBarHeight(getApplicationContext());
 
 
         mChatView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
         Log.e("height======", "" + keyboardHeight);
-        mChatInput.setMenuContainerHeight(keyboardHeight);
+//        mChatInput.setMenuContainerHeight(keyboardHeight);
 
     }
+
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (oldh - h > 300) {
+            mChatView.setMinimumHeight(oldh - h);
+        }
+    }
+
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
 
         @Override
@@ -266,9 +306,11 @@ public class ChatMsgActivity extends BaseActivity {
             // 在显示软键盘时，heightDiff会变大，等于软键盘加状态栏的高度。
             // 所以heightDiff大于状态栏高度时表示软键盘出现了，
             // 这时可算出软键盘的高度，即heightDiff减去状态栏的高度
-            if(keyboardHeight == 0 && heightDiff > statusBarHeight){
+            if (keyboardHeight == 0 && heightDiff > statusBarHeight) {
                 keyboardHeight = heightDiff - statusBarHeight;
             }
+            Log.e("onkeyboardHeight", ":" + keyboardHeight);
+            mChatInput.setMenuContainerHeight(keyboardHeight);
 
             if (isShowKeyboard) {
                 // 如果软键盘是弹出的状态，并且heightDiff小于等于状态栏高度，
@@ -290,16 +332,16 @@ public class ChatMsgActivity extends BaseActivity {
 
     private void onShowKeyboard() {
         // 在这里处理软键盘弹出的回调
-        Log.e("onShowKeyboard : key = " ,""+ keyboardHeight);
-//        mChatInput.setMenuContainerHeight(60);
+        Log.e("onShowKeyboard : key = ", "" + keyboardHeight);
+//        mChatInput.setMenuContainerHeight(keyboardHeight);
 
 
     }
 
     private void onHideKeyboard() {
         // 在这里处理软键盘收回的回调
-        Log.e("onHidekey = ","dd");
-        mChatInput.setMenuContainerHeight(0);
+        Log.e("onHidekey = ", "dd");
+//        mChatInput.setMenuContainerHeight(-keyboardHeight);
     }
 
     /*标题栏*/
@@ -320,5 +362,36 @@ public class ChatMsgActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @OnClick({R.id.title_bar_back, R.id.title_options_tv, R.id.chat_send})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.title_bar_back:
+                break;
+            case R.id.title_options_tv:
+                break;
+            case R.id.chat_send:
+//                MyMessage me;
+//                me.setDuration();
+//                message.
+//                JMessageClient.sendMessage(message);
+                final Message message1 = JMessageClient.createSingleTextMessage(userName, "", mChatEt.getText().toString());
+                MyMessage myMessage;
+
+                message1.setOnSendCompleteCallback(new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
+                        if (i == 0) {
+                            mAdapter.addToStart(new MyMessage(mChatEt.getText().toString(), IMessage.MessageType.SEND_TEXT), true);
+                            mChatEt.setText("");
+                        } else {
+                            Log.e("sendMsg", s);
+                        }
+                    }
+                });
+                JMessageClient.sendMessage(message1);
+                break;
+        }
     }
 }

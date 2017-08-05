@@ -20,6 +20,24 @@ public class MyMessage implements IMessage {
     private long duration;
     private String progress;
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    private int position;
+    public int getMsgID() {
+        return msgID;
+    }
+
+    public void setMsgID(int msgID) {
+        this.msgID = msgID;
+    }
+
+    private int msgID;
     public MyMessage(String text, MessageType type) {
         this.text = text;
         this.type = type;

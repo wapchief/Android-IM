@@ -23,6 +23,8 @@ import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.ChatMsgActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
+import com.wapchief.jpushim.framework.utils.StringUtils;
+import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.view.MyAlertDialog;
 
 import java.util.ArrayList;
@@ -33,6 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.model.Conversation;
 
 /**
@@ -101,8 +104,10 @@ public class MessageFragment extends Fragment {
             public void onItemClick(View view, int position) {
                 if (view != null) {
                     Intent intent = new Intent(getActivity(), ChatMsgActivity.class);
-                    intent.putExtra("USERNAME", data.get(position).getMsgID());
+                    intent.putExtra("USERNAME", data.get(position).getUserName());
                     intent.putExtra("NAKENAME", data.get(position).getTitle());
+                    intent.putExtra("MSGID", data.get(position).getMsgID());
+                    intent.putExtra("position",position);
                     startActivity(intent);
                 }
             }
@@ -165,14 +170,16 @@ public class MessageFragment extends Fragment {
         for (int i = 0; i < list.size(); i++) {
             bean = new MessageBean();
             try {
-                bean.setContent(list.get(i).getLatestMessage().getContent() + "");
+                bean.setContent(((TextContent)(list.get(i).getLatestMessage()).getContent()).getText());
             }catch (Exception e){
                 bean.setContent("最近没有消息！");
-
             }
-            bean.setMsgID(list.get(i).getTargetId());
+            bean.setMsgID(list.get(i).getId());
+            bean.setUserName(list.get(i).getTargetId());
             bean.setTitle(list.get(i).getTitle());
-            bean.setTime(list.get(i).getType()+"");
+            bean.setTime(list.get(i).getUnReadMsgCnt()+"条未读");
+            bean.setConversation(list.get(i));
+//            Log.e("listConVer====", list.get(i).getAllMessage()+".");
             data.add(bean);
         }
         adapter.notifyDataSetChanged();

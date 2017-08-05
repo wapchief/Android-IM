@@ -2,6 +2,8 @@ package com.wapchief.jpushim.entity;
 
 import android.widget.TextView;
 
+import cn.jpush.im.android.api.model.Conversation;
+
 /**
  * Created by apple on 2017/6/23.
  * type:
@@ -17,7 +19,7 @@ public class MessageBean {
     public String time;
     public String userName;
     public Boolean isFriends;
-
+    public Conversation conversation;
     @Override
     public String toString() {
         return "MessageBean{" +
@@ -94,5 +96,13 @@ public class MessageBean {
 
     public void setFriends(Boolean friends) {
         isFriends = friends;
+    }
+
+    public Conversation getConversation() {
+        return conversation;
+    }
+
+    public void setConversation(Conversation conversation) {
+        this.conversation = conversation;
     }
 }
