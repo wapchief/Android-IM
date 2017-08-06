@@ -1,11 +1,14 @@
 package com.wapchief.jpushim.activity;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -19,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.R;
@@ -26,6 +30,7 @@ import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MyMessage;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.framework.utils.UIUtils;
 import com.wapchief.jpushim.view.MyAlertDialog;
@@ -52,6 +57,8 @@ import cn.jpush.im.android.api.enums.MessageDirect;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.api.BasicCallback;
+
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_TEXT;
 
 /**
  * Created by wapchief on 2017/7/19.
@@ -131,7 +138,7 @@ public class ChatMsgActivity extends BaseActivity {
         for (int i = 0; i < conversation.getAllMessage().size(); i++) {
             MyMessage message;
             if (conversation.getAllMessage().get(i).getDirect()== MessageDirect.send){
-                message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.SEND_TEXT);
+                message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), SEND_TEXT);
                 message.setUserInfo(new DefaultUser(userName, "IronMan", "R.drawable.ironman"));
             }else {
                 message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.RECEIVE_TEXT);
@@ -146,6 +153,12 @@ public class ChatMsgActivity extends BaseActivity {
         }
         Collections.reverse(list);
         return list;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mData = getMessages();
     }
 
     //初始化adapter
@@ -200,17 +213,48 @@ public class ChatMsgActivity extends BaseActivity {
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
             @Override
             public void onMessageLongClick(final MyMessage message) {
-                Log.e("yyyyyyy", "" + mMsgList.getId() + "," +message.getPosition());
-                MyAlertDialog dialog = new MyAlertDialog(ChatMsgActivity.this,
+                Log.e("mymessage", "id:" + mMsgList.getId()
+                        + "\nposition:" +message.getPosition()
+                        +"\ntype:"+message.getType());
+                final MyAlertDialog dialog = new MyAlertDialog(ChatMsgActivity.this,
                         new String[]{"复制", "转发", "删除"}
                         , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if (i==2){
-                            if (conversation.deleteMessage(message.getMsgID())){
-                                mData.remove(message.getPosition());
+                        switch (i){
+                            case 0:
+                                //复制
+                                if (message.getType().equals(SEND_TEXT)|| message.getType()==SEND_TEXT){
+                                    if (Build.VERSION.SDK_INT > 11) {
+                                        ClipboardManager clipboard = (ClipboardManager) mContext
+                                                .getSystemService(Context.CLIPBOARD_SERVICE);
+                                        ClipData clip = ClipData.newPlainText("Simple text", message.getText());
+                                        clipboard.setPrimaryClip(clip);
+                                    } else {
+                                        android.text.ClipboardManager clip = (android.text.ClipboardManager) mContext
+                                                .getSystemService(Context.CLIPBOARD_SERVICE);
+                                        if (clip.hasText()) {
+                                            clip.getText();
+                                        }
+                                    }
+
+                                    showToast(ChatMsgActivity.this,"复制成功");
+                                }else {
+                                    showToast(ChatMsgActivity.this,"复制类型错误");
+                                }
+                                break;
+
+                            case 1:
+
+                                break;
+
+                            default:
+                                //2\从本地删除
+                                conversation.deleteMessage(new Integer(message.getMsgID()));
+                                //移除视图
+                                mAdapter.deleteById(message.getMsgId());
                                 mAdapter.notifyDataSetChanged();
-                            }
+                                break;
                         }
                     }
                 });
@@ -220,8 +264,6 @@ public class ChatMsgActivity extends BaseActivity {
             }
 
 
-//                message.
-                // do something
 
         });
 
@@ -383,7 +425,7 @@ public class ChatMsgActivity extends BaseActivity {
                     @Override
                     public void gotResult(int i, String s) {
                         if (i == 0) {
-                            mAdapter.addToStart(new MyMessage(mChatEt.getText().toString(), IMessage.MessageType.SEND_TEXT), true);
+                            mAdapter.addToStart(new MyMessage(mChatEt.getText().toString(), SEND_TEXT), true);
                             mChatEt.setText("");
                         } else {
                             Log.e("sendMsg", s);
@@ -391,6 +433,9 @@ public class ChatMsgActivity extends BaseActivity {
                     }
                 });
                 JMessageClient.sendMessage(message1);
+                if (mData!=null){
+                    mData.clear();
+                }
                 break;
         }
     }
