@@ -10,6 +10,7 @@ import java.util.Date;
  * Created by wapchief on 2017/8/1.
  * 日期毫秒互换辅助类
  * dataForamt:yyyy-MM-dd //格式
+ * yyyy-MM-dd HH:mm:ss
  */
 
 public class TimeUtils {

@@ -12,6 +12,19 @@ import cn.jiguang.imui.commons.models.IUser;
 public class MyMessage implements IMessage {
 
     private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
     private String text;
     private String timeString;
     private MessageType type;
@@ -112,4 +125,19 @@ public class MyMessage implements IMessage {
         return mediaFilePath;
     }
 
+    @Override
+    public String toString() {
+        return "MyMessage{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", timeString='" + timeString + '\'' +
+                ", type=" + type +
+                ", user=" + user +
+                ", mediaFilePath='" + mediaFilePath + '\'' +
+                ", duration=" + duration +
+                ", progress='" + progress + '\'' +
+                ", position=" + position +
+                ", msgID=" + msgID +
+                '}';
+    }
 }

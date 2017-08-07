@@ -109,6 +109,7 @@ public class MainActivity extends BaseActivity {
         //状态栏
         new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
         helper = SharedPrefHelper.getInstance();
+        mTitleOptionsImg.setVisibility(View.VISIBLE);
         //设置NavigationView
         initNaView();
         initSideDrawer();
@@ -137,7 +138,6 @@ public class MainActivity extends BaseActivity {
                  public void gotResult(int i, String s, UserInfo userInfo) {
                      if (i==0)
                      dao.insert(new RequestList(null, event.getReason().toString(),event.getFromUsername().toString(),userInfo.getNickname(),""));
-                     Log.e("dao=插入数据成功:", event.getFromUsername()+","+userInfo.getNickname()+","+event.getReason().toString());
                  }
              });
 //        }
@@ -181,11 +181,20 @@ public class MainActivity extends BaseActivity {
 
         mMainRootVp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //未读消息标签
-        mMainRootTab.showMsg(0, 1+JMessageClient.getAllUnReadMsgCount());
-        mMainRootTab.setMsgMargin(0, -6, 5);
-
-
+        Log.e("activity", JMessageClient.getAllUnReadMsgCount()+"");
+        if (JMessageClient.getAllUnReadMsgCount()>0) {
+            mMainRootTab.showMsg(0, JMessageClient.getAllUnReadMsgCount());
+            mMainRootTab.setMsgMargin(0, -6, 5);
+        }else {
+            mMainRootTab.setBackgroundColor(00000000);
+            mMainRootTab.showMsg(0,0);
+        }
     }
 
 
@@ -295,7 +304,7 @@ public class MainActivity extends BaseActivity {
                                 }
                             }
                         });
-                dialog.initDialog();
+                dialog.initDialog(Gravity.RIGHT|Gravity.TOP);
                 dialog.dialogSize(200,0,0,55);
                 break;
             case R.id.title_options_tv:
@@ -315,7 +324,7 @@ public class MainActivity extends BaseActivity {
                         }
                     }
                 });
-                dialog1.initDialog();
+                dialog1.initDialog(Gravity.TOP|Gravity.RIGHT);
                 dialog1.dialogSize(200,0,0,55);
                 break;
         }

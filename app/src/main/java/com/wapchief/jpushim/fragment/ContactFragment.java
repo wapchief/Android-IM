@@ -77,7 +77,12 @@ public class ContactFragment extends Fragment {
         adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
+//                Log.e("initItem", data.get(position).getType() + "");
+                if (data.get(position).type == 3) {
+                    Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                    intent.putExtra("USERNAME", data.get(position).getUserName());
+                    startActivity(intent);
+                }
             }
 
             @Override
@@ -98,8 +103,8 @@ public class ContactFragment extends Fragment {
                     mFmContactNo.setVisibility(View.GONE);
                     mFmContactRv.setVisibility(View.VISIBLE);
                     for (int j=0;j<list.size();j++) {
-                        Log.e("userinfolist====", i + "    ,s:" + s + "   ," + list
-                                .get(j).getNickname());
+//                        Log.e("userinfolist====", i + "    ,s:" + s + "   ," + list
+//                                .get(j).getNickname());
                         MessageBean bean = new MessageBean();
                         bean.setTitle(list.get(j).getNickname());
                         bean.setContent(list.get(j).getAvatar());

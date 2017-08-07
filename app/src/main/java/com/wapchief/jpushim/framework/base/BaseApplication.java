@@ -61,7 +61,6 @@ public class BaseApplication extends Application {
     private void initJPush2() {
                 sharedPrefHelper.setMusic(false);
                 sharedPrefHelper.setVib(false);
-
     }
 
     private void setupDatabase() {

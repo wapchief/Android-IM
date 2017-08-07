@@ -120,18 +120,15 @@ public class MessageFragment extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if (i==0){
-                                    if (JMessageClient.deleteSingleConversation(data.get(position).getMsgID())==true){
+                                        JMessageClient.deleteSingleConversation(data.get(position).getUserName());
+                                        data.remove(position);
+                                        adapter.notifyDataSetChanged();
                                         Toast.makeText(getActivity(),"删除成功",Toast.LENGTH_SHORT).show();
-                                        data.clear();
 
-                                        initDataBean();
-                                    }else {
-                                        Toast.makeText(getActivity(),"删除失败",Toast.LENGTH_SHORT).show();
-                                    }
                                 }
                             }
                         });
-                dialog.initDialog();
+                dialog.initDialog(0);
 
             }
         });

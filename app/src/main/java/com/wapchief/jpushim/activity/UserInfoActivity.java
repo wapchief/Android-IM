@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.utils.StringUtils;
 
 
 import butterknife.BindView;
@@ -79,7 +80,7 @@ public class UserInfoActivity extends BaseActivity {
     private String userName;
     private SharedPrefHelper helper;
     private String avtar = "";
-
+    private String getUserName="";
     @Override
     protected int setContentView() {
         return R.layout.activity_userinfo;
@@ -87,8 +88,9 @@ public class UserInfoActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        getUserName = getIntent().getStringExtra("USERNAME");
         initBar();
-        initUserInfo(getIntent().getStringExtra("USERNAME"));
+        initUserInfo(getUserName);
         initScroll();
     }
 
@@ -101,7 +103,7 @@ public class UserInfoActivity extends BaseActivity {
                 if (i == 0) {
                     avtar = userInfo.getAvatar();
                     mUserinfoBirthday.setText(userInfo.getBirthday() + "");
-                    mUserinfoGender.setText(userInfo.getGender() + "");
+                    mUserinfoGender.setText(StringUtils.constant2String(userInfo.getGender()+""));
                     mUserinfoMtime.setText(userInfo.getmTime() + "");
                     mUserinfoNikename.setText(userInfo.getNickname() + "");
                     mUserinfoUsername.setText(userInfo.getUserName() + "");
