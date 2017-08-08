@@ -1,9 +1,16 @@
 package com.wapchief.jpushim.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -28,9 +35,13 @@ import com.wapchief.jpushim.greendao.model.User;
 import org.json.JSONArray;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -75,7 +86,14 @@ public class EditUserInfoActivity extends BaseActivity {
     private ArrayList<ArrayList<String>> options2Items = new ArrayList<>();
     private ArrayList<ArrayList<ArrayList<String>>> options3Items = new ArrayList<>();
     private UserInfo userInfo;
+    //头像操作
     private Dialog dialog;
+    private Bitmap photo1;
+    private File file;
+    private static final int PHOTO_TK = 0;
+    private static final int PHOTO_PZ = 1;
+    private static final int PHOTO_CLIP = 2;
+
     @Override
     protected int setContentView() {
         return R.layout.activity_edit_user;
@@ -100,11 +118,11 @@ public class EditUserInfoActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mEditUserNackName.setText(JMessageClient.getMyInfo().getNickname()+"");
-        mEditUserBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",JMessageClient.getMyInfo().getBirthday()));
-        mEditUserGender.setText(StringUtils.constant2String(JMessageClient.getMyInfo().getGender().name()));
-        mEditUserSignature.setText(JMessageClient.getMyInfo().getSignature()+"");
-        mEditUserAddress.setText(JMessageClient.getMyInfo().getAddress()+"");
+        mEditUserNackName.setText(userInfo.getNickname()+"");
+        mEditUserBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",userInfo.getBirthday()));
+        mEditUserGender.setText(StringUtils.constant2String(userInfo.getGender().name()));
+        mEditUserSignature.setText(userInfo.getSignature()+"");
+        mEditUserAddress.setText(userInfo.getAddress()+"");
 
     }
 
@@ -154,7 +172,82 @@ public class EditUserInfoActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("result=========", requestCode + "\n" + resultCode + "\n" + data);
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode){
+                case PHOTO_PZ:
 
+                    break;
+                case PHOTO_TK:
+                    startPhotoZoom(data.getData());
+                    break;
+                case PHOTO_CLIP:
+                    try {
+                        //裁剪后的图像转成BitMap
+                        photo1 = BitmapFactory.decodeStream(getContentResolver().openInputStream(uritempFile));
+                        //创建路径
+                        String path = Environment.getExternalStorageDirectory()
+                                .getPath() + "/Pic";
+                        //获取外部储存目录
+                        file = new File(path);
+                        Log.e("file", file.getPath());
+                        //创建新目录
+                        file.mkdirs();
+                        //以当前时间重新命名文件
+                        long i=System.currentTimeMillis();
+                        //生成新的文件
+                        file = new File(file.toString() + "/" + i + ".png");
+                        Log.e("fileNew", file.getPath());
+                        //创建输出流
+                        OutputStream out = new FileOutputStream(file.getPath());
+                        //压缩文件
+                        boolean flag = photo1.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                        if (file.getName()!=null||!file.getName().equals("")){
+                            showProgressDialog("正在上传头像");
+                                    JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                                        @Override
+                                        public void gotResult(int i, String s) {
+                                            if (i==0){
+                                                dismissProgressDialog();
+                                                showToast(EditUserInfoActivity.this,"上传成功");
+                                            }else {
+                                                dismissProgressDialog();
+                                                showToast(EditUserInfoActivity.this,"上传失败："+s);
+                                            }
+                                        }
+                                    });
+                                }
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 头像裁剪
+     */
+    private Uri uritempFile;
+    public void startPhotoZoom(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        intent.putExtra("crop", "true");
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        intent.putExtra("outputX", 60);
+        intent.putExtra("outputY", 60);
+        //uritempFile为Uri类变量，实例化uritempFile
+        uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "small.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uritempFile);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+        startActivityForResult(intent, PHOTO_CLIP);
+    }
 
     /*头像选择器*/
     private void showHeadDialog() {
@@ -174,7 +267,10 @@ public class EditUserInfoActivity extends BaseActivity {
         update_dialog_TK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                doHandlerPhoto(PIC_FROM＿LOCALPHOTO);
+                Intent intent = new Intent(Intent.ACTION_PICK, null);
+                intent.setDataAndType(
+                        MediaStore.Images.Media.INTERNAL_CONTENT_URI, "image/*");
+                startActivityForResult(intent,PHOTO_TK);
                 dialog.dismiss();
             }
         });
@@ -192,7 +288,12 @@ public class EditUserInfoActivity extends BaseActivity {
         update_dialog_PZ.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(
+                        Environment.getExternalStorageDirectory(), "temp.jpg")));
 
+                startActivityForResult(i, PHOTO_PZ);
+                dialog.dismiss();
             }
         });
     }

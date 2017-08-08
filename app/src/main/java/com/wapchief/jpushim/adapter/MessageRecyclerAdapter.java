@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.AddFriendMsgActivity;
 import com.wapchief.jpushim.activity.UserInfoActivity;
@@ -110,6 +112,10 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 ((ItemViewHolder) holder).content.setText(data.get(position).content);
                 ((ItemViewHolder) holder).title.setText(data.get(position).title);
                 ((ItemViewHolder) holder).time.setText(data.get(position).time);
+                Picasso.with(context)
+                        .load(data.get(position).getImg())
+                        .placeholder(R.mipmap.icon_user)
+                        .into(((ItemViewHolder) holder).img);
                 //好友推荐
                 if (data.get(position).type == 1) {
                     if (data.get(position).getFriends()){

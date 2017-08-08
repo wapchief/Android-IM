@@ -4,7 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,6 +33,7 @@ import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.flyco.tablayout.utils.UnreadMsgUtils;
 import com.flyco.tablayout.widget.MsgView;
+import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.activity.AboutActivity;
 import com.wapchief.jpushim.activity.AddFriendsActivity;
 import com.wapchief.jpushim.activity.SettingActivity;
@@ -41,6 +45,8 @@ import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.GreenDaoHelper;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
+import com.wapchief.jpushim.framework.utils.BitMapUtils;
+import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.UIUtils;
 import com.wapchief.jpushim.greendao.RequestListDao;
 import com.wapchief.jpushim.greendao.SearchAddDao;
@@ -48,6 +54,10 @@ import com.wapchief.jpushim.greendao.model.RequestList;
 import com.wapchief.jpushim.greendao.model.SearchAdd;
 import com.wapchief.jpushim.view.MyAlertDialog;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -56,11 +66,13 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jiguang.imui.commons.ImageLoader;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
+import cn.jpush.im.api.BasicCallback;
 
 public class MainActivity extends BaseActivity {
 
@@ -84,6 +96,7 @@ public class MainActivity extends BaseActivity {
     TextView mTitleOptionsTv;
     //NavigationViewHeader
     private LinearLayout nav_header_ll;
+    private ImageView nav_header_img;
     private TextView nav_header_name,nav_header_id;
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
@@ -93,7 +106,8 @@ public class MainActivity extends BaseActivity {
     private SharedPrefHelper helper;
     private GreenDaoHelper daoHelper;
     private RequestListDao dao;
-
+    private ImageLoader imageLoader;
+    private UserInfo userInfo;
     @Override
     protected int setContentView() {
         return R.layout.activity_main;
@@ -102,12 +116,15 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        //状态栏
+        new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
+        userInfo = JMessageClient.getMyInfo();
+        initLoginType();
+        userInfo = JMessageClient.getMyInfo();
         EventBus.getDefault().register(this);
         JMessageClient.registerEventReceiver(this);
         daoHelper = new GreenDaoHelper(this);
         dao = daoHelper.initDao().getRequestListDao();
-        //状态栏
-        new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
         helper = SharedPrefHelper.getInstance();
         mTitleOptionsImg.setVisibility(View.VISIBLE);
         //设置NavigationView
@@ -116,6 +133,62 @@ public class MainActivity extends BaseActivity {
         initTab();
         initPageAdapter();
         initNVHeader();
+    }
+    /*判断登陆页面*/
+    private void initLoginType() {
+        File file;
+        Log.e("login_type",""+getIntent().getIntExtra("LOGINTYPE", 0));
+        if (getIntent().getIntExtra("LOGINTYPE",0)==1) {
+            Bitmap bitmap = BitMapUtils.drawable2Bitmap(getResources().getDrawable(R.drawable.icon_user));
+            //创建路径
+            String path = Environment.getExternalStorageDirectory()
+                    .getPath() + "/Pic";
+            //获取外部储存目录
+            file = new File(path);
+//            Log.e("file", file.getPath());
+            //创建新目录
+            file.mkdirs();
+            //以当前时间重新命名文件
+            long i = System.currentTimeMillis();
+            //生成新的文件
+            file = new File(file.toString() + "/" + i + ".png");
+//            Log.e("fileNew", file.getPath());
+            //创建输出流
+            OutputStream out = null;
+            try {
+                out = new FileOutputStream(file.getPath());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            //压缩文件
+            boolean flag = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            if (file.getName() != null || !file.getName().equals("")) {
+//                Log.e("file====", bitmap + "");
+                JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
+                        if (i == 0) {
+                            Log.e("initUserInfo", "初始化成功");
+                        } else {
+                            Log.e("initUserInfo", "初始化失败");
+                        }
+                    }
+                });
+                userInfo.setAddress("未知");
+                userInfo.setGender(UserInfo.Gender.valueOf(StringUtils.string2contant("未知")));
+                userInfo.setBirthday(System.currentTimeMillis());
+                userInfo.setSignature("签名：说点什么吧～");
+                userInfo.setNickname("游客" + userInfo.getUserName());
+                JMessageClient.updateMyInfo(UserInfo.Field.all, userInfo, new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
+                        if (i == 0) {
+
+                        }
+                    }
+                });
+            }
+        }
     }
 
     /*接收好友请求通知*/
@@ -137,7 +210,7 @@ public class MainActivity extends BaseActivity {
                  @Override
                  public void gotResult(int i, String s, UserInfo userInfo) {
                      if (i==0)
-                     dao.insert(new RequestList(null, event.getReason().toString(),event.getFromUsername().toString(),userInfo.getNickname(),""));
+                     dao.insert(new RequestList(null, event.getReason().toString(),event.getFromUsername().toString(),userInfo.getNickname(),"",userInfo.getAvatarFile().toURI().toString()));
                  }
              });
 //        }
@@ -151,9 +224,14 @@ public class MainActivity extends BaseActivity {
         View headerView = mMainNv.getHeaderView(0);
         nav_header_ll = (LinearLayout) headerView.findViewById(R.id.nav_header_ll);
         nav_header_name = (TextView) headerView.findViewById(R.id.nav_header_name);
-        nav_header_name.setText(helper.getNakeName());
+        nav_header_name.setText(userInfo.getNickname());
         nav_header_id =(TextView) headerView.findViewById(R.id.nav_header_id);
         nav_header_id.setText("ID:  "+helper.getUserId());
+        nav_header_img = (ImageView) headerView.findViewById(R.id.nav_header_img);
+        Picasso.with(MainActivity.this)
+                .load(JMessageClient.getMyInfo().getAvatarFile())
+                .placeholder(R.mipmap.icon_user)
+                .into(nav_header_img);
         nav_header_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -185,9 +263,8 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
         //未读消息标签
-        Log.e("activity", JMessageClient.getAllUnReadMsgCount()+"");
+        Log.e("Log:未读消息数", JMessageClient.getAllUnReadMsgCount()+"");
         if (JMessageClient.getAllUnReadMsgCount()>0) {
             mMainRootTab.showMsg(0, JMessageClient.getAllUnReadMsgCount());
             mMainRootTab.setMsgMargin(0, -6, 5);
@@ -195,6 +272,7 @@ public class MainActivity extends BaseActivity {
             mMainRootTab.setBackgroundColor(00000000);
             mMainRootTab.showMsg(0,0);
         }
+        super.onResume();
     }
 
 
@@ -273,7 +351,11 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-
+        //加载头像图片的方法
+        Picasso.with(MainActivity.this)
+                .load(JMessageClient.getMyInfo().getAvatarFile())
+                .placeholder(R.mipmap.icon_user)
+                .into(mTitleBarBack);
     }
 
     @OnClick({R.id.title_bar_back, R.id.title_options_img,R.id.title_options_tv})

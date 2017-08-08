@@ -17,14 +17,16 @@ public class RequestList {
     private String userName;
     private String nakeName;
     private String time;
-    @Generated(hash = 26409877)
+    private String img;
+    @Generated(hash = 2062835296)
     public RequestList(Long id, String msg, String userName, String nakeName,
-            String time) {
+            String time, String img) {
         this.id = id;
         this.msg = msg;
         this.userName = userName;
         this.nakeName = nakeName;
         this.time = time;
+        this.img = img;
     }
     @Generated(hash = 1410998970)
     public RequestList() {
@@ -59,5 +61,12 @@ public class RequestList {
     public void setTime(String time) {
         this.time = time;
     }
+    public String getImg() {
+        return this.img;
+    }
+    public void setImg(String img) {
+        this.img = img;
+    }
+  
 
 }

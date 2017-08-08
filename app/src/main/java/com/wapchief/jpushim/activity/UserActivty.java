@@ -64,7 +64,7 @@ public class UserActivty extends BaseActivity {
     TextView mBottomBarTv2;
     @BindView(R.id.bottom_bar_right)
     RelativeLayout mBottomBarRight;
-    private String avatar = "";
+    private UserInfo info;
 
     @Override
     protected int setContentView() {
@@ -74,6 +74,7 @@ public class UserActivty extends BaseActivity {
     @Override
     protected void initView() {
         helper = SharedPrefHelper.getInstance();
+        info = JMessageClient.getMyInfo();
         initBar();
 
 
@@ -95,26 +96,22 @@ public class UserActivty extends BaseActivity {
 
     @Override
     protected void initData() {
-        mUserinfoNikename.setText(JMessageClient.getMyInfo().getNickname()+"");
-        mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",JMessageClient.getMyInfo().getBirthday()));
-        mUserinfoGender.setText(StringUtils.constant2String(JMessageClient.getMyInfo().getGender().name()));
-        if (StringUtils.isNull(JMessageClient.getMyInfo().getSignature())){
+        mUserinfoNikename.setText(info.getNickname() + "");
+        mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd", info.getBirthday()));
+        mUserinfoGender.setText(StringUtils.constant2String(info.getGender().name()));
+        if (StringUtils.isNull(info.getSignature())) {
             mUserinfoSignature.setText("签名：暂未设置签名");
-        }else {
-            mUserinfoSignature.setText(JMessageClient.getMyInfo().getSignature() + "");
+        } else {
+            mUserinfoSignature.setText(info.getSignature() + "");
         }
-        mUserinfoRegion.setText(JMessageClient.getMyInfo().getRegion()+"");
-        mUserinfoUsername.setText(JMessageClient.getMyInfo().getUserName()+"");
-        mUserinfoMtime.setText("上次更新："+TimeUtils.ms2date("yyyy-MM-dd hh-mm",JMessageClient.getMyInfo().getmTime()));
+        mUserinfoRegion.setText(info.getRegion() + "");
+        mUserinfoUsername.setText(info.getUserName() + "");
+        mUserinfoMtime.setText("上次更新：" + TimeUtils.ms2date("yyyy-MM-dd hh-mm", info.getmTime()));
+        Picasso.with(this)
+                .load(info.getAvatarFile())
+                .placeholder(R.mipmap.icon_user)
+                .into(mUserinfoAvatar);
 
-        avatar=JMessageClient.getMyInfo().getAvatar()+"";
-        if (StringUtils.isNull(avatar)) {
-            mUserinfoAvatar.setImageDrawable(getResources().getDrawable(R.mipmap.icon_user));
-        }else {
-            Picasso.with(this)
-                    .load(avatar)
-                    .into(mUserinfoAvatar);
-        }
     }
 
     @Override
@@ -131,7 +128,7 @@ public class UserActivty extends BaseActivity {
                 finish();
                 break;
             case R.id.bottom_bar_tv2:
-                Intent intent=new Intent(this,EditUserInfoActivity.class);
+                Intent intent = new Intent(this, EditUserInfoActivity.class);
                 startActivity(intent);
                 break;
         }

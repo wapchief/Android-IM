@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.os.Handler;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.EventLog;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,11 +38,14 @@ import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MyMessage;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.utils.BitMapUtils;
 import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.framework.utils.UIUtils;
 import com.wapchief.jpushim.view.MyAlertDialog;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,6 +62,7 @@ import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
 import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.enums.ContentType;
@@ -65,6 +71,7 @@ import cn.jpush.im.android.api.event.ContactNotifyEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
+import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
 
@@ -108,14 +115,17 @@ public class ChatMsgActivity extends BaseActivity {
     private MsgListAdapter<MyMessage> mAdapter;
     private List<MyMessage> mData;
     private ImageLoader imageLoader;
-    private ImageView imageView;
+    //收发的头像
+    private ImageView imageAvatarSend,imageAvatarReceive;
     private String userName = "";
     private String msgID = "";
     private int position;
     List<Message> messages;
     List<Conversation> conversations;
     Conversation conversation;
-
+    private UserInfo userInfo;
+    private String imgSend = "R.drawable.ironman";
+    private String imgRecrive = "R.drawable.ironman";
     @Override
     protected int setContentView() {
         return R.layout.activity_chat;
@@ -125,6 +135,7 @@ public class ChatMsgActivity extends BaseActivity {
     protected void initView() {
         helper = SharedPrefHelper.getInstance();
         mContext = ChatMsgActivity.this;
+        userInfo = JMessageClient.getMyInfo();
         //注册接收者
         JMessageClient.registerEventReceiver(this);
         conversations = JMessageClient.getConversationList();
@@ -133,15 +144,27 @@ public class ChatMsgActivity extends BaseActivity {
         //position从上个页面传递的会话位置
         position = getIntent().getIntExtra("position", 0);
         conversation = conversations.get(position);
-//        Log.e("conver", conversation.getAllMessage().size() + "   ," + conversation.getAllMessage());
+        View view = View.inflate(mContext, R.layout.item_receive_photo, null);
+        View view1 = View.inflate(mContext, R.layout.item_send_photo, null);
+        imageAvatarSend = (ImageView) view.findViewById(R.id.aurora_iv_msgitem_avatar);
+        imageAvatarReceive = (ImageView) view1.findViewById(R.id.aurora_iv_msgitem_avatar);
+
+        try {
+            imgSend = userInfo.getAvatarFile().toURI().toString();
+            imgRecrive = StringUtils.isNull(conversation.getAvatarFile().toURI().toString())?"R.drawable.ironman":conversation.getAvatarFile().toURI().toString();
+
+        }catch (Exception e){
+        }
         mData = getMessages();
         initTitleBar();
         initMsgAdapter();
-        View view = View.inflate(mContext, R.layout.item_receive_photo, null);
-        imageView = (ImageView) view.findViewById(R.id.aurora_iv_msgitem_avatar);
+        imageLoader.loadImage(imageAvatarSend,userInfo.getAvatarFile().toURI().toString());
+        imageLoader.loadImage(imageAvatarReceive,imgRecrive);
+
+
         mTitleBarBack.setVisibility(View.VISIBLE);
-        imageView.setVisibility(View.VISIBLE);
-        imageLoader.loadImage(mTitleBarBack, "http://upload.jianshu.io/users/upload_avatars/2858691/4db2d471c01c?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240");
+//        imageView.setVisibility(View.VISIBLE);
+
     }
 
     //初始化消息列表
@@ -152,10 +175,10 @@ public class ChatMsgActivity extends BaseActivity {
             //根据消息判断接收方或者发送方类型
             if (conversation.getAllMessage().get(i).getDirect() == MessageDirect.send) {
                 message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), SEND_TEXT);
-                message.setUserInfo(new DefaultUser(userName, "IronMan", "R.drawable.ironman"));
+                message.setUserInfo(new DefaultUser(userName, "IronMan",(StringUtils.isNull(imgSend))?"R.drawable.ironman"  : imgSend) );
             } else {
                 message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.RECEIVE_TEXT);
-                message.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", "R.drawable.ironman"));
+                message.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", (StringUtils.isNull(imgRecrive))?"R.drawable.ironman"  : imgRecrive));
 
             }
             message.setPosition(i);
@@ -172,7 +195,12 @@ public class ChatMsgActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        mData = getMessages();getMessage
+//        Picasso.with(mContext)
+//                .load(userInfo.getAvatarFile())
+//                .placeholder(R.mipmap.icon_user)
+//                .into(imageAvatarSend);
+//        Picasso.with(mContext)
+//                .load()
     }
 
     //处理接收到的消息
@@ -190,7 +218,7 @@ public class ChatMsgActivity extends BaseActivity {
                     myMessage.setMsgID(message.getId());
                     myMessage.setText(((TextContent) message.getContent()).getText() + "");
                     myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm",message.getCreateTime()));
-                    myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", "R.drawable.ironman"));
+                    myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", imgRecrive));
 
                 if (message.getContentType() == ContentType.text || message.getContentType().equals("text")) {
                         mAdapter.addToStart(myMessage,true);
@@ -218,7 +246,7 @@ public class ChatMsgActivity extends BaseActivity {
         imageLoader = new ImageLoader() {
             @Override
             public void loadAvatarImage(ImageView imageView, String s) {
-                Picasso.with(getApplicationContext())
+                Picasso.with(getApplication())
                         .load(s)
                         .placeholder(R.drawable.icon_user)
                         .into(imageView);
@@ -227,12 +255,13 @@ public class ChatMsgActivity extends BaseActivity {
             @Override
             public void loadImage(ImageView imageView, String s) {
                 //缩略图
-                Picasso.with(getApplicationContext())
+                Picasso.with(getApplication())
                         .load(s)
                         .placeholder(R.drawable.icon_user)
                         .into(imageView);
             }
         };
+
 
         /**
          * 1、Sender Id: 发送方 Id(唯一标识)。
@@ -444,6 +473,7 @@ public class ChatMsgActivity extends BaseActivity {
     /*标题栏*/
     private void initTitleBar() {
         mTitleBarBack.setVisibility(View.INVISIBLE);
+        mTitleBarBack.setImageDrawable(getResources().getDrawable(R.mipmap.icon_back));
         mTitleOptionsImg.setVisibility(View.GONE);
         mTitleOptionsTv.setVisibility(View.VISIBLE);
         mTitleBarTitle.setText(userName);
@@ -465,6 +495,9 @@ public class ChatMsgActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_bar_back:
+                finish();
+                //重置会话未读
+                conversation.resetUnreadCount();
                 break;
             case R.id.title_options_tv:
                 //
@@ -496,11 +529,11 @@ public class ChatMsgActivity extends BaseActivity {
 
                 break;
             case R.id.chat_send:
-                //发送消息，目前只能发送文本
+                //发送消息，当前版本只能发送文本
                 final Message message1 = JMessageClient.createSingleTextMessage(userName, "", mChatEt.getText().toString());
                 final MyMessage myMessage = new MyMessage(mChatEt.getText().toString(), SEND_TEXT);
                 myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", message1.getCreateTime()));
-                myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", "R.drawable.ironman"));
+                myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", imgSend));
                 message1.setOnSendCompleteCallback(new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
@@ -508,7 +541,7 @@ public class ChatMsgActivity extends BaseActivity {
                             mAdapter.addToStart(myMessage, true);
                             mChatEt.setText("");
                         } else {
-                            Log.e("sendMsg", s);
+//                            Log.e("sendMsg", s);
                         }
                     }
                 });

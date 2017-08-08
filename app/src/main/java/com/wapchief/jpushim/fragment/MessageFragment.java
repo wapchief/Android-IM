@@ -35,8 +35,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.UserInfo;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -78,23 +80,25 @@ public class MessageFragment extends Fragment {
 
     private void initView() {
         initData();
-//        initDataBean();
+        initDataBean();
         initGroup();
         onClickItem();
     }
-//
-//    @Override
-//    public void onHiddenChanged(boolean hidden) {
-//        super.onHiddenChanged(hidden);
-//        if (hidden)
-//    }
 
     @Override
     public void onResume() {
         super.onResume();
-        data.clear();
-        initDataBean();
 
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (hidden){
+            data.clear();
+            initDataBean();
+        }
+
+        super.onHiddenChanged(hidden);
     }
 
     /*监听item*/
@@ -158,7 +162,7 @@ public class MessageFragment extends Fragment {
     private void initDataBean() {
         List<Conversation> list = new ArrayList<>();
         list = JMessageClient.getConversationList();
-        Log.e("list====", list.size()+"");
+        Log.e("Log:会话消息数", list.size()+"");
         if (list.size()==0){
             mFragmentMainNone.setVisibility(View.VISIBLE);
             mFragmentMainRv.setVisibility(View.GONE);
@@ -176,7 +180,7 @@ public class MessageFragment extends Fragment {
             bean.setTitle(list.get(i).getTitle());
             bean.setTime(list.get(i).getUnReadMsgCnt()+"条未读");
             bean.setConversation(list.get(i));
-//            Log.e("listConVer====", list.get(i).getAllMessage()+".");
+            bean.setImg(list.get(i).getAvatarFile().toURI().toString());
             data.add(bean);
         }
         adapter.notifyDataSetChanged();

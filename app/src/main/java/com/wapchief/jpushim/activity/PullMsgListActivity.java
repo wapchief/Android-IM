@@ -92,7 +92,7 @@ public class PullMsgListActivity extends BaseActivity {
         //分割线
         mPullMsgRv2.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mPullMsgRv2.setAdapter(adapter2);
-        final int[] id = {1001, 1002, 1003};
+        final int[] id = {1000, 1001, 1006};
         initDataAdapter(id);
         /*item监听事件*/
         adapter2.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
@@ -127,6 +127,7 @@ public class PullMsgListActivity extends BaseActivity {
                 bean.setUserName(userInfo.getUserName());
                 bean.setType(1);
                 bean.setFriends(userInfo.isFriend());
+                bean.setImg(userInfo.getAvatarFile().toURI().toString());
 //                Log.e("bean1===", bean.getTitle() + "  ," + bean.getContent());
                 TYPE_BUTTON = 1;
                 list2.add(bean);
@@ -166,6 +167,7 @@ public class PullMsgListActivity extends BaseActivity {
             bean1.setTitle(list.get(i).getNakeName());
             bean1.setContent("验证信息:"+list.get(i).getMsg());
             bean1.setUserName(list.get(i).getUserName());
+            bean1.setImg(list.get(i).getImg());
             list1.add(bean1);
         }
         //list倒序排列

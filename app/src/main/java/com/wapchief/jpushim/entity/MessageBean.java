@@ -2,6 +2,8 @@ package com.wapchief.jpushim.entity;
 
 import android.widget.TextView;
 
+import java.io.File;
+
 import cn.jpush.im.android.api.model.Conversation;
 
 /**
@@ -12,7 +14,7 @@ import cn.jpush.im.android.api.model.Conversation;
 
 public class MessageBean {
     public int type;
-    public int img;
+    public String img;
     public String msgID;
     public String title;
     public String content;
@@ -42,11 +44,11 @@ public class MessageBean {
         this.type = type;
     }
 
-    public int getImg() {
+    public String getImg() {
         return img;
     }
 
-    public void setImg(int img) {
+    public void setImg(String img) {
         this.img = img;
     }
 

@@ -92,24 +92,33 @@ public class ContactFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (hidden)
+            data.clear();
+            initGetList();
+        super.onHiddenChanged(hidden);
+    }
+
     /*获取好友列表*/
+    MessageBean bean;
     private void initGetList() {
         ContactManager.getFriendList(new GetUserInfoListCallback() {
             @Override
             public void gotResult(int i, String s, List<UserInfo> list) {
 
                 if (i==0) {
-
+                    Log.e("Log:好友数", i + "    ,s:" + s + "   ," + list
+                            .size());
                     mFmContactNo.setVisibility(View.GONE);
                     mFmContactRv.setVisibility(View.VISIBLE);
                     for (int j=0;j<list.size();j++) {
-//                        Log.e("userinfolist====", i + "    ,s:" + s + "   ," + list
-//                                .get(j).getNickname());
-                        MessageBean bean = new MessageBean();
+                        bean= new MessageBean();
                         bean.setTitle(list.get(j).getNickname());
                         bean.setContent(list.get(j).getAvatar());
                         bean.setTime(list.get(j).getUserID() + "");
                         bean.setUserName(list.get(j).getUserName());
+                        bean.setImg(list.get(j).getAvatarFile().toURI().toString());
                         bean.setType(3);
                         data.add(bean);
                         Collections.reverse(data);
