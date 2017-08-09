@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
@@ -84,7 +85,10 @@ public class AddFriendMsgActivity extends BaseActivity {
     protected void initData() {
         mAddMsgName.setText(getIntent().getStringExtra("NAME"));
         mAddMsgContent.setText("你好！我是"+helper.getNakeName());
-
+        Picasso.with(AddFriendMsgActivity.this)
+                .load(getIntent().getStringExtra("ICON"))
+                .placeholder(R.mipmap.icon_user)
+                .into(mAddMsgIcon);
     }
 
     @Override

@@ -37,7 +37,7 @@ import cn.jpush.im.api.BasicCallback;
 
 /**
  * Created by wapchief on 2017/5/8 0008 下午 3:39.
- * 描述：注册
+ * 描述：注册登陆
  */
 public class LoginActivity extends BaseActivity {
 
@@ -73,9 +73,9 @@ public class LoginActivity extends BaseActivity {
         if (!sharedPrefHelper.getUserId().equals("")) {
             loginUsername.setText(sharedPrefHelper.getUserId());
         }
-        if (!sharedPrefHelper.getUserId().equals("")) {
-            loginPassWord.setText(sharedPrefHelper.getUserPW());
-        }
+//        if (!sharedPrefHelper.getUserId().equals("")) {
+//            loginPassWord.setText(sharedPrefHelper.getUserPW());
+//        }
         mTitleBarBack.setVisibility(View.GONE);
         mTitleOptionsImg.setVisibility(View.GONE);
         mTitleBarTitle.setText("注册登陆");
@@ -229,13 +229,13 @@ public class LoginActivity extends BaseActivity {
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
     }
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            dialog();
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == KeyEvent.KEYCODE_BACK) {
+//            dialog();
+//        }
+//        return false;
+//    }
 
     private void dialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);

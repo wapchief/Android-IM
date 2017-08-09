@@ -51,6 +51,8 @@ public class SettingActivity extends BaseActivity {
     ImageView mTitleBarBack;
     @BindView(R.id.setting_exit)
     RelativeLayout mSettingExit;
+    @BindView(R.id.setting_password)
+    RelativeLayout mSettingPassword;
     private SharedPrefHelper helper;
 
     @Override
@@ -194,7 +196,7 @@ public class SettingActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.title_bar_back, R.id.setting_exit})
+    @OnClick({R.id.title_bar_back, R.id.setting_exit,R.id.setting_password})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_bar_back:
@@ -207,6 +209,10 @@ public class SettingActivity extends BaseActivity {
                 Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.setting_password:
+                startActivity(new Intent(SettingActivity.this, PassWordActivity.class));
+                break;
+
         }
     }
 }

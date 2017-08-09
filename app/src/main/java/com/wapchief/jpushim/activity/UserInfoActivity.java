@@ -1,5 +1,6 @@
 package com.wapchief.jpushim.activity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
@@ -80,7 +81,8 @@ public class UserInfoActivity extends BaseActivity {
     private String userName;
     private SharedPrefHelper helper;
     private String avtar = "";
-    private String getUserName="";
+    private String getUserName = "";
+
     @Override
     protected int setContentView() {
         return R.layout.activity_userinfo;
@@ -91,7 +93,10 @@ public class UserInfoActivity extends BaseActivity {
         getUserName = getIntent().getStringExtra("USERNAME");
         initBar();
         initUserInfo(getUserName);
-        initScroll();
+
+        mTitleBarLeft.setBackground(getResources().getDrawable(R.drawable.shape_titlebar));
+        mTitleBarRight.setBackground(getResources().getDrawable(R.drawable.shape_titlebar2));
+        mTitleBarTitle.setText("个人资料");
     }
 
     /*获取用户资料*/
@@ -103,13 +108,13 @@ public class UserInfoActivity extends BaseActivity {
                 if (i == 0) {
                     avtar = userInfo.getAvatar();
                     mUserinfoBirthday.setText(userInfo.getBirthday() + "");
-                    mUserinfoGender.setText(StringUtils.constant2String(userInfo.getGender()+""));
+                    mUserinfoGender.setText(StringUtils.constant2String(userInfo.getGender() + ""));
                     mUserinfoMtime.setText(userInfo.getmTime() + "");
                     mUserinfoNikename.setText(userInfo.getNickname() + "");
                     mUserinfoUsername.setText(userInfo.getUserName() + "");
-                    if(userInfo.getSignature().equals("")){
+                    if (userInfo.getSignature().equals("")) {
                         mUserinfoSignature.setText("签名：说点儿什么吧～");
-                    }else {
+                    } else {
                         mUserinfoSignature.setText("签名：" + userInfo.getSignature());
                     }
                     mUserinfoRegion.setText(userInfo.getRegion() + "");
@@ -128,24 +133,24 @@ public class UserInfoActivity extends BaseActivity {
     }
 
     /*滚动事件*/
-    @TargetApi(Build.VERSION_CODES.M)
-    private void initScroll() {
-        mUserinfoScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-//                Log.e("scroll===", i + " ," + i1 + " ," + i2 + " ," + i3);
-                if (i1 > 460) {
-                    mTitleBarLeft.setBackground(getResources().getDrawable(R.drawable.shape_titlebar));
-                    mTitleBarRight.setBackground(getResources().getDrawable(R.drawable.shape_titlebar2));
-                    mTitleBarTitle.setText("个人资料");
-                } else {
-                    mTitleBarLeft.setBackground(getResources().getDrawable(R.color.color_transparent));
-                    mTitleBarRight.setBackground(getResources().getDrawable(R.color.color_transparent));
-                    mTitleBarTitle.setText("");
-                }
-            }
-        });
-    }
+//    @SuppressLint("NewApi")
+//    private void initScroll() {
+//        mUserinfoScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+//            @Override
+//            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+////                Log.e("scroll===", i + " ," + i1 + " ," + i2 + " ," + i3);
+//                if (i1 > 460) {
+//                    mTitleBarLeft.setBackground(getResources().getDrawable(R.drawable.shape_titlebar));
+//                    mTitleBarRight.setBackground(getResources().getDrawable(R.drawable.shape_titlebar2));
+//                    mTitleBarTitle.setText("个人资料");
+//                } else {
+//                    mTitleBarLeft.setBackground(getResources().getDrawable(R.color.color_transparent));
+//                    mTitleBarRight.setBackground(getResources().getDrawable(R.color.color_transparent));
+//                    mTitleBarTitle.setText("");
+//                }
+//            }
+//        });
+//    }
 
     private void initBar() {
         helper = SharedPrefHelper.getInstance();
@@ -185,7 +190,6 @@ public class UserInfoActivity extends BaseActivity {
                 Intent intent = new Intent(UserInfoActivity.this, ChatMsgActivity.class);
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 startActivity(intent);
-//                JMessageClient.c
 
 
                 break;

@@ -80,25 +80,18 @@ public class MessageFragment extends Fragment {
 
     private void initView() {
         initData();
-        initDataBean();
+//        initDataBean();
         initGroup();
         onClickItem();
     }
 
     @Override
     public void onResume() {
+        data.clear();
+        adapter.clear();
+        initDataBean();
         super.onResume();
 
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        if (hidden){
-            data.clear();
-            initDataBean();
-        }
-
-        super.onHiddenChanged(hidden);
     }
 
     /*监听item*/

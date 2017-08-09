@@ -150,7 +150,6 @@ public class AddFriendsActivity extends BaseActivity {
                 //添加
                 if (!name.equals(""))
                     dao.insert(new SearchAdd(null, name));
-                Toast.makeText(this, "插入数据成功:" + name, Toast.LENGTH_SHORT).show();
             } else {
                 //删除第一条数据，用于替换最后一条搜索
                 dao.delete(dao.queryBuilder().list().get(0));
@@ -220,7 +219,7 @@ public class AddFriendsActivity extends BaseActivity {
                             Intent intent = new Intent(AddFriendsActivity.this, AddFriendMsgActivity.class);
                             intent.putExtra("ID", name);
                             intent.putExtra("NAME", userInfo.getNickname());
-                            intent.putExtra("ICON", userInfo.getAvatar());
+                            intent.putExtra("ICON", userInfo.getAvatarFile().toURI().toString());
                             startActivity(intent);
                         }else {
                             showToast(AddFriendsActivity.this,"未找到用户");

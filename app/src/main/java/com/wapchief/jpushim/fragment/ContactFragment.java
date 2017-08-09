@@ -1,13 +1,16 @@
 package com.wapchief.jpushim.fragment;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import com.wapchief.jpushim.entity.MessageBean;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,7 +72,7 @@ public class ContactFragment extends Fragment {
         //分割线
         mFmContactRv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         mFmContactRv.setAdapter(adapter);
-        initGetList();
+//        initGetList();
         initItemOnClick();
     }
 
@@ -93,17 +97,18 @@ public class ContactFragment extends Fragment {
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        if (hidden)
-            data.clear();
-            initGetList();
-        super.onHiddenChanged(hidden);
+    public void onResume() {
+        adapter.clear();
+        initGetList();
+        super.onResume();
     }
+
 
     /*获取好友列表*/
     MessageBean bean;
     private void initGetList() {
         ContactManager.getFriendList(new GetUserInfoListCallback() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void gotResult(int i, String s, List<UserInfo> list) {
 
@@ -115,15 +120,16 @@ public class ContactFragment extends Fragment {
                     for (int j=0;j<list.size();j++) {
                         bean= new MessageBean();
                         bean.setTitle(list.get(j).getNickname());
-                        bean.setContent(list.get(j).getAvatar());
-                        bean.setTime(list.get(j).getUserID() + "");
+                        bean.setContent(list.get(j).getSignature());
+                        bean.setTime(com.wapchief.jpushim.framework.utils.TimeUtils.ms2date("MM-dd HH:mm",list.get(j).getmTime()));
                         bean.setUserName(list.get(j).getUserName());
                         bean.setImg(list.get(j).getAvatarFile().toURI().toString());
                         bean.setType(3);
                         data.add(bean);
-                        Collections.reverse(data);
-                        adapter.notifyDataSetChanged();
                     }
+                    Collections.reverse(list);
+                    Collections.reverse(data);
+                    adapter.notifyDataSetChanged();
 
                 } else {
                     mFmContactRv.setVisibility(View.GONE);

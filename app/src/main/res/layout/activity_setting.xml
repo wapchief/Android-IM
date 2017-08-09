@@ -164,6 +164,27 @@
         </RelativeLayout>
 
 
+
+
+        <RelativeLayout
+            android:id="@+id/setting_password"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/white"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="修改密码"
+                android:textColor="#000000"
+                android:textSize="16sp"/>
+
+        </RelativeLayout>
         <RelativeLayout
             android:id="@+id/setting_exit"
             android:layout_width="match_parent"
@@ -183,5 +204,6 @@
                 android:textSize="16sp"/>
 
         </RelativeLayout>
+
     </LinearLayout>
 </FrameLayout>

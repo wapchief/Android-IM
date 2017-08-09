@@ -178,7 +178,9 @@ public class EditUserInfoActivity extends BaseActivity {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode){
                 case PHOTO_PZ:
-
+                    File pictur = new File(
+                            Environment.getExternalStorageDirectory() + "/temp.jpg");
+                    startPhotoZoom(Uri.fromFile(pictur));
                     break;
                 case PHOTO_TK:
                     startPhotoZoom(data.getData());
