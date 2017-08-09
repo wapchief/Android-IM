@@ -6,6 +6,8 @@ icon来源阿里巴巴矢量图
 
 ![部分功能截图](https://github.com/wapchief/JPushIM/blob/master/screenshots/img.png?raw=true)
 
+![](https://github.com/wapchief/JPushIM/blob/master/screenshots/img2.png?raw=true)
+
 #### 目前已经实现的功能：
 
 1、好友添加
