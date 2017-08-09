@@ -73,7 +73,6 @@ public class PassWordActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.password_ok:
-                Log.e("edittext:", mPasswordNew.getText() + "\n" + mPasswordNew2.getText());
                 if (mPasswordNew.getText().toString().equals(mPasswordNew2.getText().toString())) {
                     JMessageClient.updateUserPassword(mPasswordOld.getText().toString(), mPasswordNew2.getText().toString(), new BasicCallback() {
                         @Override
