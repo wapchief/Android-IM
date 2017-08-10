@@ -2,12 +2,10 @@ package com.wapchief.jpushim.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -22,7 +20,6 @@ import com.wapchief.jpushim.adapter.AddSearchAdapter;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.GreenDaoHelper;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
-import com.wapchief.jpushim.framework.network.MyUserInfoCallback;
 import com.wapchief.jpushim.greendao.SearchAddDao;
 import com.wapchief.jpushim.greendao.model.SearchAdd;
 
@@ -32,11 +29,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.api.BasicCallback;
 
 /**
  * Created by wapchief on 2017/7/24.
@@ -58,14 +53,17 @@ public class AddFriendsActivity extends BaseActivity {
     Button mAddCommit;
     @BindView(R.id.add_lv)
     ListView mAddLv;
+    @BindView(R.id.add_del)
+    Button mAddDel;
     private String[] mTitles = {"加好友", "加群"};
 
     private GreenDaoHelper daoHelper;
     private SearchAddDao dao;
     private AddSearchAdapter adapter;
     private List<SearchAdd> list;
-    private String name="";
+    private String name = "";
     private SharedPrefHelper helper;
+
     @Override
     protected int setContentView() {
         return R.layout.activity_add_friends;
@@ -85,13 +83,29 @@ public class AddFriendsActivity extends BaseActivity {
 
     /*监听item*/
     private void initLvOnClick() {
-        mAddLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+        adapter.setListener(new AddSearchAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String string = mAddLv.getItemAtPosition(i).toString();
+            public void onItemClick(final String id, int position) {
+                JMessageClient.getUserInfo(id, new GetUserInfoCallback() {
+                    @Override
+                    public void gotResult(int i, String s, UserInfo userInfo) {
+                        if (i == 0) {
+                            Intent intent = new Intent(AddFriendsActivity.this, AddFriendMsgActivity.class);
+                            intent.putExtra("ID", id);
+                            intent.putExtra("NAME", userInfo.getNickname());
+                            intent.putExtra("ICON", userInfo.getAvatarFile().toURI().toString());
+                            startActivity(intent);
+                        } else {
+                            showToast(AddFriendsActivity.this, "未找到用户");
+                        }
+                    }
+                });
             }
         });
+
     }
+
     /*搜索文本监听*/
     private void initEditKey() {
         mAddSearch.addTextChangedListener(new TextWatcher() {
@@ -108,7 +122,7 @@ public class AddFriendsActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 name = editable.toString();
-                Log.e("name===", ":"+name);
+                Log.e("name===", ":" + name);
             }
         });
 
@@ -120,9 +134,18 @@ public class AddFriendsActivity extends BaseActivity {
         daoHelper = new GreenDaoHelper(this);
         dao = daoHelper.initDao().getSearchAddDao();
         initQuery();
-
+        adapter = new AddSearchAdapter(this, list);
+        mAddLv.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
+
+    @Override
+    protected void onResume() {
+        initQuery();
+        adapter.notifyDataSetChanged();
+        super.onResume();
+    }
 
     private void initQuery() {
         //查询所有
@@ -130,17 +153,17 @@ public class AddFriendsActivity extends BaseActivity {
         //这里用于判断是否有数据
         if (list.size() == 0) {
             mAddLv.setVisibility(View.GONE);
+            mAddDel.setVisibility(View.GONE);
         } else {
             mAddLv.setVisibility(View.VISIBLE);
+            mAddDel.setVisibility(View.VISIBLE);
         }
         //list倒序排列
         Collections.reverse(list);
-        adapter = new AddSearchAdapter(this, list);
-        mAddLv.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
     }
+
     //增
-    private void initInsert() {
+    private void initInsert(String name) {
         try {
             if (list.size() < 8) {
                 //删除已经存在重复的搜索历史
@@ -163,6 +186,7 @@ public class AddFriendsActivity extends BaseActivity {
             }
             //添加后更新列表
             initQuery();
+            adapter.notifyDataSetChanged();
         } catch (Exception e) {
             Toast.makeText(this, "插入失败", Toast.LENGTH_SHORT).show();
         }
@@ -204,7 +228,7 @@ public class AddFriendsActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.title_bar_back, R.id.add_commit})
+    @OnClick({R.id.title_bar_back, R.id.add_commit,R.id.add_del})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_bar_back:
@@ -214,19 +238,31 @@ public class AddFriendsActivity extends BaseActivity {
                 JMessageClient.getUserInfo(name, new GetUserInfoCallback() {
                     @Override
                     public void gotResult(int i, String s, UserInfo userInfo) {
-                        if (i==0){
-                            initInsert();
+                        if (i == 0) {
+                            initInsert(name);
+                            Log.e("userinfo", s + "\n" + userInfo);
                             Intent intent = new Intent(AddFriendsActivity.this, AddFriendMsgActivity.class);
                             intent.putExtra("ID", name);
                             intent.putExtra("NAME", userInfo.getNickname());
                             intent.putExtra("ICON", userInfo.getAvatarFile().toURI().toString());
                             startActivity(intent);
-                        }else {
-                            showToast(AddFriendsActivity.this,"未找到用户");
+                        } else {
+                            showToast(AddFriendsActivity.this, "未找到用户");
                         }
                     }
                 });
                 break;
+            case R.id.add_del:
+                try {
+                    dao.deleteAll();
+                    mAddDel.setVisibility(View.GONE);
+                    list.clear();
+                    initQuery();
+                    adapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                }
+                break;
         }
     }
+
 }

@@ -37,18 +37,43 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#66000000"/>
-
-    <ListView
-        android:id="@+id/add_lv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
     <Button
         android:id="@+id/add_commit"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:text="搜索"
-        android:background="@drawable/shape_search"
+        android:textColor="@color/white"
+        android:background="@drawable/shape_button_lines2"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingTop="20dp"
+        android:paddingLeft="15dp"
+        android:text="搜索历史"
+        android:textSize="12sp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@android:color/darker_gray"/>
+    <ListView
+        android:id="@+id/add_lv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+    </ListView>
+
+    <Button
+        android:id="@+id/add_del"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:gravity="center"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12sp"
+        android:text="清空搜索记录"
+        android:layout_marginBottom="30dp"/>
 </LinearLayout>
