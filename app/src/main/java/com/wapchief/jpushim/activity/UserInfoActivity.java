@@ -100,13 +100,18 @@ public class UserInfoActivity extends BaseActivity {
     }
 
     /*获取用户资料*/
-    private void initUserInfo(String userName) {
+    private void initUserInfo(final String userName) {
         JMessageClient.getUserInfo(userName, new GetUserInfoCallback() {
             @Override
             public void gotResult(int i, String s, UserInfo userInfo) {
-                Log.e("iiiiiiiii", ":" + userInfo);
+//                Log.e("iiiiiiiii", getIntent().getStringExtra("USERNAME")+"\n"+getUserName+"\n"+userName+"\n" + userInfo);
                 if (i == 0) {
-                    avtar = userInfo.getAvatar();
+//                    avtar = userInfo.getAvatarFile().toURI().toString();
+
+                    Picasso.with(UserInfoActivity.this)
+                            .load(userInfo.getAvatarFile())
+                            .placeholder(R.mipmap.icon_user)
+                            .into(mUserinfoAvatar);
                     mUserinfoBirthday.setText(userInfo.getBirthday() + "");
                     mUserinfoGender.setText(StringUtils.constant2String(userInfo.getGender() + ""));
                     mUserinfoMtime.setText(userInfo.getmTime() + "");
@@ -123,13 +128,7 @@ public class UserInfoActivity extends BaseActivity {
             }
         });
 
-        if (avtar == null || avtar.equals("")) {
-            mUserinfoAvatar.setImageDrawable(getResources().getDrawable(R.mipmap.icon_user));
-        } else {
-            Picasso.with(UserInfoActivity.this)
-                    .load(avtar)
-                    .into(mUserinfoAvatar);
-        }
+
     }
 
     /*滚动事件*/

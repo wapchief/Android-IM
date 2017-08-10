@@ -20,6 +20,7 @@ import android.util.Base64;
 import android.util.EventLog;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -163,9 +164,11 @@ public class ChatMsgActivity extends BaseActivity {
 
 
         mTitleBarBack.setVisibility(View.VISIBLE);
+
 //        imageView.setVisibility(View.VISIBLE);
 
     }
+
 
     //初始化消息列表
     private List<MyMessage> getMessages() {
@@ -195,20 +198,11 @@ public class ChatMsgActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        Picasso.with(mContext)
-//                .load(userInfo.getAvatarFile())
-//                .placeholder(R.mipmap.icon_user)
-//                .into(imageAvatarSend);
-//        Picasso.with(mContext)
-//                .load()
     }
 
     //处理接收到的消息
     public void onEvent(MessageEvent event) {
         final Message message = event.getMessage();
-//        Log.e("beanmessage===", message + "\n"+TimeUtils.ms2date("MM-dd HH:mm",message.getCreateTime())+"\n"+
-//                TimeUtils.ms2date("MM-dd HH:mm",message.getSenderUserInfoMTime()));
-//        final MyMessage myMessage;
 
         runOnUiThread(new Runnable() {
             @Override
@@ -351,12 +345,14 @@ public class ChatMsgActivity extends BaseActivity {
             @Override
             public void onAvatarClick(MyMessage message) {
                 DefaultUser userInfo = (DefaultUser) message.getFromUser();
-                Intent intent = new Intent(mContext, UserActivty.class);
-                if (JMessageClient.getMyInfo().getUserName()==userName){
-                    intent.putExtra("USERNAEM", JMessageClient.getMyInfo().getUserName());
+                Intent intent;
+                if (message.getType()==SEND_TEXT){
+                    intent= new Intent(mContext, UserActivty.class);
                 }else {
-                    intent.putExtra("USERNAEM", userName);
+                    intent = new Intent(mContext, UserInfoActivity.class);
+                    intent.putExtra("USERNAME", userName);
                 }
+                Log.e("userName",userInfo+"\n"+userName);
                 startActivity(intent);
             }
         });

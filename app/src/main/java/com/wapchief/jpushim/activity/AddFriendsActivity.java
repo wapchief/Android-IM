@@ -173,6 +173,7 @@ public class AddFriendsActivity extends BaseActivity {
                 //添加
                 if (!name.equals(""))
                     dao.insert(new SearchAdd(null, name));
+                list.add(new SearchAdd(null, name));
             } else {
                 //删除第一条数据，用于替换最后一条搜索
                 dao.delete(dao.queryBuilder().list().get(0));
@@ -185,7 +186,7 @@ public class AddFriendsActivity extends BaseActivity {
                     dao.insert(new SearchAdd(null, name));
             }
             //添加后更新列表
-            initQuery();
+//            initQuery();
             adapter.notifyDataSetChanged();
         } catch (Exception e) {
             Toast.makeText(this, "插入失败", Toast.LENGTH_SHORT).show();
