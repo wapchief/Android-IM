@@ -4,4 +4,11 @@
     android:fitsSystemWindows="true"
     android:layout_height="match_parent">
 
+    <include layout="@layout/title_bar"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="15dp"
+        android:gravity="center_horizontal"
+        android:text="@string/about"/>
 </LinearLayout>

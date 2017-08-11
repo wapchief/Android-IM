@@ -19,6 +19,7 @@ import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.utils.StringUtils;
+import com.wapchief.jpushim.framework.utils.TimeUtils;
 
 
 import butterknife.BindView;
@@ -112,9 +113,9 @@ public class UserInfoActivity extends BaseActivity {
                             .load(userInfo.getAvatarFile())
                             .placeholder(R.mipmap.icon_user)
                             .into(mUserinfoAvatar);
-                    mUserinfoBirthday.setText(userInfo.getBirthday() + "");
+                    mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",userInfo.getBirthday()));
                     mUserinfoGender.setText(StringUtils.constant2String(userInfo.getGender() + ""));
-                    mUserinfoMtime.setText(userInfo.getmTime() + "");
+                    mUserinfoMtime.setText(TimeUtils.ms2date("yyyy-MM-dd HH:mm",userInfo.getmTime()));
                     mUserinfoNikename.setText(userInfo.getNickname() + "");
                     mUserinfoUsername.setText(userInfo.getUserName() + "");
                     if (userInfo.getSignature().equals("")) {

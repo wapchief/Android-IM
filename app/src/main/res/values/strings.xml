@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">JPushIM</string>
+    <string name="about">
+        参照手机QQ7.1.5版本界面部分原型开发
+        \n仅用作技术交流
+        \nicon均来源于阿里巴巴矢量图
+        \n项目源码地址：
+        \n https://github.com/wapchief/JPushIM
+    </string>
 </resources>
