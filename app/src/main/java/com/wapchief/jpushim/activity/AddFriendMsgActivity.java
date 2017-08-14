@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.ContactManager;
+import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
 
 /**
@@ -84,7 +85,7 @@ public class AddFriendMsgActivity extends BaseActivity {
     @Override
     protected void initData() {
         mAddMsgName.setText(getIntent().getStringExtra("NAME"));
-        mAddMsgContent.setText("你好！我是"+helper.getNakeName());
+        mAddMsgContent.setText("你好！我是"+ JMessageClient.getMyInfo().getNickname());
         Picasso.with(AddFriendMsgActivity.this)
                 .load(getIntent().getStringExtra("ICON"))
                 .placeholder(R.mipmap.icon_user)
@@ -110,6 +111,7 @@ public class AddFriendMsgActivity extends BaseActivity {
                         public void gotResult(int i, String s) {
                             if (i==0){
                                 showToast(AddFriendMsgActivity.this, "发送成功");
+                                finish();
                             }else {
                                 showToast(AddFriendMsgActivity.this, "发送失败:"+s);
                                 Log.e("id====", getIntent().getStringExtra("ID"));

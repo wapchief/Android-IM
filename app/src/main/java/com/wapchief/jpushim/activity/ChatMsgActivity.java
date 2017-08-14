@@ -220,6 +220,10 @@ public class ChatMsgActivity extends BaseActivity {
 //                        Log.e("beanmyMessage", myMessage + "");
                     }
 
+                if (JMessageClient.getMyInfo().getUserName().equals("1006")){
+                    sendMessage("[自动回复]你好，我是机器人");
+                }
+
             }
 
         });
@@ -384,6 +388,7 @@ public class ChatMsgActivity extends BaseActivity {
     }
 
 
+
     /*加载更多*/
     private void loadNextPage() {
         new Handler().postDelayed(new Runnable() {
@@ -525,27 +530,30 @@ public class ChatMsgActivity extends BaseActivity {
 
                 break;
             case R.id.chat_send:
-                //发送消息，当前版本只能发送文本
-                final Message message1 = JMessageClient.createSingleTextMessage(userName, "", mChatEt.getText().toString());
-                final MyMessage myMessage = new MyMessage(mChatEt.getText().toString(), SEND_TEXT);
-                myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", message1.getCreateTime()));
-                myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", imgSend));
-                message1.setOnSendCompleteCallback(new BasicCallback() {
-                    @Override
-                    public void gotResult(int i, String s) {
-                        if (i == 0) {
-                            mAdapter.addToStart(myMessage, true);
-                            mChatEt.setText("");
-                        } else {
-//                            Log.e("sendMsg", s);
-                        }
-                    }
-                });
-                JMessageClient.sendMessage(message1);
-                if (mData != null) {
-                    mData.clear();
-                }
+                sendMessage(mChatEt.getText().toString());
                 break;
+        }
+    }
+    //发送消息，当前版本只能发送文本
+    private void sendMessage(String msg){
+        final Message message1 = JMessageClient.createSingleTextMessage(userName, "", msg);
+        final MyMessage myMessage = new MyMessage(msg, SEND_TEXT);
+        myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", message1.getCreateTime()));
+        myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", imgSend));
+        message1.setOnSendCompleteCallback(new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                if (i == 0) {
+                    mAdapter.addToStart(myMessage, true);
+                    mChatEt.setText("");
+                } else {
+//                            Log.e("sendMsg", s);
+                }
+            }
+        });
+        JMessageClient.sendMessage(message1);
+        if (mData != null) {
+            mData.clear();
         }
     }
 }

@@ -224,7 +224,7 @@ public class MainActivity extends BaseActivity {
         View headerView = mMainNv.getHeaderView(0);
         nav_header_ll = (LinearLayout) headerView.findViewById(R.id.nav_header_ll);
         nav_header_name = (TextView) headerView.findViewById(R.id.nav_header_name);
-        nav_header_name.setText(userInfo.getNickname());
+        nav_header_name.setText(JMessageClient.getMyInfo().getNickname());
         nav_header_id =(TextView) headerView.findViewById(R.id.nav_header_id);
         nav_header_id.setText("ID:  "+helper.getUserId());
         nav_header_img = (ImageView) headerView.findViewById(R.id.nav_header_img);
@@ -272,6 +272,7 @@ public class MainActivity extends BaseActivity {
             mMainRootTab.setBackgroundColor(00000000);
             mMainRootTab.showMsg(0,0);
         }
+        initNVHeader();
         super.onResume();
     }
 
