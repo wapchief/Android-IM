@@ -3,6 +3,7 @@
     xmlns:cube_ptr="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     cube_ptr:ptr_duration_to_close="300"
     cube_ptr:ptr_duration_to_close_header="2000"
     cube_ptr:ptr_keep_header_when_refresh="true"

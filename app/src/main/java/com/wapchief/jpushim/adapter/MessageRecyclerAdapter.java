@@ -145,6 +145,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         @Override
                         public void gotResult(int i, String s, UserInfo userInfo) {
                             if (i==0 ){
+                                Log.e("isFriends", userInfo.getUserName()+"...." + userInfo.isFriend());
                                 if (userInfo.isFriend()) {
                                     ((ItemViewHolder) holder).button.setText("已同意");
                                     ((ItemViewHolder) holder).button.setEnabled(false);
@@ -165,7 +166,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                         @Override
                                         public void gotResult(int i, String s) {
                                             if (i==0){
-                                                ((ItemViewHolder) holder).button.setText("已添加");
+                                                ((ItemViewHolder) holder).button.setText("已同意");
                                             }else {
                                                 Toast.makeText(context,"验证失败："+s,Toast.LENGTH_SHORT).show();
                                             }

@@ -75,6 +75,8 @@
         <activity android:name=".activity.EditUserInfoActivity"/>
         <!--修改密码-->
         <activity android:name=".activity.PassWordActivity"/>
+        <!--更多通知-->
+        <activity android:name=".activity.PullMsgListMoreActivity"/>
         <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->

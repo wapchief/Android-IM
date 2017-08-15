@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/color_shape_start</item>
         <item name="colorPrimaryDark">@color/color_shape_start</item>
         <item name="colorAccent">@color/color_shape_end</item>
+        <item name="android:fitsSystemWindows">true</item>
         <!--隐藏标题栏-->
          <!--<item name="android:windowFullscreen">true</item>-->
     </style>
