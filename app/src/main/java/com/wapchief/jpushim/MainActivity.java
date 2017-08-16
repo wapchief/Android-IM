@@ -39,6 +39,7 @@ import com.wapchief.jpushim.activity.AddFriendsActivity;
 import com.wapchief.jpushim.activity.SettingActivity;
 import com.wapchief.jpushim.activity.UserActivty;
 import com.wapchief.jpushim.activity.WebViewActivity;
+import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.TabEntity;
 import com.wapchief.jpushim.fragment.FragmentFactory;
 import com.wapchief.jpushim.framework.base.BaseActivity;
@@ -67,9 +68,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jiguang.imui.commons.ImageLoader;
+import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.content.EventNotificationContent;
+import cn.jpush.im.android.api.event.BaseNotificationEvent;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
@@ -97,7 +103,7 @@ public class MainActivity extends BaseActivity {
     //NavigationViewHeader
     private LinearLayout nav_header_ll;
     private ImageView nav_header_img;
-    private TextView nav_header_name,nav_header_id;
+    private TextView nav_header_name, nav_header_id;
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private String[] mTitles = {"消息", "联系人", "动态"};
@@ -108,6 +114,7 @@ public class MainActivity extends BaseActivity {
     private RequestListDao dao;
     private ImageLoader imageLoader;
     private UserInfo userInfo;
+
     @Override
     protected int setContentView() {
         return R.layout.activity_main;
@@ -134,11 +141,12 @@ public class MainActivity extends BaseActivity {
         initPageAdapter();
         initNVHeader();
     }
-    /*判断登陆页面*/
+
+    /*判断登陆页面,设置默认角色属性*/
     private void initLoginType() {
         File file;
-        Log.e("login_type",""+getIntent().getIntExtra("LOGINTYPE", 0));
-        if (getIntent().getIntExtra("LOGINTYPE",0)==1) {
+        Log.e("login_type", "" + getIntent().getIntExtra("LOGINTYPE", 0));
+        if (getIntent().getIntExtra("LOGINTYPE", 0) == 1) {
             Bitmap bitmap = BitMapUtils.drawable2Bitmap(getResources().getDrawable(R.drawable.icon_user));
             //创建路径
             String path = Environment.getExternalStorageDirectory()
@@ -191,30 +199,44 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
     /*接收好友请求通知*/
     public void onEventMainThread(final ContactNotifyEvent event) {
-//        if (event.getType().equals("invite_received")){
-            //设置未读消息红点
-            mMainRootTab.showDot(1);
-            MsgView rtv_2_2 = mMainRootTab.getMsgView(1);
-            if (rtv_2_2 != null) {
-                //设置小红点大小和位置
-                UnreadMsgUtils.setSize(rtv_2_2, UIUtils.dip2px(this, 7.5f));
+
+        Log.e("Log:好友请求", "验证内容：" + event.getFromUsername().toString() + "\n用户："
+                + event.getFromUsername());
+        //机器人自动添加
+        if (JMessageClient.getMyInfo().getUserName().equals("1006")||JMessageClient.getMyInfo().getUserName()=="1006")
+        ContactManager.acceptInvitation(event.getFromUsername(), "", new BasicCallback() {
+            @Override
+            public void gotResult(int i, String s) {
+                if (i==0){
+                    Log.e("Log:添加好友历史：" , event.getFromUsername() + "");
+                }else {
+                    Log.e("Log:添加失败：" , s + "");
+                }
             }
-            //删除已经存在重复的搜索历史.如果来自同一个人的请求，保存最新
-            List<RequestList> list = dao.queryBuilder()
-                    .where(RequestListDao.Properties.UserName.eq(event.getFromUsername())).build().list();
-            dao.deleteInTx(list);
-            //添加
-             JMessageClient.getUserInfo(event.getFromUsername(), new GetUserInfoCallback() {
-                 @Override
-                 public void gotResult(int i, String s, UserInfo userInfo) {
-                     if (i==0)
-                     dao.insert(new RequestList(null, event.getReason().toString(),event.getFromUsername().toString(),userInfo.getNickname(),"",userInfo.getAvatarFile().toURI().toString()));
-                 }
-             });
-//        }
-        Log.e("bean===", event.getFromUsername() + "," + event.getReason()+","+event.getType());
+        });
+        //设置未读消息红点
+        mMainRootTab.showDot(1);
+        MsgView rtv_2_2 = mMainRootTab.getMsgView(1);
+        if (rtv_2_2 != null) {
+            //设置小红点大小和位置
+            UnreadMsgUtils.setSize(rtv_2_2, UIUtils.dip2px(this, 7.5f));
+        }
+        //删除已经存在重复的搜索历史.如果来自同一个人的请求，保存最新
+        List<RequestList> list = dao.queryBuilder()
+                .where(RequestListDao.Properties.UserName.eq(event.getFromUsername())).build().list();
+        dao.deleteInTx(list);
+        //添加
+        JMessageClient.getUserInfo(event.getFromUsername(), new GetUserInfoCallback() {
+            @Override
+            public void gotResult(int i, String s, UserInfo userInfo) {
+                if (i == 0)
+                    dao.insert(new RequestList(null, event.getReason().toString(), event.getFromUsername().toString(), userInfo.getNickname(), "", userInfo.getAvatarFile().toURI().toString()));
+            }
+        });
+
     }
 
     /*初始化NavigationView头部控件*/
@@ -225,8 +247,8 @@ public class MainActivity extends BaseActivity {
         nav_header_ll = (LinearLayout) headerView.findViewById(R.id.nav_header_ll);
         nav_header_name = (TextView) headerView.findViewById(R.id.nav_header_name);
         nav_header_name.setText(JMessageClient.getMyInfo().getNickname());
-        nav_header_id =(TextView) headerView.findViewById(R.id.nav_header_id);
-        nav_header_id.setText("ID:  "+helper.getUserId());
+        nav_header_id = (TextView) headerView.findViewById(R.id.nav_header_id);
+        nav_header_id.setText("ID:  " + helper.getUserId());
         nav_header_img = (ImageView) headerView.findViewById(R.id.nav_header_img);
         Picasso.with(MainActivity.this)
                 .load(JMessageClient.getMyInfo().getAvatarFile())
@@ -260,22 +282,30 @@ public class MainActivity extends BaseActivity {
         mMainRootVp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
     }
-
-    @Override
-    protected void onResume() {
-        //未读消息标签
-        Log.e("Log:未读消息数", JMessageClient.getAllUnReadMsgCount()+"");
-        if (JMessageClient.getAllUnReadMsgCount()>0) {
+    /*未读消息标签*/
+    private void initMsgCount(){
+        Log.e("Log:未读消息数", JMessageClient.getAllUnReadMsgCount() + "");
+        if (JMessageClient.getAllUnReadMsgCount() > 0) {
             mMainRootTab.showMsg(0, JMessageClient.getAllUnReadMsgCount());
             mMainRootTab.setMsgMargin(0, -6, 5);
-        }else {
-            mMainRootTab.setBackgroundColor(00000000);
-            mMainRootTab.showMsg(0,0);
+        } else {
+            mMainRootTab.clearFocus();
+
+            mMainRootTab.showMsg(0, 0);
         }
+    }
+    @Override
+    protected void onResume() {
+        initMsgCount();
         initNVHeader();
         super.onResume();
     }
 
+    @Override
+    protected void onDestroy() {
+        JMessageClient.unRegisterEventReceiver(this);
+        super.onDestroy();
+    }
 
     /*添加监听器，手动设置Main布局的位置*/
     private void initSideDrawer() {
@@ -310,7 +340,7 @@ public class MainActivity extends BaseActivity {
         mMainNv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.side_bar1:
                         Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
                         intent.putExtra("URL", "https://github.com/wapchief");
@@ -359,7 +389,7 @@ public class MainActivity extends BaseActivity {
                 .into(mTitleBarBack);
     }
 
-    @OnClick({R.id.title_bar_back, R.id.title_options_img,R.id.title_options_tv})
+    @OnClick({R.id.title_bar_back, R.id.title_options_img, R.id.title_options_tv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_bar_back:
@@ -376,9 +406,9 @@ public class MainActivity extends BaseActivity {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                switch (i){
+                                switch (i) {
                                     case 0:
-                                        showToast(MainActivity.this, "暂未开放" );
+                                        showToast(MainActivity.this, "暂未开放");
                                         break;
                                     case 1:
                                         Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);
@@ -387,28 +417,28 @@ public class MainActivity extends BaseActivity {
                                 }
                             }
                         });
-                dialog.initDialog(Gravity.RIGHT|Gravity.TOP);
-                dialog.dialogSize(200,0,0,55);
+                dialog.initDialog(Gravity.RIGHT | Gravity.TOP);
+                dialog.dialogSize(200, 0, 0, 55);
                 break;
             case R.id.title_options_tv:
                 MyAlertDialog dialog1 = new MyAlertDialog(
                         MainActivity.this, new String[]{"创建群组", "添加好友／群"},
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        switch (i){
-                            case 0:
-                                showToast(MainActivity.this, "暂未开放" );
-                                break;
-                            case 1:
-                                Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);
-                                startActivity(intent);
-                                break;
-                        }
-                    }
-                });
-                dialog1.initDialog(Gravity.TOP|Gravity.RIGHT);
-                dialog1.dialogSize(200,0,0,55);
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                switch (i) {
+                                    case 0:
+                                        showToast(MainActivity.this, "暂未开放");
+                                        break;
+                                    case 1:
+                                        Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);
+                                        startActivity(intent);
+                                        break;
+                                }
+                            }
+                        });
+                dialog1.initDialog(Gravity.TOP | Gravity.RIGHT);
+                dialog1.dialogSize(200, 0, 0, 55);
                 break;
         }
     }
@@ -522,7 +552,7 @@ public class MainActivity extends BaseActivity {
         Timer tExit = null;
         if (isExit == false) {
             isExit = true; // 准备退出
-            showLongToast(this,"再按一次退出程序");
+            showLongToast(this, "再按一次退出程序");
             tExit = new Timer();
             tExit.schedule(new TimerTask() {
                 @Override

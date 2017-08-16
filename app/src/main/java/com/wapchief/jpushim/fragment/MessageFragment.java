@@ -22,7 +22,9 @@ import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.ChatMsgActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
+import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MessageBean;
+import com.wapchief.jpushim.entity.MyMessage;
 import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.view.MyAlertDialog;
@@ -37,8 +39,13 @@ import butterknife.Unbinder;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
+import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
+
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_TEXT;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -79,6 +86,7 @@ public class MessageFragment extends Fragment {
     }
 
     private void initView() {
+        JMessageClient.registerEventReceiver(this);
         initData();
 //        initDataBean();
         initGroup();
@@ -91,9 +99,46 @@ public class MessageFragment extends Fragment {
         adapter.clear();
         initDataBean();
         super.onResume();
-
     }
 
+    @Override
+    public void onDestroy() {
+        JMessageClient.unRegisterEventReceiver(this);
+        super.onDestroy();
+    }
+
+    /*接收消息*/
+    public void onEvent(final MessageEvent event) {
+        final Message msg = event.getMessage();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+//                Log.e("Log:新消息", "消息啊" + msg.getContentType().name() + "\n"
+//                        + msg);
+                if (JMessageClient.getMyInfo().getUserName()=="1006"|| JMessageClient.getMyInfo().getUserName().equals("1006")) {
+                    final Message message1 = JMessageClient.createSingleTextMessage(msg.getTargetID(), "", "[自动回复]你好，我是机器人");
+                    final MyMessage myMessage = new MyMessage("[自动回复]你好，我是机器人", SEND_TEXT);
+                    myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", message1.getCreateTime()));
+                    myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", JMessageClient.getMyInfo().getAvatar()));
+                    message1.setOnSendCompleteCallback(new BasicCallback() {
+                        @Override
+                        public void gotResult(int i, String s) {
+                            if (i == 0) {
+                                Log.e("Log:自动回复：", s + "");
+                            } else {
+//                            Log.e("sendMsg", s);
+                            }
+                        }
+                    });
+                    JMessageClient.sendMessage(message1);
+                }
+                adapter.clear();
+                initDataBean();
+
+            }
+        });
+
+    }
     /*监听item*/
     private void onClickItem() {
         adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
@@ -171,7 +216,7 @@ public class MessageFragment extends Fragment {
             bean.setMsgID(list.get(i).getId());
             bean.setUserName(list.get(i).getTargetId());
             bean.setTitle(list.get(i).getTitle());
-            bean.setTime(list.get(i).getUnReadMsgCnt()+"条未读");
+            bean.setTime(list.get(i).getUnReadMsgCnt()+"");
             bean.setConversation(list.get(i));
             bean.setImg(list.get(i).getAvatarFile().toURI().toString());
             data.add(bean);

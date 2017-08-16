@@ -116,6 +116,17 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         .load(data.get(position).getImg())
                         .placeholder(R.mipmap.icon_user)
                         .into(((ItemViewHolder) holder).img);
+                //会话列表
+                if (data.get(position).type == 0) {
+//                    Log.e("msgtype", "type:" + data.get(position).type+"\n"+data.get(position).time);
+                    if (Integer.valueOf(data.get(position).time) <= 0) {
+                        ((ItemViewHolder) holder).time.setText(data.get(position).time+"条未读消息");
+                        ((ItemViewHolder) holder).time.setTextColor(Color.parseColor("#66000000"));
+                    }else {
+                        ((ItemViewHolder) holder).time.setText(data.get(position).time+"条未读消息");
+                        ((ItemViewHolder) holder).time.setTextColor(Color.parseColor("#E5955D"));
+                    }
+                }
                 //好友推荐
                 if (data.get(position).type == 1) {
                     if (data.get(position).getFriends()){

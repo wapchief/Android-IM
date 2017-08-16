@@ -7,9 +7,8 @@ import java.io.File;
 import cn.jpush.im.android.api.model.Conversation;
 
 /**
- * Created by apple on 2017/6/23.
  * type:
- * 1 好友推荐
+ * 1 好友推荐,2 好友验证 3 好友列表 0会话列表
  */
 
 public class MessageBean {

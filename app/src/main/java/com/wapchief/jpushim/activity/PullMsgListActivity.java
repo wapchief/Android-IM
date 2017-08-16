@@ -117,7 +117,7 @@ public class PullMsgListActivity extends BaseActivity {
             dataAdapter2(id[i]);
             Collections.reverse(list2);
         }
-        Log.e("list2=====", ""+list2);
+//        Log.e("list2=====", ""+list2);
     }
 
     /*加载推荐好友数据*/
@@ -126,7 +126,7 @@ public class PullMsgListActivity extends BaseActivity {
             @Override
             public void gotResult(int i, String s, UserInfo userInfo) {
                 bean = new MessageBean();
-                Log.e("userinfoMsg", ""+userInfo);
+//                Log.e("userinfoMsg", ""+userInfo);
                 bean.setTitle(userInfo.getNickname());
                 bean.setContent(userInfo.getUserName() + "");
                 bean.setUserName(userInfo.getUserName());
