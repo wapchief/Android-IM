@@ -161,12 +161,8 @@ public class ChatMsgActivity extends BaseActivity {
         initMsgAdapter();
         imageLoader.loadImage(imageAvatarSend,userInfo.getAvatarFile().toURI().toString());
         imageLoader.loadImage(imageAvatarReceive,imgRecrive);
-
-
         mTitleBarBack.setVisibility(View.VISIBLE);
-
-//        imageView.setVisibility(View.VISIBLE);
-
+//        initIsOnline();
     }
 
 

@@ -32,6 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.callback.GetUserInfoCallback;
+import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
 
@@ -62,6 +64,8 @@ public class LoginActivity extends BaseActivity {
     private int time = 60;
     SharedPrefHelper sharedPrefHelper;
     private UserInfo userInfo;
+
+    Handler handler=new Handler();
     @Override
     protected int setContentView() {
         return R.layout.activity_login;
@@ -92,7 +96,7 @@ public class LoginActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.login_code_bt:
-                startCount();
+//                startCount();
 //                SMSSDK.getInstance().getSmsCodeAsyn(loginUsername.getText().toString(), "1", new SmscodeListener() {
 //                    @Override
 //                    public void getCodeSuccess(String s) {
@@ -134,58 +138,64 @@ public class LoginActivity extends BaseActivity {
                 break;
             case R.id.login_ok:
                 //登陆
-                initLogin(loginUsername.getText().toString(),loginPassWord.getText().toString(),0);
+//                Log.e("info2============",""+JMessageClient.getMyInfo());
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        initLogin(loginUsername.getText().toString(),loginPassWord.getText().toString(),0);
+                    }
+                }, 500);
                 break;
 
         }
     }
 
     // 验证码按钮
-    public void startCount() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                time--;
-                if (time <= 0) {
-                    mHandler.sendEmptyMessage(5);
-                } else {
-                    mHandler.sendEmptyMessage(4);
-                    mHandler.postDelayed(this, 1000);
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }
+//    public void startCount() {
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                time--;
+//                if (time <= 0) {
+//                    mHandler.sendEmptyMessage(5);
+//                } else {
+//                    mHandler.sendEmptyMessage(4);
+//                    mHandler.postDelayed(this, 1000);
+//                }
+//            }
+//        };
+//        new Thread(runnable).start();
+//    }
 
-    private Handler mHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    // hidenSoft(mUserPwd);
-                    // if (tomain) {
-                    // Intent i = new Intent(LoginActivity.this,
-                    // MainActivity.class);
-                    // LoginActivity.this.startActivity(i);
-                    // overridePendingTransition(R.anim.anim_enter,
-                    // R.anim.anim_exit);
-                    // }
-                    setResult(RESULT_OK);
-                    LoginActivity.this.finish();
-                    break;
-                case 4:
-                    loginCodeBt.setEnabled(false);
-                    loginCodeBt.setTextColor(Color.rgb(32, 32, 32));
-                    loginCodeBt.setText("已发送(" + String.valueOf(time) + ")");
-                    break;
-                case 5:
-                    loginCodeBt.setText("重新获取验证码");
-                    loginCodeBt.setEnabled(true);
-                    time = 60;
-                    break;
-            }
-
-        }
-    };
+//    private Handler mHandler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case 0:
+//                    // hidenSoft(mUserPwd);
+//                    // if (tomain) {
+//                    // Intent i = new Intent(LoginActivity.this,
+//                    // MainActivity.class);
+//                    // LoginActivity.this.startActivity(i);
+//                    // overridePendingTransition(R.anim.anim_enter,
+//                    // R.anim.anim_exit);
+//                    // }
+//                    setResult(RESULT_OK);
+//                    LoginActivity.this.finish();
+//                    break;
+//                case 4:
+//                    loginCodeBt.setEnabled(false);
+//                    loginCodeBt.setTextColor(Color.rgb(32, 32, 32));
+//                    loginCodeBt.setText("已发送(" + String.valueOf(time) + ")");
+//                    break;
+//                case 5:
+//                    loginCodeBt.setText("重新获取验证码");
+//                    loginCodeBt.setEnabled(true);
+//                    time = 60;
+//                    break;
+//            }
+//
+//        }
+//    };
 
     /**
      *
@@ -208,18 +218,36 @@ public class LoginActivity extends BaseActivity {
                         break;
                     case 801004:
                         showToast(LoginActivity.this, "密码错误");
+                        handler.sendEmptyMessage(-1);
                         break;
                     case 0:
                         showToast(LoginActivity.this, "登陆成功");
                         sharedPrefHelper.setUserId(loginUsername.getText().toString());
                         sharedPrefHelper.setUserPW(loginPassWord.getText().toString());
-                        Intent intent = new Intent(LoginActivity.this
-                                , MainActivity.class);
-                        intent.putExtra("LOGINTYPE", type);
-                        startActivity(intent);
+                        initUserInfo(loginUsername.getText().toString(),type);
                         break;
+                        default:
+
+                            break;
                 }
 
+            }
+        });
+    }
+    //初始化个人资料
+    public void initUserInfo(String id, final int type){
+      showProgressDialog("正在初始化数据");
+        JMessageClient.getUserInfo(id, new GetUserInfoCallback() {
+            @Override
+            public void gotResult(int i, String s, UserInfo userInfo) {
+                dismissProgressDialog();
+                if (i==0) {
+//                    Log.e("info-Login", ""+JMessageClient.getMyInfo()+"\n"+JMessageClient.getConversationList()+"\n"+userInfo);
+                    Intent intent = new Intent(LoginActivity.this
+                            , MainActivity.class);
+                    intent.putExtra("LOGINTYPE", type);
+                    startActivity(intent);
+                }
             }
         });
     }

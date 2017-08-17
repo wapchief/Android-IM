@@ -39,6 +39,7 @@ import butterknife.Unbinder;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
@@ -117,9 +118,6 @@ public class MessageFragment extends Fragment {
 //                        + msg);
                 if (JMessageClient.getMyInfo().getUserName()=="1006"|| JMessageClient.getMyInfo().getUserName().equals("1006")) {
                     final Message message1 = JMessageClient.createSingleTextMessage(msg.getTargetID(), "", "[自动回复]你好，我是机器人");
-                    final MyMessage myMessage = new MyMessage("[自动回复]你好，我是机器人", SEND_TEXT);
-                    myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", message1.getCreateTime()));
-                    myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", JMessageClient.getMyInfo().getAvatar()));
                     message1.setOnSendCompleteCallback(new BasicCallback() {
                         @Override
                         public void gotResult(int i, String s) {
@@ -198,28 +196,33 @@ public class MessageFragment extends Fragment {
     }
 
     private void initDataBean() {
-        List<Conversation> list = new ArrayList<>();
-        list = JMessageClient.getConversationList();
+        List<Conversation> list = JMessageClient.getConversationList();
         Log.e("Log:会话消息数", list.size()+"");
-        if (list.size()==0){
+        if (list.size()<=0){
             mFragmentMainNone.setVisibility(View.VISIBLE);
             mFragmentMainRv.setVisibility(View.GONE);
-            return;
-        }
-        for (int i = 0; i < list.size(); i++) {
-            bean = new MessageBean();
-            try {
-                bean.setContent(((TextContent)(list.get(i).getLatestMessage()).getContent()).getText());
-            }catch (Exception e){
-                bean.setContent("最近没有消息！");
+        }else {
+            mFragmentMainNone.setVisibility(View.GONE);
+            mFragmentMainRv.setVisibility(View.VISIBLE);
+            for (int i = 0; i < list.size(); i++) {
+                bean = new MessageBean();
+                try {
+                    bean.setContent(((TextContent) (list.get(i).getLatestMessage()).getContent()).getText());
+                } catch (Exception e) {
+                    bean.setContent("最近没有消息！");
+                }
+                bean.setMsgID(list.get(i).getId());
+                bean.setUserName(list.get(i).getTargetId());
+                bean.setTitle(list.get(i).getTitle());
+                bean.setTime(list.get(i).getUnReadMsgCnt() + "");
+                bean.setConversation(list.get(i));
+                try {
+                    bean.setImg(list.get(i).getAvatarFile().toURI() + "");
+                } catch (Exception e) {
+                    Log.e("e======", e.getMessage());
+                }
+                data.add(bean);
             }
-            bean.setMsgID(list.get(i).getId());
-            bean.setUserName(list.get(i).getTargetId());
-            bean.setTitle(list.get(i).getTitle());
-            bean.setTime(list.get(i).getUnReadMsgCnt()+"");
-            bean.setConversation(list.get(i));
-            bean.setImg(list.get(i).getAvatarFile().toURI().toString());
-            data.add(bean);
         }
         adapter.notifyDataSetChanged();
     }

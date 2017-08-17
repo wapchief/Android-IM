@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -67,6 +69,7 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jiguang.api.JCoreInterface;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.JMessageClient;
@@ -74,7 +77,9 @@ import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.EventNotificationContent;
 import cn.jpush.im.android.api.event.BaseNotificationEvent;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
@@ -206,17 +211,17 @@ public class MainActivity extends BaseActivity {
         Log.e("Log:好友请求", "验证内容：" + event.getFromUsername().toString() + "\n用户："
                 + event.getFromUsername());
         //机器人自动添加
-        if (JMessageClient.getMyInfo().getUserName().equals("1006")||JMessageClient.getMyInfo().getUserName()=="1006")
-        ContactManager.acceptInvitation(event.getFromUsername(), "", new BasicCallback() {
-            @Override
-            public void gotResult(int i, String s) {
-                if (i==0){
-                    Log.e("Log:添加好友历史：" , event.getFromUsername() + "");
-                }else {
-                    Log.e("Log:添加失败：" , s + "");
+        if (JMessageClient.getMyInfo().getUserName().equals("1006") || JMessageClient.getMyInfo().getUserName() == "1006")
+            ContactManager.acceptInvitation(event.getFromUsername(), "", new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if (i == 0) {
+                        Log.e("Log:添加好友历史：", event.getFromUsername() + "");
+                    } else {
+                        Log.e("Log:添加失败：", s + "");
+                    }
                 }
-            }
-        });
+            });
         //设置未读消息红点
         mMainRootTab.showDot(1);
         MsgView rtv_2_2 = mMainRootTab.getMsgView(1);
@@ -269,10 +274,6 @@ public class MainActivity extends BaseActivity {
         //当xml属性失效的时候需要手动在代码中
         mMainRootTab.setTextSelectColor(getResources().getColor(R.color.colorTheme));
         mMainRootTab.setTextUnselectColor(getResources().getColor(R.color.colorText));
-//        for (String title : mTitles) {
-//            mFragments.add(fragment);
-//        }
-
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], tabIcon[i], tabIconGray[i]));
         }
@@ -282,8 +283,10 @@ public class MainActivity extends BaseActivity {
         mMainRootVp.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
     }
+
     /*未读消息标签*/
-    private void initMsgCount(){
+    private void initMsgCount() {
+
         Log.e("Log:未读消息数", JMessageClient.getAllUnReadMsgCount() + "");
         if (JMessageClient.getAllUnReadMsgCount() > 0) {
             mMainRootTab.showMsg(0, JMessageClient.getAllUnReadMsgCount());
@@ -293,9 +296,23 @@ public class MainActivity extends BaseActivity {
 
             mMainRootTab.showMsg(0, 0);
         }
+
     }
+
+    /*消息数量*/
+    public void onEvent(final MessageEvent event) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                initMsgCount();
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
+        Log.e("info-Main", ""+JMessageClient.getMyInfo());
+        Log.e("Log:会话消息数Main", JMessageClient.getConversationList().size()+"");
         initMsgCount();
         initNVHeader();
         super.onResume();
@@ -528,13 +545,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    /**
-     * 单击回退
-     *
-     * @param keyCode
-     * @param event
-     * @return
-     */
+    /*单机回退*/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -543,9 +554,7 @@ public class MainActivity extends BaseActivity {
         return false;
     }
 
-    /**
-     * 双击退出
-     */
+    /*双击退出*/
     private static Boolean isExit = false;
 
     private void exitBy2Click() {
