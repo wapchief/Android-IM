@@ -1,5 +1,6 @@
 package com.wapchief.jpushim;
 
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -79,6 +80,7 @@ import cn.jpush.im.android.api.event.BaseNotificationEvent;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.event.OfflineMessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -133,8 +135,6 @@ public class MainActivity extends BaseActivity {
         userInfo = JMessageClient.getMyInfo();
         initLoginType();
         userInfo = JMessageClient.getMyInfo();
-        EventBus.getDefault().register(this);
-        JMessageClient.registerEventReceiver(this);
         daoHelper = new GreenDaoHelper(this);
         dao = daoHelper.initDao().getRequestListDao();
         helper = SharedPrefHelper.getInstance();
@@ -243,7 +243,6 @@ public class MainActivity extends BaseActivity {
         });
 
     }
-
     /*初始化NavigationView头部控件*/
     private void initNVHeader() {
 //        mMainNv.setItemTextColor(getResources().getColorStateList(R.drawable.nav_select_tv,null));
@@ -308,11 +307,9 @@ public class MainActivity extends BaseActivity {
             }
         });
     }
-
     @Override
     protected void onResume() {
-        Log.e("info-Main", ""+JMessageClient.getMyInfo());
-        Log.e("Log:会话消息数Main", JMessageClient.getConversationList().size()+"");
+//        Log.e("info-Main", ""+JMessageClient.getMyInfo());
         initMsgCount();
         initNVHeader();
         super.onResume();
@@ -545,18 +542,19 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    /*单机回退*/
+    private static Boolean isExit = false;
+
+    /*单击回退*/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             exitBy2Click();
+            return false;
         }
-        return false;
+        return super.onKeyDown(keyCode, event);
     }
 
     /*双击退出*/
-    private static Boolean isExit = false;
-
     private void exitBy2Click() {
         Timer tExit = null;
         if (isExit == false) {
@@ -571,7 +569,9 @@ public class MainActivity extends BaseActivity {
             }, 2000); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
 
         } else {
-            finish();
+            finishAll();
+            ActivityManager activityMgr = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+            activityMgr.killBackgroundProcesses(this.getPackageName());
             System.exit(0);
         }
     }

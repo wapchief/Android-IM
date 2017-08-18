@@ -85,4 +85,11 @@ public class SharedPrefHelper {
     public boolean getVib() {
         return sharedPreferences.getBoolean("push_vib", false);
     }
+
+    public void setAppKey(String appKey) {
+        sharedPreferences.edit().putString("appkey", appKey).commit();
+    }
+    public String getAppKey() {
+        return sharedPreferences.getString("appkey","");
+    }
 }

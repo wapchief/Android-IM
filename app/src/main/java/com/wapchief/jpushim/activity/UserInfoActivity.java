@@ -29,6 +29,7 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.eventbus.EventBus;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -186,7 +187,11 @@ public class UserInfoActivity extends BaseActivity {
                 break;
             case R.id.bottom_bar_tv2:
                 /*创建会话*/
-                Conversation.createSingleConversation(getIntent().getStringExtra("USERNAME"), "");
+                Conversation conv = JMessageClient.getSingleConversation(getIntent().getStringExtra("USERNAME"), SharedPrefHelper.getInstance().getAppKey());
+                //如果会话为空，使用EventBus通知会话列表添加新会话
+                if (conv == null) {
+                    Conversation.createSingleConversation(getIntent().getStringExtra("USERNAME"), SharedPrefHelper.getInstance().getAppKey());
+                }
                 Intent intent = new Intent(UserInfoActivity.this, ChatMsgActivity.class);
                 intent.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
                 startActivity(intent);

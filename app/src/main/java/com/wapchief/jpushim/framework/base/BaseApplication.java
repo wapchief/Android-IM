@@ -45,7 +45,8 @@ public class BaseApplication extends Application {
         //实例化极光推送
         JPushInterface.init(mContext);
         //实例化极光IM,并自动同步聊天记录
-        JMessageClient.init(mContext, true);
+        JMessageClient.init(getApplicationContext(), true);
+        JMessageClient.setDebugMode(true);
         //初始化极光sms
 //        SMSSDK.getInstance().initSdk(mContext);
         //初始化数据库
@@ -61,6 +62,7 @@ public class BaseApplication extends Application {
     private void initJPush2() {
                 sharedPrefHelper.setMusic(false);
                 sharedPrefHelper.setVib(false);
+                sharedPrefHelper.setAppKey("b47a37f342eba5f9fbcd1961");
     }
 
     private void setupDatabase() {

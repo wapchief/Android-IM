@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black_transparent">#80000000</color>
+    <color name="black">#000000</color>
+    <color name="gray">#cccccc</color>
+    <color name="red">#C91623</color>
+    <color name="bigred">#C91623</color>
+    <color name="hintcolor">#b6b6b6</color>
+    <color name="loginline">#45bd73</color>
+    <color name="blue">#00a0e9</color>
+    <color name="oriange">#ff9a00</color>
+    <color name="dark">#424242</color>
+    <color name="grey">#8C8C8C</color>
+    <color name="light_red">#fa4b4b</color>
+    <color name="theme_lanse">#3F51B5</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>

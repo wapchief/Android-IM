@@ -532,10 +532,13 @@ public class ChatMsgActivity extends BaseActivity {
     }
     //发送消息，当前版本只能发送文本
     private void sendMessage(String msg){
-        final Message message1 = JMessageClient.createSingleTextMessage(userName, "", msg);
+//        Message message1 = JMessageClient.createSingleTextMessage(userName, "", msg);
+        TextContent content = new TextContent(msg);
+        Message message1=conversation.createSendMessage(content);
         final MyMessage myMessage = new MyMessage(msg, SEND_TEXT);
         myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", message1.getCreateTime()));
         myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", imgSend));
+
         message1.setOnSendCompleteCallback(new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {

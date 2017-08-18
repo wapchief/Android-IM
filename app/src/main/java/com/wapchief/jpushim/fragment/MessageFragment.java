@@ -4,11 +4,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +27,8 @@ import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.ChatMsgActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
-import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MessageBean;
-import com.wapchief.jpushim.entity.MyMessage;
-import com.wapchief.jpushim.framework.utils.StringUtils;
-import com.wapchief.jpushim.framework.utils.TimeUtils;
+import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.view.MyAlertDialog;
 
 import java.util.ArrayList;
@@ -37,16 +39,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.event.OfflineMessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
-
-import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_TEXT;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -58,8 +59,11 @@ public class MessageFragment extends Fragment {
     RelativeLayout mFragmentMainGroup;
     @BindView(R.id.fragment_main_none)
     TextView mFragmentMainNone;
+    @BindView(R.id.fragment_main_rf)
+    SwipeRefreshLayout mFragmentMainRf;
     private List<MessageBean> data = new ArrayList<>();
-
+    private List<Conversation> list=new ArrayList<>();
+    Conversation conversation;
     @BindView(R.id.fragment_main_rv)
     RecyclerView mFragmentMainRv;
     Unbinder unbinder;
@@ -74,61 +78,112 @@ public class MessageFragment extends Fragment {
     TextView mItemMainContent;
     @BindView(R.id.item_main_time)
     TextView mItemMainTime;
-    private int groupID=0;
+    private int groupID = 0;
     MessageBean bean;
+    Handler handler = new Handler();
+    //漫游
+    private BackgroundHandler mBackgroundHandler;
+    HandlerThread mThread;
+    private static final int REFRESH_CONVERSATION_LIST = 0x3000;
+    private static final int DISMISS_REFRESH_HEADER = 0x3001;
+    private static final int ROAM_COMPLETED = 0x3002;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = View.inflate(getActivity(), R.layout.fragment_main, null);
         unbinder = ButterKnife.bind(this, view);
+        JMessageClient.registerEventReceiver(this);
         initView();
         return view;
 
     }
 
+
     private void initView() {
-        JMessageClient.registerEventReceiver(this);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updataData();
+            }
+        }, 2000);
+//        mThread = new HandlerThread("MainActivity");
+//        mThread.start();
+//        mBackgroundHandler = new BackgroundHandler(mThread.getLooper());
+        initRefresh();
         initData();
-//        initDataBean();
         initGroup();
         onClickItem();
     }
 
-    @Override
-    public void onResume() {
+    /*下拉刷新*/
+    private void initRefresh() {
+        mFragmentMainRf.setColorSchemeResources(
+                R.color.color_shape_right
+                , R.color.colorAccent
+                , R.color.aurora_msg_receive_bubble_default_color
+                , R.color.oriange);
+        //开启一个刷新的线程
+        mFragmentMainRf.post(new Runnable() {
+            @Override
+            public void run() {
+                //开始
+                mFragmentMainRf.setRefreshing(true);
+            }
+        });
+        //监听刷新状态操作
+        mFragmentMainRf.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //设置延迟刷新时间1500
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //刷新数据
+                        updataData();
+                    }
+                }, 1800);
+            }
+        });
+    }
+    private void updataData(){
         data.clear();
         adapter.clear();
         initDataBean();
+    }
+
+    @Override
+    public void onResume() {
+        updataData();
         super.onResume();
     }
+
 
     @Override
     public void onDestroy() {
         JMessageClient.unRegisterEventReceiver(this);
+        mBackgroundHandler.removeCallbacksAndMessages(null);
+        mThread.getLooper().quit();
         super.onDestroy();
     }
 
     /*接收消息*/
     public void onEvent(final MessageEvent event) {
         final Message msg = event.getMessage();
-        getActivity().runOnUiThread(new Runnable() {
+        this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-//                Log.e("Log:新消息", "消息啊" + msg.getContentType().name() + "\n"
-//                        + msg);
-                if (JMessageClient.getMyInfo().getUserName()=="1006"|| JMessageClient.getMyInfo().getUserName().equals("1006")) {
-                    final Message message1 = JMessageClient.createSingleTextMessage(msg.getTargetID(), "", "[自动回复]你好，我是机器人");
-                    message1.setOnSendCompleteCallback(new BasicCallback() {
-                        @Override
-                        public void gotResult(int i, String s) {
-                            if (i == 0) {
-                                Log.e("Log:自动回复：", s + "");
-                            } else {
-//                            Log.e("sendMsg", s);
-                            }
-                        }
-                    });
-                    JMessageClient.sendMessage(message1);
+                Log.e("Log:新消息", "消息啊" + msg.getContentType().name() + "\n"
+                        + msg);
+
+                if (JMessageClient.getMyInfo().getUserName() == "1006" || JMessageClient.getMyInfo().getUserName().equals("1006")) {
+
+                    final Message message1 =
+                            JMessageClient.createSingleTextMessage(((UserInfo)msg.getTargetInfo()).getUserName(), SharedPrefHelper.getInstance().getAppKey(), "[自动回复]你好，我是机器人");
+//                    for (int i=0;i<list.size();i++){
+//                        conversation = list.get(i);
+//                        Message message=conversation.createSendMessage(new TextContent("[自动回复]你好，我是机器人"));
+                        JMessageClient.sendMessage(message1);
+//                    }
                 }
                 adapter.clear();
                 initDataBean();
@@ -137,6 +192,69 @@ public class MessageFragment extends Fragment {
         });
 
     }
+    /**
+     * 接收离线消息
+     *
+     * @param event 离线消息事件
+     */
+    public void onEvent(OfflineMessageEvent event) {
+        Conversation conv = event.getConversation();
+        Log.e("refreshOffline=====", ":" + conv);
+        data.clear();
+        adapter.clear();
+        initDataBean();
+    }
+    /**
+     * 消息漫游完成事件
+     *
+     * @param event 漫游完成后， 刷新会话事件
+     */
+    public void onEvent(ConversationRefreshEvent event) {
+        final Conversation conv = event.getConversation();
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.e("refresh", "漫游："+conv);
+                data.clear();
+                adapter.clear();
+                initDataBean();
+            }
+        });
+    }
+
+
+    private class BackgroundHandler extends Handler {
+        public BackgroundHandler(Looper looper) {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case REFRESH_CONVERSATION_LIST:
+                    Conversation conv = (Conversation) msg.obj;
+//                    mConvListController.getAdapter().setToTop(conv);
+                    adapter.clear();
+                    initDataBean();
+                    break;
+                case DISMISS_REFRESH_HEADER:
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                        }
+                    });
+                    break;
+                case ROAM_COMPLETED:
+                    conv = (Conversation) msg.obj;
+//                    mConvListController.getAdapter().addAndSort(conv);
+                    break;
+            }
+        }
+    }
+
+
     /*监听item*/
     private void onClickItem() {
         adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
@@ -147,7 +265,7 @@ public class MessageFragment extends Fragment {
                     intent.putExtra("USERNAME", data.get(position).getUserName());
                     intent.putExtra("NAKENAME", data.get(position).getTitle());
                     intent.putExtra("MSGID", data.get(position).getMsgID());
-                    intent.putExtra("position",position);
+                    intent.putExtra("position", position);
                     startActivity(intent);
                 }
             }
@@ -155,15 +273,15 @@ public class MessageFragment extends Fragment {
             @Override
             public void onItemLongClick(View view, final int position) {
                 String[] strings = {"删除会话"};
-                MyAlertDialog dialog=new MyAlertDialog(getActivity(), strings,
+                MyAlertDialog dialog = new MyAlertDialog(getActivity(), strings,
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                if (i==0){
-                                        JMessageClient.deleteSingleConversation(data.get(position).getUserName());
-                                        data.remove(position);
-                                        adapter.notifyDataSetChanged();
-                                        Toast.makeText(getActivity(),"删除成功",Toast.LENGTH_SHORT).show();
+                                if (i == 0) {
+                                    JMessageClient.deleteSingleConversation(data.get(position).getUserName());
+                                    data.remove(position);
+                                    adapter.notifyDataSetChanged();
+                                    Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
 
                                 }
                             }
@@ -196,12 +314,12 @@ public class MessageFragment extends Fragment {
     }
 
     private void initDataBean() {
-        List<Conversation> list = JMessageClient.getConversationList();
+        list= JMessageClient.getConversationList();
         Log.e("Log:会话消息数", list.size()+"");
-        if (list.size()<=0){
+        if (list.size() <= 0) {
             mFragmentMainNone.setVisibility(View.VISIBLE);
             mFragmentMainRv.setVisibility(View.GONE);
-        }else {
+        } else {
             mFragmentMainNone.setVisibility(View.GONE);
             mFragmentMainRv.setVisibility(View.VISIBLE);
             for (int i = 0; i < list.size(); i++) {
@@ -212,18 +330,21 @@ public class MessageFragment extends Fragment {
                     bean.setContent("最近没有消息！");
                 }
                 bean.setMsgID(list.get(i).getId());
-                bean.setUserName(list.get(i).getTargetId());
+                bean.setUserName(((UserInfo) list.get(i).getTargetInfo()).getUserName());
                 bean.setTitle(list.get(i).getTitle());
                 bean.setTime(list.get(i).getUnReadMsgCnt() + "");
                 bean.setConversation(list.get(i));
+                Log.e("Log:Conversation", list.get(i).getAllMessage()+"");
+
                 try {
                     bean.setImg(list.get(i).getAvatarFile().toURI() + "");
                 } catch (Exception e) {
-                    Log.e("e======", e.getMessage());
                 }
                 data.add(bean);
             }
         }
+
+        mFragmentMainRf.setRefreshing(false);
         adapter.notifyDataSetChanged();
     }
 

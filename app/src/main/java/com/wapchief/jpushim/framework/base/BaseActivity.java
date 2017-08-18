@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.usage.UsageEvents;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -22,6 +23,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.wapchief.jpushim.R;
+import com.wapchief.jpushim.activity.LoginActivity;
+import com.wapchief.jpushim.activity.SettingActivity;
+import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 
 import butterknife.ButterKnife;
@@ -31,6 +35,8 @@ import cn.jpush.im.android.api.event.ContactNotifyEvent;
 import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.eventbus.EventBus;
+
+import static cn.jpush.im.android.api.event.LoginStateChangeEvent.Reason.user_logout;
 
 /**
  * Created by Wu on 2017/4/13 0013 上午 10:58.
@@ -47,14 +53,16 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     Context mContext;
     //加载中
     private ProgressDialog progressDialog;
-
+    SharedPrefHelper helper;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(rootContentView());
         ButterKnife.bind(this);
         new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);
+        JMessageClient.registerEventReceiver(this);
         mContext = BaseActivity.this;
+        helper=SharedPrefHelper.getInstance();
         initView();
         initData();
     }
@@ -62,7 +70,19 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     @Override
     public void onClick(View view) {
     }
-    @Override
+    public void onEventMainThread(LoginStateChangeEvent event) {
+        final LoginStateChangeEvent.Reason reason = event.getReason();
+        if (reason==user_logout) {
+            showLongToast(this, "该账号在其他设备登录，被强制下线");
+            JMessageClient.logout();
+            helper.setUserPW("");
+            helper.setNakeName("");
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+    }
+
+        @Override
     protected void onDestroy() {
         //销毁
         JMessageClient.unRegisterEventReceiver(this);
