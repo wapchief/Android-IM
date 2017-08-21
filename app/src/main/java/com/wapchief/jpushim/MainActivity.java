@@ -570,8 +570,12 @@ public class MainActivity extends BaseActivity {
 
         } else {
             finishAll();
-            ActivityManager activityMgr = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
-            activityMgr.killBackgroundProcesses(this.getPackageName());
+            try {
+                ActivityManager activityMgr = (ActivityManager) this.getSystemService(Context.ACTIVITY_SERVICE);
+                activityMgr.killBackgroundProcesses(this.getPackageName());
+            }catch (SecurityException e) {
+                Log.i("Exception-Security", e.getMessage());
+            }
             System.exit(0);
         }
     }

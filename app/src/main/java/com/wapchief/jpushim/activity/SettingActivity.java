@@ -21,6 +21,7 @@ import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.IntegerCallback;
 import cn.jpush.im.api.BasicCallback;
 
+import static android.content.Intent.FLAG_ACTIVITY_NO_HISTORY;
 import static cn.jpush.im.android.api.JMessageClient.FLAG_NOTIFY_SILENCE;
 import static cn.jpush.im.android.api.JMessageClient.FLAG_NOTIFY_WITH_SOUND;
 import static cn.jpush.im.android.api.JMessageClient.FLAG_NOTIFY_WITH_VIBRATE;

@@ -20,6 +20,7 @@ import com.wapchief.jpushim.activity.AddFriendMsgActivity;
 import com.wapchief.jpushim.activity.UserInfoActivity;
 import com.wapchief.jpushim.entity.MessageBean;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.view.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,7 +196,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
         TextView title, time, content;
-        ImageView img;
+        CircleImageView img;
         Button button;
 
         public ItemViewHolder(View view) {
@@ -203,7 +204,7 @@ public class MessageRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             title = (TextView) view.findViewById(R.id.item_main_username);
             time = (TextView) view.findViewById(R.id.item_main_time);
             content = (TextView) view.findViewById(R.id.item_main_content);
-            img = (ImageView) view.findViewById(R.id.item_main_img);
+            img = (CircleImageView) view.findViewById(R.id.item_main_img);
             button = (Button) view.findViewById(R.id.item_main_bt);
         }
     }

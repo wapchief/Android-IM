@@ -50,11 +50,16 @@
 
         </activity>
         <!--登陆-->
-        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.LoginActivity"
+            android:noHistory="true">
+
+        </activity>
         <!--用户中心-->
         <activity android:name=".activity.UserActivty"/>
         <!--首页-->
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:exported="true" >
+        </activity>
         <!--会话窗-->
         <activity android:name=".activity.ChatMsgActivity"/>
         <!--WebView-->
@@ -62,7 +67,8 @@
         <!--关于-->
         <activity android:name=".activity.AboutActivity"/>
         <!--设置-->
-        <activity android:name=".activity.SettingActivity"/>
+        <activity android:name=".activity.SettingActivity"
+            android:noHistory="true"></activity>
         <!--添加好友／群-->
         <activity android:name=".activity.AddFriendsActivity"/>
         <!--请求内容-->

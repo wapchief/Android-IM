@@ -1,5 +1,7 @@
 package com.wapchief.jpushim.activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
+import com.wapchief.jpushim.framework.base.BaseApplication;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.utils.BitMapUtils;
 import com.wapchief.jpushim.framework.utils.StringUtils;
@@ -27,6 +30,8 @@ import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.greendao.model.User;
 
 import java.io.File;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -285,5 +290,39 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
         builder.create().show();
+    }
+
+    private static Boolean isExit = false;
+    /*单击回退*/
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exitBy2Click();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    /*双击退出*/
+    private void exitBy2Click() {
+        Timer tExit = null;
+        if (isExit == false) {
+            isExit = true; // 准备退出
+            showLongToast(this, "再按一次退出程序");
+            tExit = new Timer();
+            tExit.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    isExit = false; // 取消退出
+                }
+            }, 2000); // 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+
+        } else {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+
+            ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+            manager.killBackgroundProcesses(getPackageName());
+        }
     }
 }
