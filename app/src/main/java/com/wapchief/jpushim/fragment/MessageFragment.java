@@ -82,7 +82,6 @@ public class MessageFragment extends Fragment {
     MessageBean bean;
     Handler handler = new Handler();
     //漫游
-    private BackgroundHandler mBackgroundHandler;
     HandlerThread mThread;
     private static final int REFRESH_CONVERSATION_LIST = 0x3000;
     private static final int DISMISS_REFRESH_HEADER = 0x3001;
@@ -161,7 +160,6 @@ public class MessageFragment extends Fragment {
     @Override
     public void onDestroy() {
         JMessageClient.unRegisterEventReceiver(this);
-        mBackgroundHandler.removeCallbacksAndMessages(null);
         mThread.getLooper().quit();
         super.onDestroy();
     }
@@ -223,38 +221,6 @@ public class MessageFragment extends Fragment {
     }
 
 
-    private class BackgroundHandler extends Handler {
-        public BackgroundHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(android.os.Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case REFRESH_CONVERSATION_LIST:
-                    Conversation conv = (Conversation) msg.obj;
-//                    mConvListController.getAdapter().setToTop(conv);
-                    adapter.clear();
-                    initDataBean();
-                    break;
-                case DISMISS_REFRESH_HEADER:
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                        }
-                    });
-                    break;
-                case ROAM_COMPLETED:
-                    conv = (Conversation) msg.obj;
-//                    mConvListController.getAdapter().addAndSort(conv);
-                    break;
-            }
-        }
-    }
-
-
     /*监听item*/
     private void onClickItem() {
         adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
@@ -286,7 +252,7 @@ public class MessageFragment extends Fragment {
                                 }
                             }
                         });
-                dialog.initDialog(0);
+                dialog.initDialog();
 
             }
         });

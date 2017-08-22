@@ -1,5 +1,6 @@
 package com.wapchief.jpushim.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.wapchief.jpushim.activity.PullMsgListActivity;
 import com.wapchief.jpushim.activity.UserInfoActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
+import com.wapchief.jpushim.view.MyAlertDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,8 +92,18 @@ public class ContactFragment extends Fragment {
             }
 
             @Override
-            public void onItemLongClick(View view, int position) {
+            public void onItemLongClick(View view, final int position) {
+                MyAlertDialog dialog = new MyAlertDialog(getActivity(), new String[]{"删除好友"}, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (data.get(position).type == 3) {
+                            data.remove(position);
+                            adapter.notifyDataSetChanged();
+                        }
 
+                    }
+                });
+                dialog.initDialog();
             }
         });
     }
@@ -106,22 +118,23 @@ public class ContactFragment extends Fragment {
 
     /*获取好友列表*/
     MessageBean bean;
+
     private void initGetList() {
         ContactManager.getFriendList(new GetUserInfoListCallback() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void gotResult(int i, String s, List<UserInfo> list) {
 
-                if (i==0) {
+                if (i == 0) {
                     Log.e("Log:好友数", i + "    ,s:" + s + "   ," + list
                             .size());
                     mFmContactNo.setVisibility(View.GONE);
                     mFmContactRv.setVisibility(View.VISIBLE);
-                    for (int j=0;j<list.size();j++) {
-                        bean= new MessageBean();
+                    for (int j = 0; j < list.size(); j++) {
+                        bean = new MessageBean();
                         bean.setTitle(list.get(j).getNickname());
                         bean.setContent(list.get(j).getSignature());
-                        bean.setTime(com.wapchief.jpushim.framework.utils.TimeUtils.ms2date("MM-dd HH:mm",list.get(j).getmTime()));
+                        bean.setTime(com.wapchief.jpushim.framework.utils.TimeUtils.ms2date("MM-dd HH:mm", list.get(j).getmTime()));
                         bean.setUserName(list.get(j).getUserName());
                         bean.setImg(list.get(j).getAvatarFile().toURI().toString());
                         bean.setType(3);
@@ -146,7 +159,7 @@ public class ContactFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.fm_contact_no,R.id.fm_contact_msg})
+    @OnClick({R.id.fm_contact_no, R.id.fm_contact_msg})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.fm_contact_no:
@@ -154,7 +167,7 @@ public class ContactFragment extends Fragment {
                 startActivity(intent);
                 break;
             case R.id.fm_contact_msg:
-                startActivity(new Intent(getActivity(),PullMsgListActivity.class));
+                startActivity(new Intent(getActivity(), PullMsgListActivity.class));
                 break;
         }
     }

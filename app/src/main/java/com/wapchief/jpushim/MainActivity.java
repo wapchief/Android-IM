@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -139,6 +140,7 @@ public class MainActivity extends BaseActivity {
         dao = daoHelper.initDao().getRequestListDao();
         helper = SharedPrefHelper.getInstance();
         mTitleOptionsImg.setVisibility(View.VISIBLE);
+        mMainRootVp.setOffscreenPageLimit(3);
         //设置NavigationView
         initNaView();
         initSideDrawer();
@@ -585,5 +587,23 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    class AsyncTaskWrapper extends AsyncTask<Void, Integer, Object>{
+
+        @Override
+        protected Object doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+        }
     }
 }

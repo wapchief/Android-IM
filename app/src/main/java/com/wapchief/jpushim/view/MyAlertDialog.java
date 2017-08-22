@@ -47,6 +47,13 @@ public class MyAlertDialog {
         initGravity(gravity);
     }
 
+    public void initDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setItems(strings, onClick);
+        dialog = builder.create();
+        dialog.show();
+    }
+
     /**
      *
      * @param width 宽度

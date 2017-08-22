@@ -85,4 +85,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     //选择器
     compile 'com.contrarywind:Android-PickerView:3.2.5'
+    compile 'com.airbnb.android:lottie:2.2.0'
 }
