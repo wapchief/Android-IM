@@ -302,6 +302,29 @@ public class EditUserInfoActivity extends BaseActivity {
                 dialog.dismiss();
             }
         });
+        //相机拍照
+        update_dialog_PZ = (TextView) view.findViewById(R.id.update_dialog_PZ);
+        update_dialog_PZ.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 启动系统相机
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Uri mImageCaptureUri;
+                // 判断7.0android系统
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    contentUri = FileProvider.getUriForFile(EditUserInfoActivity.this,
+                            "com.wapchief.jpushim.fileProvider",
+                            new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+                } else {
+                    mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
+                }
+                startActivityForResult(intent, PHOTO_PZ);
+                dialog.dismiss();
+            }
+        });
         //取消
         update_dialog_cancel = (TextView) view.findViewById(R.id.update_dialog_cancel);
         update_dialog_cancel.setOnClickListener(new View.OnClickListener() {
@@ -311,31 +334,6 @@ public class EditUserInfoActivity extends BaseActivity {
             }
         });
         dialog.show();
-        //相机拍照
-        update_dialog_PZ = (TextView) view.findViewById(R.id.update_dialog_PZ);
-        update_dialog_PZ.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);// 启动系统相机
-                Uri mImageCaptureUri;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//如果是7.0android系统
-                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    contentUri = FileProvider.getUriForFile(EditUserInfoActivity.this,
-                            "com.wapchief.jpushim.fileProvider",
-                            new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-                    Log.e("uriBC=====", "" + contentUri);
-
-                } else {
-                    mImageCaptureUri = Uri.fromFile(new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
-                    Log.e("uriBC23=====", "" + mImageCaptureUri);
-
-                }
-                startActivityForResult(intent, PHOTO_PZ);
-                dialog.dismiss();
-            }
-        });
     }
 
     /*性别选择器*/
