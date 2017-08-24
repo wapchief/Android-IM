@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.bartoszlipinski.recyclerviewheader2.RecyclerViewHeader;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.ChatMsgActivity;
+import com.wapchief.jpushim.activity.GroupListActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
@@ -324,7 +325,7 @@ public class MessageFragment extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.fragment_main_group:
-                Toast.makeText(getActivity(), "暂未开放，敬请期待", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), GroupListActivity.class));
                 break;
         }
     }

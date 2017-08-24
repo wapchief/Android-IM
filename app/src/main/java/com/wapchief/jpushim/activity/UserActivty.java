@@ -127,7 +127,7 @@ public class UserActivty extends BaseActivity {
                 finish();
                 break;
             case R.id.bottom_bar_tv2:
-                Intent intent = new Intent(this, EditUserInfoActivity.class);
+                Intent intent = new Intent(this, UserEditActivity.class);
                 startActivity(intent);
                 break;
         }

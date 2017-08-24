@@ -86,12 +86,22 @@
         <activity android:name=".activity.PullMsgListActivity"/>
         <!--查看用户资料-->
         <activity android:name=".activity.UserInfoActivity"/>
+        <!--用户资料更多-->
+        <activity android:name=".activity.UserInfoOptionsActivity"/>
         <!--编辑个人资料-->
-        <activity android:name=".activity.EditUserInfoActivity"/>
+        <activity android:name=".activity.UserEditActivity"/>
         <!--修改密码-->
         <activity android:name=".activity.PassWordActivity"/>
         <!--更多通知-->
         <activity android:name=".activity.PullMsgListMoreActivity"/>
+        <!--群组会话-->
+        <activity android:name=".activity.ChatMsgGroupActivity"/>
+        <!--创建群组-->
+        <activity android:name=".activity.CreateGroupActivity"/>
+        <!--群组列表-->
+        <activity android:name=".activity.GroupListActivity"/>
+        <!--群组详情-->
+        <activity android:name=".activity.GroupDetailActivity"/>
         <!--***********************极光配置***********************-->
         <!-- Required SDK 核心功能-->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->

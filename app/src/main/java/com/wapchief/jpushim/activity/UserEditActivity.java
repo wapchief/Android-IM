@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -65,7 +66,7 @@ import cn.jpush.im.api.BasicCallback;
  * 编辑个人资料
  */
 
-public class EditUserInfoActivity extends BaseActivity {
+public class UserEditActivity extends BaseActivity {
     @BindView(R.id.title_bar_back)
     ImageView mTitleBarBack;
     @BindView(R.id.title_bar_title)
@@ -101,6 +102,7 @@ public class EditUserInfoActivity extends BaseActivity {
     private static final int PHOTO_CLIP = 2;
     private String mFilePath;
     Uri contentUri;
+    private Activity mActivity;
 
     @Override
     protected int setContentView() {
@@ -109,6 +111,7 @@ public class EditUserInfoActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        mActivity = UserEditActivity.this;
         helper = SharedPrefHelper.getInstance();
         userInfo = JMessageClient.getMyInfo();
         mFilePath = Environment.getExternalStorageDirectory().getPath();// 获取SD卡路径
@@ -171,10 +174,10 @@ public class EditUserInfoActivity extends BaseActivity {
                     @Override
                     public void gotResult(int i, String s) {
                         if (i == 0) {
-                            showToast(EditUserInfoActivity.this, "更新成功");
+                            showToast(mActivity, "更新成功");
                             finish();
                         } else {
-                            showToast(EditUserInfoActivity.this, "更新失败：" + s);
+                            showToast(mActivity, "更新失败：" + s);
                         }
                     }
                 });
@@ -228,10 +231,10 @@ public class EditUserInfoActivity extends BaseActivity {
                                 public void gotResult(int i, String s) {
                                     if (i == 0) {
                                         dismissProgressDialog();
-                                        showToast(EditUserInfoActivity.this, "上传成功");
+                                        showToast(mActivity, "上传成功");
                                     } else {
                                         dismissProgressDialog();
-                                        showToast(EditUserInfoActivity.this, "上传失败：" + s);
+                                        showToast(mActivity, "上传失败：" + s);
                                     }
                                 }
                             });
@@ -313,7 +316,7 @@ public class EditUserInfoActivity extends BaseActivity {
                 // 判断7.0android系统
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    contentUri = FileProvider.getUriForFile(EditUserInfoActivity.this,
+                    contentUri = FileProvider.getUriForFile(mActivity,
                             "com.wapchief.jpushim.fileProvider",
                             new File(Environment.getExternalStorageDirectory(), "temp.jpg"));
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);

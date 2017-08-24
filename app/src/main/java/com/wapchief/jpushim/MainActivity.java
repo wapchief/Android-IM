@@ -40,6 +40,7 @@ import com.flyco.tablayout.widget.MsgView;
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.activity.AboutActivity;
 import com.wapchief.jpushim.activity.AddFriendsActivity;
+import com.wapchief.jpushim.activity.GroupCreateActivity;
 import com.wapchief.jpushim.activity.SettingActivity;
 import com.wapchief.jpushim.activity.UserActivty;
 import com.wapchief.jpushim.activity.WebViewActivity;
@@ -122,7 +123,6 @@ public class MainActivity extends BaseActivity {
     private RequestListDao dao;
     private ImageLoader imageLoader;
     private UserInfo userInfo;
-
     @Override
     protected int setContentView() {
         return R.layout.activity_main;
@@ -148,7 +148,6 @@ public class MainActivity extends BaseActivity {
         initPageAdapter();
         initNVHeader();
     }
-
     /*判断登陆页面,设置默认角色属性*/
     private void initLoginType() {
         File file;
@@ -424,7 +423,7 @@ public class MainActivity extends BaseActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 switch (i) {
                                     case 0:
-                                        showToast(MainActivity.this, "暂未开放");
+                                        startActivity(new Intent(MainActivity.this, GroupCreateActivity.class));
                                         break;
                                     case 1:
                                         Intent intent = new Intent(MainActivity.this, AddFriendsActivity.class);

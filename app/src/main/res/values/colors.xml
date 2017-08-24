@@ -23,4 +23,5 @@
     <color name="color_shape_end">#60B7F8</color>
     <color name="color_transparent">#00000000</color>
     <color name="color_shape_right">#5CBAF7</color>
+    <color name="button_delect">#E96B5C</color>
 </resources>

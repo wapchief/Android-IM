@@ -84,6 +84,7 @@ public class UserInfoActivity extends BaseActivity {
     private SharedPrefHelper helper;
     private String avtar = "";
     private String getUserName = "";
+    private UserInfo userInfo;
 
     @Override
     protected int setContentView() {
@@ -109,7 +110,7 @@ public class UserInfoActivity extends BaseActivity {
 //                Log.e("iiiiiiiii", getIntent().getStringExtra("USERNAME")+"\n"+getUserName+"\n"+userName+"\n" + userInfo);
                 if (i == 0) {
 //                    avtar = userInfo.getAvatarFile().toURI().toString();
-
+                    userInfo = userInfo;
                     Picasso.with(UserInfoActivity.this)
                             .load(userInfo.getAvatarFile())
                             .placeholder(R.mipmap.icon_user)
@@ -184,6 +185,9 @@ public class UserInfoActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.title_options_tv:
+                Intent intent1 = new Intent(UserInfoActivity.this, UserInfoOptionsActivity.class);
+                intent1.putExtra("USERNAME", getIntent().getStringExtra("USERNAME"));
+                startActivity(intent1);
                 break;
             case R.id.bottom_bar_tv2:
                 /*创建会话*/

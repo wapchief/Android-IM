@@ -141,6 +141,8 @@ public class ChatMsgActivity extends BaseActivity {
         JMessageClient.registerEventReceiver(this);
         conversations = JMessageClient.getConversationList();
         userName = getIntent().getStringExtra("USERNAME");
+        //消息界面关闭通知
+        JMessageClient.enterSingleConversation(userName);
         msgID = getIntent().getStringExtra("MSGID");
         //position从上个页面传递的会话位置
         position = getIntent().getIntExtra("position", 0);
@@ -230,6 +232,7 @@ public class ChatMsgActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         JMessageClient.unRegisterEventReceiver(this);
+        JMessageClient.exitConversation();
         super.onDestroy();
         //接收事件解绑
     }
