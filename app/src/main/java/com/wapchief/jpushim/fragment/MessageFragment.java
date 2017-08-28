@@ -301,7 +301,7 @@ public class MessageFragment extends Fragment {
                 bean.setTitle(list.get(i).getTitle());
                 bean.setTime(list.get(i).getUnReadMsgCnt() + "");
                 bean.setConversation(list.get(i));
-                Log.e("Log:Conversation", list.get(i).getAllMessage()+"");
+//                Log.e("Log:Conversation", list.get(i).getAllMessage()+"");
 
                 try {
                     bean.setImg(list.get(i).getAvatarFile().toURI() + "");

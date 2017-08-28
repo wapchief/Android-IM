@@ -97,7 +97,7 @@
         <!--群组会话-->
         <activity android:name=".activity.ChatMsgGroupActivity"/>
         <!--创建群组-->
-        <activity android:name=".activity.CreateGroupActivity"/>
+        <activity android:name=".activity.GroupCreateActivity"/>
         <!--群组列表-->
         <activity android:name=".activity.GroupListActivity"/>
         <!--群组详情-->

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,6 +39,7 @@ import butterknife.Unbinder;
 import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.callback.GetUserInfoListCallback;
 import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -56,7 +58,7 @@ public class ContactFragment extends Fragment {
     RelativeLayout mFmContactMsg;
     private List<MessageBean> data = new ArrayList<>();
     private MessageRecyclerAdapter adapter;
-
+    private UserInfo info;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -93,17 +95,7 @@ public class ContactFragment extends Fragment {
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                MyAlertDialog dialog = new MyAlertDialog(getActivity(), new String[]{"删除好友"}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (data.get(position).type == 3) {
-                            data.remove(position);
-                            adapter.notifyDataSetChanged();
-                        }
 
-                    }
-                });
-                dialog.initDialog();
             }
         });
     }
@@ -128,6 +120,7 @@ public class ContactFragment extends Fragment {
                 if (i == 0) {
                     Log.e("Log:好友数", i + "    ,s:" + s + "   ," + list
                             .size());
+                    info = list.get(i);
                     mFmContactNo.setVisibility(View.GONE);
                     mFmContactRv.setVisibility(View.VISIBLE);
                     for (int j = 0; j < list.size(); j++) {

@@ -1,7 +1,9 @@
 package com.wapchief.jpushim.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -67,7 +69,7 @@ public class UserInfoOptionsActivity extends BaseActivity {
             @Override
             public void gotResult(int i, String s, UserInfo userInfo) {
                 info = userInfo;
-                Log.e("userinfooptions", ""+userInfo);
+//                Log.e("userinfooptions", ""+userInfo);
             }
         });
     }
@@ -88,22 +90,31 @@ public class UserInfoOptionsActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bottom_bar_tv2:
-                info.removeFromFriendList(new BasicCallback() {
-                    @Override
-                    public void gotResult(int i, String s) {
-                        if (i==0){
-                            showToast(UserInfoOptionsActivity.this,"删除成功");
-                            //同时删除会话
-                            JMessageClient.deleteSingleConversation(info.getUserName());
-                            Intent intent=new Intent(UserInfoOptionsActivity.this, MainActivity.class);
-                            intent.putExtra("REMOVEID", info.getUserName());
-                            startActivity(intent);
+                new AlertDialog.Builder(UserInfoOptionsActivity.this).setTitle("好友删除提示：")
+                        .setMessage("该操作会将好友删除，并且会清空会话")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.e("dialog", "确定");
+                                info.removeFromFriendList(new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        if (i==0){
+                                            showToast(UserInfoOptionsActivity.this,"删除成功");
+                                            //同时删除会话
+                                            JMessageClient.deleteSingleConversation(info.getUserName());
+                                            Intent intent=new Intent(UserInfoOptionsActivity.this, MainActivity.class);
+                                            intent.putExtra("REMOVEID", info.getUserName());
+                                            startActivity(intent);
 
-                        }else {
-                            showToast(UserInfoOptionsActivity.this,"删除失败"+s);
-                        }
-                    }
-                });
+                                        }else {
+                                            showToast(UserInfoOptionsActivity.this,"删除失败"+s);
+                                        }
+                                    }
+                                });
+
+                            }
+                        }).show();
                 break;
             case R.id.title_bar_back:
                 finish();
