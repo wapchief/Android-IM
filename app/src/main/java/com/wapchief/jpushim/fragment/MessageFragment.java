@@ -40,15 +40,20 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.content.PromptContent;
 import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.event.MessageRetractEvent;
 import cn.jpush.im.android.api.event.OfflineMessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
+
+import static cn.jpush.im.android.api.enums.ContentType.prompt;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -81,6 +86,8 @@ public class MessageFragment extends Fragment {
     TextView mItemMainTime;
     private int groupID = 0;
     MessageBean bean;
+    //接收撤回的消息
+    private Message retractMsg;
     Handler handler = new Handler();
     //漫游
     HandlerThread mThread;
@@ -93,6 +100,7 @@ public class MessageFragment extends Fragment {
         View view = View.inflate(getActivity(), R.layout.fragment_main, null);
         unbinder = ButterKnife.bind(this, view);
         JMessageClient.registerEventReceiver(this);
+        list= JMessageClient.getConversationList();
         initView();
         return view;
 
@@ -106,9 +114,6 @@ public class MessageFragment extends Fragment {
                 updataData();
             }
         }, 2000);
-//        mThread = new HandlerThread("MainActivity");
-//        mThread.start();
-//        mBackgroundHandler = new BackgroundHandler(mThread.getLooper());
         initRefresh();
         initData();
         initGroup();
@@ -161,7 +166,6 @@ public class MessageFragment extends Fragment {
     @Override
     public void onDestroy() {
         JMessageClient.unRegisterEventReceiver(this);
-        mThread.getLooper().quit();
         super.onDestroy();
     }
 
@@ -171,8 +175,7 @@ public class MessageFragment extends Fragment {
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.e("Log:新消息", "消息啊" + msg.getContentType().name() + "\n"
-                        + msg);
+//                Log.e("Log:新消息", "消息啊" + msg.getContentType().name() + "\n" + msg);
 
                 if (JMessageClient.getMyInfo().getUserName() == "1006" || JMessageClient.getMyInfo().getUserName().equals("1006")) {
 
@@ -184,12 +187,23 @@ public class MessageFragment extends Fragment {
                         JMessageClient.sendMessage(message1);
 //                    }
                 }
-                adapter.clear();
-                initDataBean();
+                updataData();
 
             }
         });
 
+    }
+
+    /*接收撤回消息*/
+    public void onEvent(MessageRetractEvent event) {
+        retractMsg = event.getRetractedMessage();
+//        Log.e("messageF", retractMsg+"\n"+((PromptContent)retractMsg.getContent()).getPromptText());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                updataData();
+            }
+        },500);
     }
     /**
      * 接收离线消息
@@ -199,9 +213,7 @@ public class MessageFragment extends Fragment {
     public void onEvent(OfflineMessageEvent event) {
         Conversation conv = event.getConversation();
         Log.e("refreshOffline=====", ":" + conv);
-        data.clear();
-        adapter.clear();
-        initDataBean();
+        updataData();
     }
     /**
      * 消息漫游完成事件
@@ -214,9 +226,7 @@ public class MessageFragment extends Fragment {
             @Override
             public void run() {
                 Log.e("refresh", "漫游："+conv);
-                data.clear();
-                adapter.clear();
-                initDataBean();
+                updataData();
             }
         });
     }
@@ -282,6 +292,7 @@ public class MessageFragment extends Fragment {
 
     private void initDataBean() {
         list= JMessageClient.getConversationList();
+//        conversation=list.get()
         Log.e("Log:会话消息数", list.size()+"");
         if (list.size() <= 0) {
             mFragmentMainNone.setVisibility(View.VISIBLE);
@@ -292,9 +303,16 @@ public class MessageFragment extends Fragment {
             for (int i = 0; i < list.size(); i++) {
                 bean = new MessageBean();
                 try {
-                    bean.setContent(((TextContent) (list.get(i).getLatestMessage()).getContent()).getText());
+                    //这里进行撤回消息的判断
+//                    Log.e("type", list.get(i).getTitle()+","+list.get(i).getLatestMessage().getContent().getContentType());
+                    if (list.get(i).getLatestMessage().getContent().getContentType()== ContentType.prompt) {
+                        bean.setContent(((PromptContent) (list.get(i).getLatestMessage()).getContent()).getPromptText());
+                    }else {
+                        bean.setContent(((TextContent) (list.get(i).getLatestMessage()).getContent()).getText());
+                    }
                 } catch (Exception e) {
-                    bean.setContent("最近没有消息！");
+                        bean.setContent("最近没有消息！");
+                    Log.e("Exception:MessageFM", e.getMessage());
                 }
                 bean.setMsgID(list.get(i).getId());
                 bean.setUserName(((UserInfo) list.get(i).getTargetInfo()).getUserName());

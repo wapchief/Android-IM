@@ -21,19 +21,32 @@ public class MessageBean {
     public String userName;
     public Boolean isFriends;
     public Conversation conversation;
+    public int MsgType;
+
+    public int getMsgType() {
+        return MsgType;
+    }
+
+    public void setMsgType(int msgType) {
+        MsgType = msgType;
+    }
+
     @Override
     public String toString() {
         return "MessageBean{" +
                 "type=" + type +
-                ", img=" + img +
-                ", msgID=" + msgID +
+                ", img='" + img + '\'' +
+                ", msgID='" + msgID + '\'' +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", time='" + time + '\'' +
                 ", userName='" + userName + '\'' +
                 ", isFriends=" + isFriends +
+                ", conversation=" + conversation +
+                ", MsgType=" + MsgType +
                 '}';
     }
+
 
     public int getType() {
         return type;

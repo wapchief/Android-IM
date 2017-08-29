@@ -64,19 +64,30 @@ import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.content.CustomContent;
 import cn.jpush.im.android.api.content.MessageContent;
+import cn.jpush.im.android.api.content.PromptContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.enums.MessageDirect;
 import cn.jpush.im.android.api.event.ContactNotifyEvent;
+import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
+import cn.jpush.im.android.api.event.MessageRetractEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
 
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.RECEIVE_TEXT;
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_CUSTOM;
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_FILE;
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_IMAGE;
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_LOCATION;
 import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_TEXT;
+import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_VIDEO;
+import static cn.jpush.im.android.api.enums.ContentType.prompt;
 
 /**
  * Created by wapchief on 2017/7/19.
@@ -119,9 +130,9 @@ public class ChatMsgActivity extends BaseActivity {
     //收发的头像
     private ImageView imageAvatarSend,imageAvatarReceive;
     private String userName = "";
+    //撤回消息的视图msgid
     private String msgID = "";
     private int position;
-    List<Message> messages;
     List<Conversation> conversations;
     Conversation conversation;
     private UserInfo userInfo;
@@ -175,14 +186,30 @@ public class ChatMsgActivity extends BaseActivity {
             MyMessage message;
             //根据消息判断接收方或者发送方类型
             if (conversation.getAllMessage().get(i).getDirect() == MessageDirect.send) {
-                message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), SEND_TEXT);
+                //判断消息是否撤回
+                if (conversation.getAllMessage().get(i).getContent().getContentType().equals(prompt)){
+                    message = new MyMessage(((PromptContent) conversation.getAllMessage().get(i).getContent()).getPromptText(), SEND_TEXT);
+
+                }else {
+                    message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), SEND_TEXT);
+
+                }
+                Log.e("conversationT", ":"+conversation.getAllMessage().get(i).getContent().getContentType());
                 message.setUserInfo(new DefaultUser(userName, "IronMan",(StringUtils.isNull(imgSend))?"R.drawable.ironman"  : imgSend) );
             } else {
-                message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.RECEIVE_TEXT);
+                //判断消息是否撤回
+                if (conversation.getAllMessage().get(i).getContent().getContentType().equals(prompt)){
+                    message = new MyMessage(((PromptContent) conversation.getAllMessage().get(i).getContent()).getPromptText(), IMessage.MessageType.RECEIVE_TEXT);
+
+                }else {
+                    message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.RECEIVE_TEXT);
+                    msgID = message.getMsgId();
+                }
                 message.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", (StringUtils.isNull(imgRecrive))?"R.drawable.ironman"  : imgRecrive));
 
             }
             message.setPosition(i);
+            message.setMessage(conversation.getAllMessage().get(i));
             message.setMsgID(conversation.getAllMessage().get(i).getId());
             message.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", conversation.getAllMessage().get(i).getCreateTime()));
             list.add(message);
@@ -198,7 +225,7 @@ public class ChatMsgActivity extends BaseActivity {
         super.onResume();
     }
 
-    //处理接收到的消息
+    /*接收到的消息*/
     public void onEvent(MessageEvent event) {
         final Message message = event.getMessage();
 
@@ -207,6 +234,8 @@ public class ChatMsgActivity extends BaseActivity {
             public void run() {
                     //创建一个消息对象
                     MyMessage myMessage = new MyMessage(((TextContent) message.getContent()).getText(),IMessage.MessageType.RECEIVE_TEXT);
+                    msgID = myMessage.getMsgId();
+                    myMessage.setMessage(message);
                     myMessage.setMsgID(message.getId());
                     myMessage.setText(((TextContent) message.getContent()).getText() + "");
                     myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm",message.getCreateTime()));
@@ -215,18 +244,30 @@ public class ChatMsgActivity extends BaseActivity {
                 if (message.getContentType() == ContentType.text || message.getContentType().equals("text")) {
                         mAdapter.addToStart(myMessage,true);
                         mAdapter.notifyDataSetChanged();
-//                        Log.e("beanmyMessage", myMessage + "");
                     }
-
-                if (JMessageClient.getMyInfo().getUserName().equals("1006")){
-                    sendMessage("[自动回复]你好，我是机器人");
-                }
 
             }
 
         });
 
         //do your own business
+    }
+
+    /*接收到撤回的消息*/
+    public void onEvent(MessageRetractEvent event){
+        final Message message = event.getRetractedMessage();
+
+        Log.e("messageRetract", message + "\nid:"+message.getServerMessageId()+"\n"+message.getFromUser());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.deleteById(msgID);
+                mAdapter.addToStart(new MyMessage("[对方撤回了一条消息]", IMessage.MessageType.RECEIVE_TEXT),true);
+                mAdapter.notifyDataSetChanged();
+            }
+
+        });
+
     }
 
     @Override
@@ -290,18 +331,34 @@ public class ChatMsgActivity extends BaseActivity {
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
             @Override
             public void onMessageLongClick(final MyMessage message) {
-//                Log.e("mymessage", "id:" + mMsgList.getId()
-//                        + "\nposition:" + message.getPosition()
-//                        + "\ntype:" + message.getType());
+                Log.e("mymessage", "id:" + mMsgList.getId()
+                        + "\nposition:" + message.getPosition()
+                        + "\ntype:" + message.getType()
+                        + "\nmessage:"+message.getMessage()
+                +"\nMsgId:"+message.getMsgId());
+                String[] strings;
+                //判断消息类型
+                if (message.getType() == SEND_TEXT
+                        || message.getType()==SEND_CUSTOM
+                        || message.getType()==SEND_FILE
+                        || message.getType()==SEND_IMAGE
+                        || message.getType()==SEND_LOCATION
+                        || message.getType()==SEND_VIDEO) {
+                    strings = new String[]{"复制","撤回", "转发", "删除"};
+                }else {
+                    strings = new String[]{"复制", "转发", "删除"};
+                }
                 final MyAlertDialog dialog = new MyAlertDialog(ChatMsgActivity.this,
-                        new String[]{"复制", "转发", "删除"}
+                        strings
                         , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {
                             case 0:
-                                //复制
-                                if (message.getType().equals(SEND_TEXT) || message.getType() == SEND_TEXT) {
+                                //复制：当消息类型为文字的时候才可以复制
+                                if (message.getType().equals(SEND_TEXT)
+                                        || message.getType() == SEND_TEXT
+                                        ||message.getType()==RECEIVE_TEXT) {
                                     if (Build.VERSION.SDK_INT > 11) {
                                         ClipboardManager clipboard = (ClipboardManager) mContext
                                                 .getSystemService(Context.CLIPBOARD_SERVICE);
@@ -322,9 +379,24 @@ public class ChatMsgActivity extends BaseActivity {
                                 break;
 
                             case 1:
-
+                                //撤回：发送方才可撤回
+                                conversation.retractMessage(message.getMessage(), new BasicCallback() {
+                                    @Override
+                                    public void gotResult(int i, String s) {
+                                        if (i==0){
+                                            showToast(ChatMsgActivity.this,"撤回了一条消息");
+                                            mAdapter.deleteById(message.getMsgId());
+                                            mAdapter.addToStart(new MyMessage("[你撤回了一条消息]", SEND_TEXT),true);
+                                            mAdapter.notifyDataSetChanged();
+                                        }else {
+                                            showToast(ChatMsgActivity.this,"撤回失败："+s);
+                                        }
+                                    }
+                                });
                                 break;
-
+                            case 2:
+                                //转发
+                                break;
                             default:
                                 //2\从本地删除
                                 conversation.deleteMessage(new Integer(message.getMsgID()));
@@ -533,12 +605,13 @@ public class ChatMsgActivity extends BaseActivity {
                 break;
         }
     }
-    //发送消息，当前版本只能发送文本
+    /*发送消息，当前版本只能发送文本*/
     private void sendMessage(String msg){
 //        Message message1 = JMessageClient.createSingleTextMessage(userName, "", msg);
         TextContent content = new TextContent(msg);
         Message message1=conversation.createSendMessage(content);
         final MyMessage myMessage = new MyMessage(msg, SEND_TEXT);
+        myMessage.setMessage(message1);
         myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", message1.getCreateTime()));
         myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", imgSend));
 
