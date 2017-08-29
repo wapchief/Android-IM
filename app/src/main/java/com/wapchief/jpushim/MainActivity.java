@@ -50,6 +50,7 @@ import com.wapchief.jpushim.fragment.FragmentFactory;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.GreenDaoHelper;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.system.MyDataCleanManager;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 import com.wapchief.jpushim.framework.utils.BitMapUtils;
 import com.wapchief.jpushim.framework.utils.StringUtils;
@@ -383,6 +384,15 @@ public class MainActivity extends BaseActivity {
                     case R.id.side_bar6:
                         Intent intent5 = new Intent(MainActivity.this, AboutActivity.class);
                         startActivity(intent5);
+                        break;
+                    case R.id.side_bar7:
+                        String size = null;
+                        try {
+                            size = MyDataCleanManager.getTotalCacheSize(getApplicationContext());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        showLongToast(MainActivity.this,size);
                         break;
                 }
 

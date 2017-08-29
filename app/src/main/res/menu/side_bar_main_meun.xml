@@ -28,6 +28,11 @@
             android:id="@+id/side_bar6"
             android:icon="@mipmap/icon_about"
             android:title="关于" />
+
+        <item
+            android:id="@+id/side_bar7"
+            android:icon="@mipmap/icon_setting"
+            android:title="清除缓存" />
     </menu>
     </item>
 </menu>

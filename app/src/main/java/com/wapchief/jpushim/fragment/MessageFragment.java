@@ -159,6 +159,7 @@ public class MessageFragment extends Fragment {
     @Override
     public void onResume() {
         updataData();
+        initGroup();
         super.onResume();
     }
 
