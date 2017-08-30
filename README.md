@@ -7,6 +7,9 @@ icon来源阿里巴巴矢量图
 ![部分功能截图](https://github.com/wapchief/JPushIM/blob/master/screenshots/img.png?raw=true)
 
 
+#### 项目基本介绍：
+
+[从零开始开发一个即时通讯项目](http://www.jianshu.com/p/dca480006691)
 
 #### 目前已经实现的功能：
 
