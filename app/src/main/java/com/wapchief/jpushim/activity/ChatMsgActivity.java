@@ -331,11 +331,11 @@ public class ChatMsgActivity extends BaseActivity {
         mAdapter.setMsgLongClickListener(new MsgListAdapter.OnMsgLongClickListener<MyMessage>() {
             @Override
             public void onMessageLongClick(final MyMessage message) {
-                Log.e("mymessage", "id:" + mMsgList.getId()
-                        + "\nposition:" + message.getPosition()
-                        + "\ntype:" + message.getType()
-                        + "\nmessage:"+message.getMessage()
-                +"\nMsgId:"+message.getMsgId());
+//                Log.e("mymessage", "id:" + mMsgList.getId()
+//                        + "\nposition:" + message.getPosition()
+//                        + "\ntype:" + message.getType()
+//                        + "\nmessage:"+message.getMessage()
+//                +"\nMsgId:"+message.getMsgId());
                 String[] strings;
                 //判断消息类型
                 if (message.getType() == SEND_TEXT
