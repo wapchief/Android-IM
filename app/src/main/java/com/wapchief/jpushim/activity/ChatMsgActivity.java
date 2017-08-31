@@ -126,6 +126,7 @@ public class ChatMsgActivity extends BaseActivity {
     private Context mContext;
     private MsgListAdapter<MyMessage> mAdapter;
     private List<MyMessage> mData;
+    private List<MyMessage> list=new ArrayList<>();
     private ImageLoader imageLoader;
     //收发的头像
     private ImageView imageAvatarSend,imageAvatarReceive;
@@ -138,6 +139,7 @@ public class ChatMsgActivity extends BaseActivity {
     private UserInfo userInfo;
     private String imgSend = "R.drawable.ironman";
     private String imgRecrive = "R.drawable.ironman";
+    MyMessage myMessage;
     @Override
     protected int setContentView() {
         return R.layout.activity_chat;
@@ -181,7 +183,7 @@ public class ChatMsgActivity extends BaseActivity {
 
     //初始化消息列表
     private List<MyMessage> getMessages() {
-        List<MyMessage> list = new ArrayList<>();
+        list= new ArrayList<>();
         for (int i = 0; i < conversation.getAllMessage().size(); i++) {
             MyMessage message;
             //根据消息判断接收方或者发送方类型
@@ -203,16 +205,16 @@ public class ChatMsgActivity extends BaseActivity {
 
                 }else {
                     message = new MyMessage(((TextContent) conversation.getAllMessage().get(i).getContent()).getText(), IMessage.MessageType.RECEIVE_TEXT);
-                    msgID = message.getMsgId();
                 }
                 message.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", (StringUtils.isNull(imgRecrive))?"R.drawable.ironman"  : imgRecrive));
 
             }
             message.setPosition(i);
             message.setMessage(conversation.getAllMessage().get(i));
-            message.setMsgID(conversation.getAllMessage().get(i).getId());
+            message.setMsgID(conversation.getAllMessage().get(i).getServerMessageId());
             message.setTimeString(TimeUtils.ms2date("MM-dd HH:mm", conversation.getAllMessage().get(i).getCreateTime()));
             list.add(message);
+            msgID = message.getMsgId();
 
         }
         Collections.reverse(list);
@@ -233,10 +235,9 @@ public class ChatMsgActivity extends BaseActivity {
             @Override
             public void run() {
                     //创建一个消息对象
-                    MyMessage myMessage = new MyMessage(((TextContent) message.getContent()).getText(),IMessage.MessageType.RECEIVE_TEXT);
-                    msgID = myMessage.getMsgId();
+                    myMessage = new MyMessage(((TextContent) message.getContent()).getText(),IMessage.MessageType.RECEIVE_TEXT);
                     myMessage.setMessage(message);
-                    myMessage.setMsgID(message.getId());
+                    myMessage.setMsgID(message.getServerMessageId());
                     myMessage.setText(((TextContent) message.getContent()).getText() + "");
                     myMessage.setTimeString(TimeUtils.ms2date("MM-dd HH:mm",message.getCreateTime()));
                     myMessage.setUserInfo(new DefaultUser(JMessageClient.getMyInfo().getUserName(), "DeadPool", imgRecrive));
@@ -245,7 +246,8 @@ public class ChatMsgActivity extends BaseActivity {
                         mAdapter.addToStart(myMessage,true);
                         mAdapter.notifyDataSetChanged();
                     }
-
+                //收到消息时，添加到集合
+                list.add(myMessage);
             }
 
         });
@@ -256,14 +258,22 @@ public class ChatMsgActivity extends BaseActivity {
     /*接收到撤回的消息*/
     public void onEvent(MessageRetractEvent event){
         final Message message = event.getRetractedMessage();
-
-        Log.e("messageRetract", message + "\nid:"+message.getServerMessageId()+"\n"+message.getFromUser());
+        final boolean id = false;
+//        String id=List<MyMessage>
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAdapter.deleteById(msgID);
-                mAdapter.addToStart(new MyMessage("[对方撤回了一条消息]", IMessage.MessageType.RECEIVE_TEXT),true);
-                mAdapter.notifyDataSetChanged();
+                Log.e("dataSize", mData.size()+","+list.size());
+                for (int i=0;i<=list.size();i++){
+                    Log.e("messageRetract", "message:"+message+"\nMymessage:"+list.get(i));
+                    if (list.get(i).getMsgID()==message.getServerMessageId()){
+                        mAdapter.delete(list.get(i));
+                        MyMessage message1=new MyMessage("[对方撤回了一条消息]", IMessage.MessageType.RECEIVE_TEXT);
+                        mAdapter.addToStart(message1,true);
+                        mAdapter.notifyDataSetChanged();
+                        mAdapter.updateMessage(message1);
+                    }
+                }
             }
 
         });
@@ -337,6 +347,9 @@ public class ChatMsgActivity extends BaseActivity {
 //                        + "\nmessage:"+message.getMessage()
 //                +"\nMsgId:"+message.getMsgId());
                 String[] strings;
+                msgID = message.getMsgId();
+                Log.e("msgIDLong", msgID);
+
                 //判断消息类型
                 if (message.getType() == SEND_TEXT
                         || message.getType()==SEND_CUSTOM
@@ -386,8 +399,9 @@ public class ChatMsgActivity extends BaseActivity {
                                         if (i==0){
                                             showToast(ChatMsgActivity.this,"撤回了一条消息");
                                             mAdapter.deleteById(message.getMsgId());
-                                            mAdapter.addToStart(new MyMessage("[你撤回了一条消息]", SEND_TEXT),true);
-                                            mAdapter.notifyDataSetChanged();
+//                                            mAdapter.addToStart(new MyMessage("[你撤回了一条消息]", SEND_TEXT),false);
+                                            mAdapter.updateMessage(message);
+//                                            mAdapter.notifyDataSetChanged();
                                         }else {
                                             showToast(ChatMsgActivity.this,"撤回失败："+s);
                                         }
@@ -399,8 +413,9 @@ public class ChatMsgActivity extends BaseActivity {
                                 break;
                             default:
                                 //2\从本地删除
-                                conversation.deleteMessage(new Integer(message.getMsgID()));
+                                conversation.deleteMessage(new Integer(message.getMsgId()));
                                 //移除视图
+                                Log.e("msgIDdelect", message.getMsgId());
                                 mAdapter.deleteById(message.getMsgId());
                                 mAdapter.notifyDataSetChanged();
                                 break;

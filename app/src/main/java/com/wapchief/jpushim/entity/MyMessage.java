@@ -53,15 +53,15 @@ public class MyMessage implements IMessage {
     }
 
     private int position;
-    public int getMsgID() {
+    public long getMsgID() {
         return msgID;
     }
 
-    public void setMsgID(int msgID) {
+    public void setMsgID(long msgID) {
         this.msgID = msgID;
     }
 
-    private int msgID;
+    private long msgID;
     public MyMessage(String text, MessageType type) {
         this.text = text;
         this.type = type;
