@@ -7,9 +7,13 @@ icon来源阿里巴巴矢量图
 ![部分功能截图](https://github.com/wapchief/JPushIM/blob/master/screenshots/img.png?raw=true)
 
 
-#### 项目基本介绍：
+#### 相关文档：：
 
-[从零开始开发一个即时通讯项目](http://www.jianshu.com/p/dca480006691)
+http://www.jianshu.com/nb/11718325
+> * [Android-IM从零开始开发一个即时通讯项目](http://www.jianshu.com/p/dca480006691)
+> * [Android-IM即时通讯关于消息撤回的处理](http://www.jianshu.com/p/f1367e7736e6)
+> * [Android-IM给即时通讯添加一个自动聊天机器人](http://www.jianshu.com/p/866a171cfb7f)
+> * [Android-IM使用极光即时通讯发送、接收好友请求](http://www.jianshu.com/p/42c10471ff54)
 
 #### 目前已经实现的功能：
 
