@@ -13,6 +13,22 @@ import cn.jpush.im.android.api.model.Message;
 public class MyMessage implements IMessage {
 
     private long id;
+    private String text;
+    private String timeString;
+    private MessageType type;
+    private IUser user;
+    private String mediaFilePath;
+    private long duration;
+    private String progress;
+    private Message message;
+    private int position;
+    private long msgID;
+
+    public MyMessage(String text, MessageType type) {
+        this.text = text;
+        this.type = type;
+        this.id = UUID.randomUUID().getLeastSignificantBits();
+    }
 
     public long getId() {
         return id;
@@ -25,15 +41,6 @@ public class MyMessage implements IMessage {
     public void setText(String text) {
         this.text = text;
     }
-
-    private String text;
-    private String timeString;
-    private MessageType type;
-    private IUser user;
-    private String mediaFilePath;
-    private long duration;
-    private String progress;
-    private Message message;
 
     public Message getMessage() {
         return message;
@@ -52,20 +59,12 @@ public class MyMessage implements IMessage {
         this.position = position;
     }
 
-    private int position;
     public long getMsgID() {
         return msgID;
     }
 
     public void setMsgID(long msgID) {
         this.msgID = msgID;
-    }
-
-    private long msgID;
-    public MyMessage(String text, MessageType type) {
-        this.text = text;
-        this.type = type;
-        this.id = UUID.randomUUID().getLeastSignificantBits();
     }
 
     @Override
