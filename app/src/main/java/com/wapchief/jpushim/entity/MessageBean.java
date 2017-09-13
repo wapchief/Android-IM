@@ -3,6 +3,7 @@ package com.wapchief.jpushim.entity;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.Serializable;
 
 import cn.jpush.im.android.api.model.Conversation;
 
@@ -11,7 +12,7 @@ import cn.jpush.im.android.api.model.Conversation;
  * 1 好友推荐,2 好友验证 3 好友列表 0会话列表
  */
 
-public class MessageBean {
+public class MessageBean implements Serializable {
     public int type;
     public String img;
     public String msgID;
@@ -22,7 +23,7 @@ public class MessageBean {
     public Boolean isFriends;
     public Conversation conversation;
     public int MsgType;
-
+    private static final long serialVersionUID = 1L;
     public int getMsgType() {
         return MsgType;
     }

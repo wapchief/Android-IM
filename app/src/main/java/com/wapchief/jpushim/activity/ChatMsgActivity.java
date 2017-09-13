@@ -1,36 +1,24 @@
 package com.wapchief.jpushim.activity;
 
-import android.app.AlertDialog;
-import android.app.usage.UsageEvents;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.CalendarContract;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Base64;
-import android.util.EventLog;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.MainActivity;
@@ -39,20 +27,14 @@ import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MyMessage;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
-import com.wapchief.jpushim.framework.utils.BitMapUtils;
 import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
-import com.wapchief.jpushim.framework.utils.UIUtils;
 import com.wapchief.jpushim.view.MyAlertDialog;
+import com.wapchief.jpushim.view.MyViewHolder;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,21 +45,15 @@ import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
-import cn.jpush.im.android.api.content.CustomContent;
-import cn.jpush.im.android.api.content.MessageContent;
 import cn.jpush.im.android.api.content.PromptContent;
 import cn.jpush.im.android.api.content.TextContent;
 import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.enums.MessageDirect;
-import cn.jpush.im.android.api.event.ContactNotifyEvent;
-import cn.jpush.im.android.api.event.LoginStateChangeEvent;
 import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.event.MessageRetractEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
 
 import static cn.jiguang.imui.commons.models.IMessage.MessageType.RECEIVE_TEXT;
@@ -165,7 +141,8 @@ public class ChatMsgActivity extends BaseActivity {
         View view1 = View.inflate(mContext, R.layout.item_send_photo, null);
         imageAvatarSend = (ImageView) view.findViewById(R.id.aurora_iv_msgitem_avatar);
         imageAvatarReceive = (ImageView) view1.findViewById(R.id.aurora_iv_msgitem_avatar);
-
+//        MessageBean bean = (MessageBean) getIntent().getSerializableExtra("bean");
+//        Log.e("beanSeriali", bean.getTitle() + "\n"+bean);
         try {
             imgSend = userInfo.getAvatarFile().toURI().toString();
             imgRecrive = StringUtils.isNull(conversation.getAvatarFile().toURI().toString()) ? "R.drawable.ironman" : conversation.getAvatarFile().toURI().toString();
@@ -285,7 +262,6 @@ public class ChatMsgActivity extends BaseActivity {
         super.onDestroy();
         //接收事件解绑
     }
-
     //初始化adapter
     private void initMsgAdapter() {
         //加载头像图片的方法
@@ -310,12 +286,24 @@ public class ChatMsgActivity extends BaseActivity {
 
 
         /**
+         * 自定义viewholder
+         */
+          class MyTexViewHolder extends MyViewHolder<IMessage> {
+            public MyTexViewHolder(View itemView, boolean isSender) {
+                super(itemView, isSender);
+            }
+        }
+
+        /**
          * 1、Sender Id: 发送方 Id(唯一标识)。
          * 2、HoldersConfig，可以用这个对象来构造自定义消息的 ViewHolder 及布局界面。
          * 如果不自定义则使用默认的布局
          * 3、ImageLoader 的实例，用来展示头像。如果为空，将会隐藏头像。
          */
         final MsgListAdapter.HoldersConfig holdersConfig = new MsgListAdapter.HoldersConfig();
+//
+//        holdersConfig.setSenderTxtMsg(MyTexViewHolder.class,R.layout.item_msglist_send);
+//        holdersConfig.setReceiverTxtMsg(MyTexViewHolder.class,R.layout.item_msglist_send);
         mAdapter = new MsgListAdapter<MyMessage>(helper.getUserId(), holdersConfig, imageLoader);
         //单击消息事件，可以选择查看大图或者播放视频
         mAdapter.setOnMsgClickListener(new MsgListAdapter.OnMsgClickListener<MyMessage>() {
@@ -346,7 +334,7 @@ public class ChatMsgActivity extends BaseActivity {
 //                +"\nMsgId:"+message.getMsgId());
                 String[] strings;
                 msgID = message.getMsgId();
-                Log.e("msgIDLong", msgID);
+//                Log.e("msgIDLong", msgID);
 
                 //判断消息类型
                 if (message.getType() == SEND_TEXT
@@ -397,7 +385,9 @@ public class ChatMsgActivity extends BaseActivity {
                                         if (i == 0) {
                                             showToast(ChatMsgActivity.this, "撤回了一条消息");
                                             mAdapter.deleteById(message.getMsgId());
-//                                            mAdapter.addToStart(new MyMessage("[你撤回了一条消息]", SEND_TEXT),false);
+//                                            MyMessage myMessage = new MyMessage("", SEND_TEXT);
+//                                            message.setTimeString("[你撤回了一条消息]");
+//                                            mAdapter.addToStart(message,false);
                                             mAdapter.updateMessage(message);
 //                                            mAdapter.notifyDataSetChanged();
                                         } else {
@@ -638,6 +628,7 @@ public class ChatMsgActivity extends BaseActivity {
             }
         });
         JMessageClient.sendMessage(message1);
+//        EventBus.getDefault().post(new MessageEvent(1,"",message1));
         if (mData != null) {
             mData.clear();
         }

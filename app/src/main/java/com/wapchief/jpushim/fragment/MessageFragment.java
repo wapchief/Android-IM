@@ -6,14 +6,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,10 +48,6 @@ import cn.jpush.im.android.api.event.OfflineMessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.android.eventbus.EventBus;
-import cn.jpush.im.api.BasicCallback;
-
-import static cn.jpush.im.android.api.enums.ContentType.prompt;
 
 /**
  * Created by wapchief on 2017/7/18.
@@ -244,6 +238,7 @@ public class MessageFragment extends Fragment {
                     intent.putExtra("NAKENAME", data.get(position).getTitle());
                     intent.putExtra("MSGID", data.get(position).getMsgID());
                     intent.putExtra("position", position);
+//                    intent.putExtra("bean", data.get(position));
                     startActivity(intent);
                 }
             }
