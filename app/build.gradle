@@ -86,4 +86,7 @@ dependencies {
     //选择器
     compile 'com.contrarywind:Android-PickerView:3.2.5'
     compile 'com.airbnb.android:lottie:2.2.0'
+    //网络访问
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
 }

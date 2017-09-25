@@ -10,9 +10,14 @@ import cn.jpush.im.android.api.model.Conversation;
 /**
  * type:
  * 1 好友推荐,2 好友验证 3 好友列表 0会话列表
+ *
  */
 
 public class MessageBean implements Serializable {
+    //登录状态
+    public boolean login;
+    //在线状态
+    public boolean online;
     public int type;
     public String img;
     public String msgID;
@@ -95,6 +100,22 @@ public class MessageBean implements Serializable {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public boolean isLogin() {
+        return login;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 
     public String getUserName() {

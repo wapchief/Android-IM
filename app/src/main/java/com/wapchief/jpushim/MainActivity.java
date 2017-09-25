@@ -32,11 +32,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.flyco.tablayout.utils.UnreadMsgUtils;
 import com.flyco.tablayout.widget.MsgView;
+import com.flyco.tablayout.CommonTabLayout;
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.activity.AboutActivity;
 import com.wapchief.jpushim.activity.AddFriendsActivity;
@@ -46,10 +46,12 @@ import com.wapchief.jpushim.activity.UserActivty;
 import com.wapchief.jpushim.activity.WebViewActivity;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.TabEntity;
+import com.wapchief.jpushim.entity.UserStateBean;
 import com.wapchief.jpushim.fragment.FragmentFactory;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.GreenDaoHelper;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.network.NetWorkManager;
 import com.wapchief.jpushim.framework.system.MyDataCleanManager;
 import com.wapchief.jpushim.framework.system.SystemStatusManager;
 import com.wapchief.jpushim.framework.utils.BitMapUtils;
@@ -89,6 +91,10 @@ import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.android.eventbus.EventBus;
 import cn.jpush.im.api.BasicCallback;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
 
@@ -226,6 +232,7 @@ public class MainActivity extends BaseActivity {
             });
         //设置未读消息红点
         mMainRootTab.showDot(1);
+        mMainRootTab.setMsgMargin(1, -6, 5);
         MsgView rtv_2_2 = mMainRootTab.getMsgView(1);
         if (rtv_2_2 != null) {
             //设置小红点大小和位置
@@ -294,8 +301,7 @@ public class MainActivity extends BaseActivity {
             mMainRootTab.setMsgMargin(0, -6, 5);
         } else {
             mMainRootTab.clearFocus();
-
-            mMainRootTab.showMsg(0, 0);
+            mMainRootTab.hideMsg(0);
         }
 
     }
@@ -313,9 +319,11 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
 //        Log.e("info-Main", ""+JMessageClient.getMyInfo());
         initMsgCount();
+        mMainRootTab.hideMsg(1);
         initNVHeader();
         super.onResume();
     }
+
 
     @Override
     protected void onDestroy() {
