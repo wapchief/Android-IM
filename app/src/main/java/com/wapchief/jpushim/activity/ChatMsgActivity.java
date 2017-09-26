@@ -25,8 +25,10 @@ import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.entity.DefaultUser;
 import com.wapchief.jpushim.entity.MyMessage;
+import com.wapchief.jpushim.entity.UserStateBean;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
+import com.wapchief.jpushim.framework.network.NetWorkManager;
 import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.view.MyAlertDialog;
@@ -55,6 +57,9 @@ import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 import cn.jpush.im.api.BasicCallback;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static cn.jiguang.imui.commons.models.IMessage.MessageType.RECEIVE_TEXT;
 import static cn.jiguang.imui.commons.models.IMessage.MessageType.SEND_CUSTOM;
@@ -201,6 +206,7 @@ public class ChatMsgActivity extends BaseActivity {
 
     @Override
     protected void onResume() {
+        friendState();
         super.onResume();
     }
 
@@ -632,5 +638,31 @@ public class ChatMsgActivity extends BaseActivity {
         if (mData != null) {
             mData.clear();
         }
+    }
+
+    /*获取对方在线状态*/
+    String state;
+    public void friendState(){
+        NetWorkManager.isFriendState(userName, new Callback<UserStateBean>() {
+            @Override
+            public void onResponse(Call<UserStateBean> call, Response<UserStateBean> response) {
+                if (response.code()==200) {
+                    if (response.body().online){
+                        state = "[在线]";
+                    }else {
+                        state = "[离线]";
+                    }
+                    mTitleBarTitle.setText(userName + state);
+                }else {
+                    mTitleBarTitle.setText(userName);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserStateBean> call, Throwable throwable) {
+
+            }
+        });
+
     }
 }

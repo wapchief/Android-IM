@@ -3,6 +3,7 @@ package com.wapchief.jpushim.framework.network;
 import android.util.Log;
 
 import com.wapchief.jpushim.entity.UserStateBean;
+import com.wapchief.jpushim.entity.UserStateListBean;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.utils.Base64Utils;
 
@@ -70,6 +71,21 @@ public class NetWorkManager {
                 userName);
         call.enqueue(callback);
 
+    }
+
+    /*批量查询好友在线状态*/
+    public static void isFriendStateList(String[] list,Callback<UserStateListBean> callback){
+        headers();
+        OkHttpClient client=httpClient.build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Url.JPUSH_ROOT)
+                .client(client)
+                .build();
+        Api aPi = retrofit.create(Api.class);
+        Call<UserStateListBean> call = aPi.isFriendsStateList(
+                list);
+        call.enqueue(callback);
     }
 
     /*获取用户资料*/

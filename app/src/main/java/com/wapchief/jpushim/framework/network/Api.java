@@ -1,6 +1,7 @@
 package com.wapchief.jpushim.framework.network;
 
 import com.wapchief.jpushim.entity.UserStateBean;
+import com.wapchief.jpushim.entity.UserStateListBean;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -21,9 +22,14 @@ public interface Api {
     /*获取好友在线信息*/
     @GET("/v1/users/{username}/userstat")
     Call<UserStateBean> isFriendState(
-//            @Header("Content-Type" )String content,
-//            @Header("Authorization")String auther,
             @Path("username") String username);
+
+    /*获取好友批量在线状态*/
+
+    @POST("/v1/users/userstat")
+    Call<UserStateListBean> isFriendsStateList(@Query("") String[] list
+    );
+
 
     /*获取用户资料*/
     @GET("/v1/users/{username}")
