@@ -89,4 +89,6 @@ dependencies {
     //网络访问
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    //键盘选择器，高仿qq
+    compile 'com.github.w446108264:XhsEmoticonsKeyboard:2.0.4'
 }
