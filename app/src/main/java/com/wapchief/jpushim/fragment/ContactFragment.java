@@ -133,8 +133,6 @@ public class ContactFragment extends Fragment {
                     info = list.get(i);
                     mFmContactNo.setVisibility(View.GONE);
                     mFmContactRv.setVisibility(View.VISIBLE);
-                    mFmContactNo.setVisibility(View.GONE);
-                    mFmContactRv.setVisibility(View.VISIBLE);
                     for (int j = 0; j < list.size(); j++) {
                         bean = new MessageBean();
                         bean.setTitle(list.get(j).getNickname());

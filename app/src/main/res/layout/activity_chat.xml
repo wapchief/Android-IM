@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.wapchief.jpushim.view.ChatView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/chat_view"
@@ -14,8 +14,9 @@
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title"
+        android:layout_above="@+id/chat_bottom">
 
         <cn.jiguang.imui.messages.MessageList
             android:id="@+id/msg_list"
@@ -41,9 +42,11 @@
         android:id="@+id/chat_input"
         android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
     
     <LinearLayout
+        android:id="@+id/chat_bottom"
         android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -62,4 +65,4 @@
             android:layout_height="wrap_content"
             android:text="发送"/>
     </LinearLayout>
-</LinearLayout>
+</com.wapchief.jpushim.view.ChatView>

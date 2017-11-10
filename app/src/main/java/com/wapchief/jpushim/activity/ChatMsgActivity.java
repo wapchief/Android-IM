@@ -12,8 +12,12 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,6 +35,7 @@ import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.network.NetWorkManager;
 import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
+import com.wapchief.jpushim.view.ChatView;
 import com.wapchief.jpushim.view.MyAlertDialog;
 import com.wapchief.jpushim.view.MyViewHolder;
 
@@ -74,7 +79,8 @@ import static cn.jpush.im.android.api.enums.ContentType.prompt;
  * Created by wapchief on 2017/7/19.
  */
 
-public class ChatMsgActivity extends BaseActivity {
+public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChangedListener,
+        ChatView.OnKeyboardChangedListener,View.OnTouchListener {
     @BindView(R.id.title_bar_back)
     ImageView mTitleBarBack;
     @BindView(R.id.title_bar_title)
@@ -91,7 +97,7 @@ public class ChatMsgActivity extends BaseActivity {
     @BindView(R.id.chat_input)
     ChatInputView mChatInput;
     @BindView(R.id.chat_view)
-    LinearLayout mChatView;
+    ChatView mChatView;
     @BindView(R.id.chat_et)
     EditText mChatEt;
     @BindView(R.id.chat_send)
@@ -122,6 +128,9 @@ public class ChatMsgActivity extends BaseActivity {
     private String imgRecrive = "R.drawable.ironman";
     MyMessage myMessage;
 
+    InputMethodManager mManager;
+    Window mWindow;
+
     @Override
     protected int setContentView() {
         return R.layout.activity_chat;
@@ -129,6 +138,10 @@ public class ChatMsgActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        this.mManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        mChatView.setKeyboardChangedListener(this);
+//        mChatView.setOnSizeChangedListener(this);
+//        mChatView.setOnTouchListener(this);
         helper = SharedPrefHelper.getInstance();
         mContext = ChatMsgActivity.this;
         userInfo = JMessageClient.getMyInfo();
@@ -155,6 +168,7 @@ public class ChatMsgActivity extends BaseActivity {
         } catch (Exception e) {
         }
         mData = getMessages();
+//        mChatInput.setMenuContainerHeight(keyBoardHegiht());
         initTitleBar();
         initMsgAdapter();
         imageLoader.loadImage(imageAvatarSend, userInfo.getAvatarFile().toURI().toString());
@@ -268,6 +282,7 @@ public class ChatMsgActivity extends BaseActivity {
         super.onDestroy();
         //接收事件解绑
     }
+
     //初始化adapter
     private void initMsgAdapter() {
         //加载头像图片的方法
@@ -294,7 +309,7 @@ public class ChatMsgActivity extends BaseActivity {
         /**
          * 自定义viewholder
          */
-          class MyTexViewHolder extends MyViewHolder<IMessage> {
+        class MyTexViewHolder extends MyViewHolder<IMessage> {
             public MyTexViewHolder(View itemView, boolean isSender) {
                 super(itemView, isSender);
             }
@@ -479,19 +494,21 @@ public class ChatMsgActivity extends BaseActivity {
     }
 
     private void initKeyBoard() {
-//        statusBarHeight = getStatusBarHeight(getApplicationContext());
-
-
-        mChatView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
         Log.e("height======", "" + keyboardHeight);
-//        mChatInput.setMenuContainerHeight(keyboardHeight);
 
     }
 
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (oldh - h > 300) {
-            mChatView.setMinimumHeight(oldh - h);
+            mChatInput.setMenuContainerHeight(oldh - h);
+            mChatView.setMenuHeight(oldh - h);
         }
+        scrollToBottom();
+    }
+
+    /*滚动到底部*/
+    private void scrollToBottom() {
+        mAdapter.getLayoutManager().scrollToPosition(0);
     }
 
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -535,6 +552,7 @@ public class ChatMsgActivity extends BaseActivity {
             }
         }
     };
+
 
     private void onShowKeyboard() {
         // 在这里处理软键盘弹出的回调
@@ -642,18 +660,19 @@ public class ChatMsgActivity extends BaseActivity {
 
     /*获取对方在线状态*/
     String state;
-    public void friendState(){
+
+    public void friendState() {
         NetWorkManager.isFriendState(userName, new Callback<UserStateBean>() {
             @Override
             public void onResponse(Call<UserStateBean> call, Response<UserStateBean> response) {
-                if (response.code()==200) {
-                    if (response.body().online){
+                if (response.code() == 200) {
+                    if (response.body().online) {
                         state = "[在线]";
-                    }else {
+                    } else {
                         state = "[离线]";
                     }
                     mTitleBarTitle.setText(userName + state);
-                }else {
+                } else {
                     mTitleBarTitle.setText(userName);
                 }
             }
@@ -664,5 +683,65 @@ public class ChatMsgActivity extends BaseActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onKeyBoardStateChanged(int state) {
+        switch (state) {
+            case ChatInputView.KEYBOARD_STATE_INIT:
+                ChatInputView chatInputView = mChatView.getChatInputView();
+                if (mManager != null) {
+                    mManager.isActive();
+                }
+                if (chatInputView.getMenuState() == View.INVISIBLE
+                        || (!chatInputView.getSoftInputState()
+                        && chatInputView.getMenuState() == View.GONE)) {
+
+                    mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                            | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    chatInputView.dismissMenuLayout();
+                }
+                break;
+        }
+    }
+
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+        switch (motionEvent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                ChatInputView chatInputView = mChatView.getChatInputView();
+
+                if (view.getId() == chatInputView.getInputView().getId()) {
+
+                    if (chatInputView.getMenuState() == View.VISIBLE
+                            && !chatInputView.getSoftInputState()) {
+                        chatInputView.dismissMenuAndResetSoftMode();
+                        return false;
+                    } else {
+                        return false;
+                    }
+                }
+                if (chatInputView.getMenuState() == View.VISIBLE) {
+                    chatInputView.dismissMenuLayout();
+                }
+                try {
+                    View v = getCurrentFocus();
+                    if (mManager != null && v != null) {
+                        mManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+                                | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                        view.clearFocus();
+                        chatInputView.setSoftInputState(false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+        return false;
     }
 }

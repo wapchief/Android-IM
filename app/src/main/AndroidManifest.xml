@@ -70,7 +70,8 @@
             android:exported="true" >
         </activity>
         <!--会话窗-->
-        <activity android:name=".activity.ChatMsgActivity"/>
+        <activity android:name=".activity.ChatMsgActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <!--WebView-->
         <activity android:name=".activity.WebViewActivity"/>
         <!--关于-->
