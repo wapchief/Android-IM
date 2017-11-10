@@ -2,9 +2,14 @@
 
 基于极光开发的聊天项目
 
+目前还有一款基于腾讯TIM开发的及时通讯也已经上传至GitHub，
+地址https://github.com/wapchief/TimDemo-Android
+但是还有一些小问题，有时间的话再完善
+
 icon来源阿里巴巴矢量图
 
 ![部分功能截图](https://github.com/wapchief/JPushIM/blob/master/screenshots/img.png?raw=true)
+
 
 
 #### 相关文档：：
