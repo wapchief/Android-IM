@@ -40,14 +40,14 @@
 
     <cn.jiguang.imui.chatinput.ChatInputView
         android:id="@+id/chat_input"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
     
     <LinearLayout
         android:id="@+id/chat_bottom"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal"

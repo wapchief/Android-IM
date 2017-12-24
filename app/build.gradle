@@ -60,7 +60,7 @@ dependencies {
     //极光消息列表
     compile 'cn.jiguang.imui:messagelist:0.4.3'
     //极光对话输入
-    compile 'cn.jiguang.imui:chatinput:0.4.3'
+    compile 'cn.jiguang.imui:chatinput:0.5.7'
     //数据库框架
     compile 'org.greenrobot:greendao:3.2.0'
     //数据库升级辅助类

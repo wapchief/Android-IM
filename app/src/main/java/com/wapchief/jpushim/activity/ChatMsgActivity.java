@@ -39,14 +39,23 @@ import com.wapchief.jpushim.view.ChatView;
 import com.wapchief.jpushim.view.MyAlertDialog;
 import com.wapchief.jpushim.view.MyViewHolder;
 
+import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.jiguang.imui.chatinput.ChatInputView;
+import cn.jiguang.imui.chatinput.listener.OnMenuClickListener;
+import cn.jiguang.imui.chatinput.listener.RecordVoiceListener;
+import cn.jiguang.imui.chatinput.model.FileItem;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.messages.MessageList;
@@ -80,7 +89,7 @@ import static cn.jpush.im.android.api.enums.ContentType.prompt;
  */
 
 public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChangedListener,
-        ChatView.OnKeyboardChangedListener,View.OnTouchListener {
+        View.OnTouchListener{
     @BindView(R.id.title_bar_back)
     ImageView mTitleBarBack;
     @BindView(R.id.title_bar_title)
@@ -139,6 +148,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
     @Override
     protected void initView() {
         this.mManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        editTextHeight();
 //        mChatView.setKeyboardChangedListener(this);
 //        mChatView.setOnSizeChangedListener(this);
 //        mChatView.setOnTouchListener(this);
@@ -168,13 +178,95 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
         } catch (Exception e) {
         }
         mData = getMessages();
-//        mChatInput.setMenuContainerHeight(keyBoardHegiht());
+        mChatInput.setMenuContainerHeight(heightDifference);
         initTitleBar();
         initMsgAdapter();
         imageLoader.loadImage(imageAvatarSend, userInfo.getAvatarFile().toURI().toString());
         imageLoader.loadImage(imageAvatarReceive, imgRecrive);
         mTitleBarBack.setVisibility(View.VISIBLE);
 //        initIsOnline();
+        initInputView();
+    }
+    int heightDifference = 0;
+
+    /*获取键盘的高度*/
+    private void editTextHeight() {
+        mChatInput.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                //获取当前界面可视部分
+                ChatMsgActivity.this.getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
+                //获取屏幕的高度
+                int screenHeight = ChatMsgActivity.this.getWindow().getDecorView().getRootView().getHeight();
+                //此处就是用来获取键盘的高度的， 在键盘没有弹出的时候 此高度为0 键盘弹出的时候为一个正数
+                if (screenHeight - r.bottom > 0) {
+                    heightDifference = screenHeight - r.bottom;
+                }
+//                LogUtils.e(heightDifference + "");
+            }
+        });
+    }
+    /*输入框操作*/
+    private void initInputView() {
+
+        mChatInput.setMenuClickListener(new OnMenuClickListener() {
+            @Override
+            public boolean onSendTextMessage(CharSequence charSequence) {
+                sendMessage(charSequence.toString());
+                return false;
+            }
+
+            @Override
+            public void onSendFiles(List<FileItem> list) {
+
+            }
+
+            @Override
+            public boolean switchToMicrophoneMode() {
+                return true;
+            }
+
+            @Override
+            public boolean switchToGalleryMode() {
+                return true;
+            }
+
+            @Override
+            public boolean switchToCameraMode() {
+                return true;
+            }
+
+            @Override
+            public boolean switchToEmojiMode() {
+                return true;
+            }
+        });
+        //录音
+//        mChatInput.getRecordVoiceButton().setRecordVoiceListener(new RecordVoiceListener() {
+//            @Override
+//            public void onStartRecord() {
+//                //设置文件保存路径
+//                File rootDir = mContext.getFilesDir();
+//                String fileDir = rootDir.getAbsolutePath() + "/voice";
+//                mChatInput.getRecordVoiceButton().setVoiceFilePath(fileDir, TimeUtils.date2ms(
+//                        Calendar.getInstance(Locale.CHINA)+"","yyyy_MMdd_hhmmss") + "");
+//            }
+//
+//            @Override
+//            public void onFinishRecord(File file, int i) {
+////                MyMessage message = new MyMessage(null, IMessage.MessageType.SEND_VOICE);
+////                message.setMediaFilePath(voiceFile.getPath());
+////                message.setDuration(duration);
+////                message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+////                mAdapter.addToStart(message, true);
+//            }
+//
+//            @Override
+//            public void onCancelRecord() {
+//
+//            }
+//        });
     }
 
 
@@ -500,8 +592,8 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
 
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (oldh - h > 300) {
-            mChatInput.setMenuContainerHeight(oldh - h);
-            mChatView.setMenuHeight(oldh - h);
+//            mChatInput.setMenuContainerHeight(oldh - h);
+//            mChatView.setMenuHeight(oldh - h);
         }
         scrollToBottom();
     }
@@ -511,47 +603,47 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
         mAdapter.getLayoutManager().scrollToPosition(0);
     }
 
-    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-
-        @Override
-        public void onGlobalLayout() {
-            // 应用可以显示的区域。此处包括应用占用的区域，
-            // 以及ActionBar和状态栏，但不含设备底部的虚拟按键。
-            Rect r = new Rect();
-            mChatView.getWindowVisibleDisplayFrame(r);
-
-            // 屏幕高度。这个高度不含虚拟按键的高度
-            int screenHeight = mChatView.getRootView().getHeight();
-
-            int heightDiff = screenHeight - (r.bottom - r.top);
-
-            // 在不显示软键盘时，heightDiff等于状态栏的高度
-            // 在显示软键盘时，heightDiff会变大，等于软键盘加状态栏的高度。
-            // 所以heightDiff大于状态栏高度时表示软键盘出现了，
-            // 这时可算出软键盘的高度，即heightDiff减去状态栏的高度
-            if (keyboardHeight == 0 && heightDiff > statusBarHeight) {
-                keyboardHeight = heightDiff - statusBarHeight;
-            }
-            Log.e("onkeyboardHeight", ":" + keyboardHeight);
-            mChatInput.setMenuContainerHeight(keyboardHeight);
-
-            if (isShowKeyboard) {
-                // 如果软键盘是弹出的状态，并且heightDiff小于等于状态栏高度，
-                // 说明这时软键盘已经收起
-                if (heightDiff <= statusBarHeight) {
-                    isShowKeyboard = false;
-                    onHideKeyboard();
-                }
-            } else {
-                // 如果软键盘是收起的状态，并且heightDiff大于状态栏高度，
-                // 说明这时软键盘已经弹出
-                if (heightDiff > statusBarHeight) {
-                    isShowKeyboard = true;
-                    onShowKeyboard();
-                }
-            }
-        }
-    };
+//    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+//
+//        @Override
+//        public void onGlobalLayout() {
+//            // 应用可以显示的区域。此处包括应用占用的区域，
+//            // 以及ActionBar和状态栏，但不含设备底部的虚拟按键。
+//            Rect r = new Rect();
+//            mChatView.getWindowVisibleDisplayFrame(r);
+//
+//            // 屏幕高度。这个高度不含虚拟按键的高度
+//            int screenHeight = mChatView.getRootView().getHeight();
+//
+//            int heightDiff = screenHeight - (r.bottom - r.top);
+//
+//            // 在不显示软键盘时，heightDiff等于状态栏的高度
+//            // 在显示软键盘时，heightDiff会变大，等于软键盘加状态栏的高度。
+//            // 所以heightDiff大于状态栏高度时表示软键盘出现了，
+//            // 这时可算出软键盘的高度，即heightDiff减去状态栏的高度
+//            if (keyboardHeight == 0 && heightDiff > statusBarHeight) {
+//                keyboardHeight = heightDiff - statusBarHeight;
+//            }
+//            Log.e("onkeyboardHeight", ":" + keyboardHeight);
+//            mChatInput.setMenuContainerHeight(keyboardHeight);
+//
+//            if (isShowKeyboard) {
+//                // 如果软键盘是弹出的状态，并且heightDiff小于等于状态栏高度，
+//                // 说明这时软键盘已经收起
+//                if (heightDiff <= statusBarHeight) {
+//                    isShowKeyboard = false;
+//                    onHideKeyboard();
+//                }
+//            } else {
+//                // 如果软键盘是收起的状态，并且heightDiff大于状态栏高度，
+//                // 说明这时软键盘已经弹出
+//                if (heightDiff > statusBarHeight) {
+//                    isShowKeyboard = true;
+//                    onShowKeyboard();
+//                }
+//            }
+//        }
+//    };
 
 
     private void onShowKeyboard() {
@@ -686,29 +778,29 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
     }
 
     @Override
-    public void onKeyBoardStateChanged(int state) {
-        switch (state) {
-            case ChatInputView.KEYBOARD_STATE_INIT:
-                ChatInputView chatInputView = mChatView.getChatInputView();
-                if (mManager != null) {
-                    mManager.isActive();
-                }
-                if (chatInputView.getMenuState() == View.INVISIBLE
-                        || (!chatInputView.getSoftInputState()
-                        && chatInputView.getMenuState() == View.GONE)) {
-
-                    mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-                            | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    chatInputView.dismissMenuLayout();
-                }
-                break;
-        }
-    }
+//    public void onKeyBoardStateChanged(int state) {
+//        switch (state) {
+//            case ChatInputView.KEYBOARD_STATE_INIT:
+//                ChatInputView chatInputView = mChatView.getChatInputView();
+//                if (mManager != null) {
+//                    mManager.isActive();
+//                }
+//                if (chatInputView.getMenuState() == View.INVISIBLE
+//                        || (!chatInputView.getSoftInputState()
+//                        && chatInputView.getMenuState() == View.GONE)) {
+//
+//                    mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+//                            | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//                    try {
+//                        Thread.sleep(100);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    chatInputView.dismissMenuLayout();
+//                }
+//                break;
+//        }
+//    }
 
     public boolean onTouch(View view, MotionEvent motionEvent) {
         switch (motionEvent.getAction()) {
@@ -744,4 +836,5 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
         }
         return false;
     }
+
 }
