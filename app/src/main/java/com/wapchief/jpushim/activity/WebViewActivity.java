@@ -92,7 +92,7 @@ public class WebViewActivity extends BaseActivity {
                 mWebView.goBack();
                 return true;
             } else {//当webview处于第一页面时,直接退出程序
-                System.exit(0);
+               finish();
             }
 
 

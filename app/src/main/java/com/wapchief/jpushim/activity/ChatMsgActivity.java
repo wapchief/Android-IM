@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
@@ -61,8 +63,10 @@ import cn.jiguang.imui.commons.models.IMessage;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.content.ImageContent;
 import cn.jpush.im.android.api.content.PromptContent;
 import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.content.VoiceContent;
 import cn.jpush.im.android.api.enums.ContentType;
 import cn.jpush.im.android.api.enums.MessageDirect;
 import cn.jpush.im.android.api.event.MessageEvent;
@@ -681,9 +685,13 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.title_bar_back, R.id.title_options_tv, R.id.chat_send})
+    @OnClick({R.id.title_bar_back,R.id.title_bar_title, R.id.title_options_tv, R.id.chat_send})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.title_bar_title:
+                Intent intent = new Intent(mContext, UserInfoActivity.class);
+                intent.putExtra("USERNAME", userName);
+                break;
             case R.id.title_bar_back:
                 finish();
                 //重置会话未读
@@ -740,6 +748,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                     mAdapter.addToStart(myMessage, true);
                     mChatEt.setText("");
                 } else {
+                    Log.e("发送失败？", s);
                 }
             }
         });
@@ -771,7 +780,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
 
             @Override
             public void onFailure(Call<UserStateBean> call, Throwable throwable) {
-
+//                LogUtils.e(throwable.getMessage()+".");
             }
         });
 

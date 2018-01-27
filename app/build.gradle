@@ -91,4 +91,7 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     //键盘选择器，高仿qq
     compile 'com.github.w446108264:XhsEmoticonsKeyboard:2.0.4'
+    //工具类
+    compile 'com.blankj:utilcode:1.9.0'
+
 }
