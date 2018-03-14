@@ -32,4 +32,11 @@ public class TimeUtils {
         SimpleDateFormat format = new SimpleDateFormat(dateForamt);
         return format.format(date);
     }
+
+    /**时间戳转日期*/
+    public static String unix2Date(String dateForamt, long ms) {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateForamt);
+        String sd = sdf.format(new Date(ms*1000));
+        return sd;
+    }
 }

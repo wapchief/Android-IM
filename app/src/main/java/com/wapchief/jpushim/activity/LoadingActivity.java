@@ -1,9 +1,14 @@
 package com.wapchief.jpushim.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.blankj.utilcode.util.BarUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
@@ -19,15 +24,10 @@ import cn.jpush.im.api.BasicCallback;
  * Created by wapchief on 2017/7/19.
  */
 
-public class LoadingActivity extends BaseActivity {
+public class LoadingActivity extends AppCompatActivity {
     private SharedPrefHelper helper;
-    @Override
-    protected int setContentView() {
-        return R.layout.activity_loading;
-    }
 
-    @Override
-    protected void initView() {
+    private void initView() {
         helper = SharedPrefHelper.getInstance();
         final Handler handler = new Handler();
         // getUserMessage();
@@ -44,13 +44,13 @@ public class LoadingActivity extends BaseActivity {
                         @Override
                         public void gotResult(int i, String s) {
                             if (i==0){
-                                showLongToast(LoadingActivity.this,"登陆成功");
+                                ToastUtils.showShort("登陆成功");
                                 initUserInfo();
                                 startActivity(new Intent(getApplication(), MainActivity.class));
                                 LoadingActivity.this.finish();
                             }else {
                                 startActivity(new Intent(LoadingActivity.this,LoginActivity.class));
-                                showToast(LoadingActivity.this, "登陆失败:"+s);
+                                ToastUtils.showShort("登陆失败:"+s);
                             }
                         }
                     });
@@ -62,8 +62,12 @@ public class LoadingActivity extends BaseActivity {
     }
 
     @Override
-    protected void initData() {
-
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_loading);
+        BarUtils.setNotificationBarVisibility(false);
+        BarUtils.setStatusBarVisibility(this,false);
+        initView();
     }
 
     public void initUserInfo(){

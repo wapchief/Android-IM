@@ -105,7 +105,7 @@ public class UserActivty extends BaseActivity {
 //        Log.e("info====", JMessageClient.getMyInfo().getAddress() + "\nregion:" + info.getRegion());
         mUserinfoRegion.setText(JMessageClient.getMyInfo().getAddress() + "");
         mUserinfoUsername.setText(JMessageClient.getMyInfo().getUserName() + "");
-        mUserinfoMtime.setText("上次更新：" + TimeUtils.ms2date("yyyy-MM-dd hh-mm", JMessageClient.getMyInfo().getmTime()));
+        mUserinfoMtime.setText("上次更新：" + TimeUtils.unix2Date("yyyy-MM-dd hh-mm", JMessageClient.getMyInfo().getmTime()));
         Picasso.with(this)
                 .load(JMessageClient.getMyInfo().getAvatarFile())
                 .placeholder(R.mipmap.icon_user)

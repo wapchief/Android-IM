@@ -3,6 +3,7 @@ package com.wapchief.jpushim.framework.base;
 import android.app.Application;
 import android.content.Context;
 
+import com.blankj.utilcode.util.Utils;
 import com.github.yuweiguocn.library.greendao.MigrationHelper;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.greendao.DaoMaster;
@@ -53,7 +54,8 @@ public class BaseApplication extends Application {
         setupDatabase();
         //通知管理,通知栏开启，其他关闭
         JMessageClient.setNotificationFlag(FLAG_NOTIFY_SILENCE);
-
+        //初始化utils
+        Utils.init(this);
         //推送状态
         initJPush2();
 

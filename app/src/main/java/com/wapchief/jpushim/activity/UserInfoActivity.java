@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
@@ -117,7 +118,7 @@ public class UserInfoActivity extends BaseActivity {
                             .into(mUserinfoAvatar);
                     mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",userInfo.getBirthday()));
                     mUserinfoGender.setText(StringUtils.constant2String(userInfo.getGender() + ""));
-                    mUserinfoMtime.setText(TimeUtils.ms2date("yyyy-MM-dd HH:mm",userInfo.getmTime()));
+                    mUserinfoMtime.setText("上次活动："+TimeUtils.unix2Date("yyyy-MM-dd HH:mm",userInfo.getmTime()));
                     mUserinfoNikename.setText(userInfo.getNickname() + "");
                     mUserinfoUsername.setText(userInfo.getUserName() + "");
                     if (userInfo.getSignature().equals("")) {

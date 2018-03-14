@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -18,10 +20,12 @@ import android.widget.Toast;
 
 import com.bigkoo.svprogresshud.SVProgressHUD;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.blankj.utilcode.util.BarUtils;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.LoginActivity;
 import com.wapchief.jpushim.activity.SettingActivity;
@@ -57,6 +61,15 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BarUtils.setNavBarImmersive(this);
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+//            try {
+//                Class decorViewClazz = Class.forName("com.android.internal.policy.DecorView");
+//                Field field = decorViewClazz.getDeclaredField("mSemiTransparentStatusBarColor");
+//                field.setAccessible(true);
+//                field.setInt(getWindow().getDecorView(), Color.TRANSPARENT);  //改为透明
+//            } catch (Exception e) {}
+//        }
         setContentView(rootContentView());
         ButterKnife.bind(this);
         new SystemStatusManager(this).setTranslucentStatus(R.drawable.shape_titlebar);

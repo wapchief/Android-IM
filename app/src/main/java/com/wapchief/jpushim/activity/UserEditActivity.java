@@ -165,6 +165,7 @@ public class UserEditActivity extends BaseActivity {
                 initRegionPickView();
                 break;
             case R.id.bottom_bar_tv2:
+                showProgressDialog("正在保存...");
                 userInfo.setAddress(mEditUserAddress.getText() + "");
                 userInfo.setGender(UserInfo.Gender.valueOf(StringUtils.string2contant(mEditUserGender.getText().toString())));
                 userInfo.setBirthday(TimeUtils.date2ms("yyyy-MM-dd", mEditUserBirthday.getText().toString()));
@@ -173,6 +174,7 @@ public class UserEditActivity extends BaseActivity {
                 JMessageClient.updateMyInfo(UserInfo.Field.all, userInfo, new BasicCallback() {
                     @Override
                     public void gotResult(int i, String s) {
+                        dismissProgressDialog();
                         if (i == 0) {
                             showToast(mActivity, "更新成功");
                             finish();
@@ -182,6 +184,8 @@ public class UserEditActivity extends BaseActivity {
                     }
                 });
                 break;
+                default:
+                    break;
         }
     }
 

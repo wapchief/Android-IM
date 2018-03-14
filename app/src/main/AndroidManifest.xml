@@ -9,6 +9,7 @@
 
     <!--******************极光权限*****************-->
     <!-- Required -->
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
     <uses-permission android:name="com.wapchief.jpushim.permission.JPUSH_MESSAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -50,7 +51,9 @@
                 android:resource="@xml/provider_paths" />
         </provider>
         <!--加载登陆状态-->
-        <activity android:name=".activity.LoadingActivity">
+        <activity android:name=".activity.LoadingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ThemeSplash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
