@@ -46,7 +46,9 @@ public class LoadingActivity extends AppCompatActivity {
                             if (i==0){
                                 ToastUtils.showShort("登陆成功");
                                 initUserInfo();
-                                startActivity(new Intent(getApplication(), MainActivity.class));
+                                Intent intent = new Intent(getApplication(), MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
                                 LoadingActivity.this.finish();
                             }else {
                                 startActivity(new Intent(LoadingActivity.this,LoginActivity.class));
