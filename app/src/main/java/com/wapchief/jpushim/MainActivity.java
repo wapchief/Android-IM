@@ -183,33 +183,35 @@ public class MainActivity extends BaseActivity {
                 e.printStackTrace();
             }
             //压缩文件
-            boolean flag = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            if (file.getName() != null || !file.getName().equals("")) {
-//                Log.e("file====", bitmap + "");
-                JMessageClient.updateUserAvatar(file, new BasicCallback() {
-                    @Override
-                    public void gotResult(int i, String s) {
-                        if (i == 0) {
-                            Log.e("initUserInfo", "初始化成功");
-                        } else {
-                            Log.e("initUserInfo", "初始化失败");
-                        }
-                    }
-                });
-                userInfo.setAddress("未知");
-                userInfo.setGender(UserInfo.Gender.valueOf(StringUtils.string2contant("未知")));
-                userInfo.setBirthday(System.currentTimeMillis());
-                userInfo.setSignature("签名：说点什么吧～");
-                userInfo.setNickname("游客" + userInfo.getUserName());
-                JMessageClient.updateMyInfo(UserInfo.Field.all, userInfo, new BasicCallback() {
-                    @Override
-                    public void gotResult(int i, String s) {
-                        if (i == 0) {
+            try {
+                boolean flag = bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
 
-                        }
-                    }
-                });
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if (i == 0) {
+                        Log.e("initUserInfo", "初始化成功");
+                    } else {
+                        Log.e("initUserInfo", "初始化失败");
+                    }
+                }
+            });
+            userInfo.setAddress("未知");
+            userInfo.setGender(UserInfo.Gender.valueOf(StringUtils.string2contant("未知")));
+            userInfo.setBirthday(System.currentTimeMillis());
+            userInfo.setSignature("签名：说点什么吧～");
+            userInfo.setNickname("游客" + userInfo.getUserName());
+            JMessageClient.updateMyInfo(UserInfo.Field.all, userInfo, new BasicCallback() {
+                @Override
+                public void gotResult(int i, String s) {
+                    if (i == 0) {
+
+                    }
+                }
+            });
         }
     }
 
