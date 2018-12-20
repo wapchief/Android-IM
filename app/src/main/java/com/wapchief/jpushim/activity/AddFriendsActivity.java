@@ -93,8 +93,12 @@ public class AddFriendsActivity extends BaseActivity {
                         if (i == 0) {
                             Intent intent = new Intent(AddFriendsActivity.this, AddFriendMsgActivity.class);
                             intent.putExtra("ID", id);
-                            intent.putExtra("NAME", userInfo.getNickname());
-                            intent.putExtra("ICON", userInfo.getAvatarFile().toURI().toString());
+                            if (userInfo.getNickname()!=null) {
+                                intent.putExtra("NAME", userInfo.getNickname());
+                            }
+                            if (userInfo.getAvatarFile() != null) {
+                                intent.putExtra("ICON", userInfo.getAvatarFile().toURI().toString());
+                            }
                             startActivity(intent);
                         } else {
                             showToast(AddFriendsActivity.this, "未找到用户");
@@ -244,8 +248,12 @@ public class AddFriendsActivity extends BaseActivity {
                             Log.e("userinfo", s + "\n" + userInfo);
                             Intent intent = new Intent(AddFriendsActivity.this, AddFriendMsgActivity.class);
                             intent.putExtra("ID", name);
-                            intent.putExtra("NAME", userInfo.getNickname());
-                            intent.putExtra("ICON", userInfo.getAvatarFile().toURI().toString());
+                            if (userInfo.getNickname()!=null) {
+                                intent.putExtra("NAME", userInfo.getNickname());
+                            }
+                            if (userInfo.getAvatarFile() != null) {
+                                intent.putExtra("ICON", userInfo.getAvatarFile().toURI().toString());
+                            }
                             startActivity(intent);
                         } else {
                             showToast(AddFriendsActivity.this, "未找到用户");
@@ -263,6 +271,7 @@ public class AddFriendsActivity extends BaseActivity {
                 } catch (Exception e) {
                 }
                 break;
+                default:break;
         }
     }
 
