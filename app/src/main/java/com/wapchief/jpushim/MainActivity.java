@@ -76,6 +76,7 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import cn.jiguang.api.JCoreInterface;
 import cn.jiguang.imui.commons.ImageLoader;
 import cn.jpush.im.android.api.ContactManager;
@@ -155,6 +156,7 @@ public class MainActivity extends BaseActivity {
         initTab();
         initPageAdapter();
         initNVHeader();
+        JAnalyticsInterface.onPageStart(this,this.getClass().getCanonicalName());
     }
     /*判断登陆页面,设置默认角色属性*/
     private void initLoginType() {
@@ -331,6 +333,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         JMessageClient.unRegisterEventReceiver(this);
+        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
         super.onDestroy();
     }
 

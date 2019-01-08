@@ -14,6 +14,7 @@ import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.event.MessageEvent;
@@ -31,6 +32,7 @@ public class LoadingActivity extends AppCompatActivity {
         helper = SharedPrefHelper.getInstance();
         final Handler handler = new Handler();
         // getUserMessage();
+        JAnalyticsInterface.onPageStart(this,this.getClass().getCanonicalName());
         handler.postDelayed(new Runnable() {
 
             @Override
@@ -61,6 +63,12 @@ public class LoadingActivity extends AppCompatActivity {
 
             }
         }, 500);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
     }
 
     @Override

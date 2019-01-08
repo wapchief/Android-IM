@@ -36,6 +36,9 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
+import cn.jiguang.analytics.android.api.LoginEvent;
+import cn.jiguang.analytics.android.api.RegisterEvent;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.event.ConversationRefreshEvent;
@@ -124,6 +127,8 @@ public class LoginActivity extends BaseActivity {
                             case 0:
                                 showToast(LoginActivity.this, "注册成功");
                                 initLogin(loginUsername.getText().toString(),loginPassWord.getText().toString(),1);
+                                RegisterEvent event = new RegisterEvent("userName", true);
+                                JAnalyticsInterface.onEvent(getContext(),event);
                                 break;
                             case 898001:
                                 showToast(LoginActivity.this, "用户名已存在");
@@ -151,56 +156,10 @@ public class LoginActivity extends BaseActivity {
                     }
                 }, 500);
                 break;
+                default:break;
 
         }
     }
-
-    // 验证码按钮
-//    public void startCount() {
-//        Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                time--;
-//                if (time <= 0) {
-//                    mHandler.sendEmptyMessage(5);
-//                } else {
-//                    mHandler.sendEmptyMessage(4);
-//                    mHandler.postDelayed(this, 1000);
-//                }
-//            }
-//        };
-//        new Thread(runnable).start();
-//    }
-
-//    private Handler mHandler = new Handler() {
-//        public void handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case 0:
-//                    // hidenSoft(mUserPwd);
-//                    // if (tomain) {
-//                    // Intent i = new Intent(LoginActivity.this,
-//                    // MainActivity.class);
-//                    // LoginActivity.this.startActivity(i);
-//                    // overridePendingTransition(R.anim.anim_enter,
-//                    // R.anim.anim_exit);
-//                    // }
-//                    setResult(RESULT_OK);
-//                    LoginActivity.this.finish();
-//                    break;
-//                case 4:
-//                    loginCodeBt.setEnabled(false);
-//                    loginCodeBt.setTextColor(Color.rgb(32, 32, 32));
-//                    loginCodeBt.setText("已发送(" + String.valueOf(time) + ")");
-//                    break;
-//                case 5:
-//                    loginCodeBt.setText("重新获取验证码");
-//                    loginCodeBt.setEnabled(true);
-//                    time = 60;
-//                    break;
-//            }
-//
-//        }
-//    };
 
     /**
      *
@@ -212,7 +171,6 @@ public class LoginActivity extends BaseActivity {
         JMessageClient.login(userName, passWord, new BasicCallback() {
             @Override
             public void gotResult(int i, String s) {
-//                        Log.e("s=======2:", i + "，" + s);
                 dismissProgressDialog();
                 switch (i) {
                     case 801003:
@@ -230,6 +188,9 @@ public class LoginActivity extends BaseActivity {
                         sharedPrefHelper.setUserId(loginUsername.getText().toString());
                         sharedPrefHelper.setUserPW(loginPassWord.getText().toString());
                         initUserInfo(loginUsername.getText().toString(),type);
+                        //登录成功计数
+                        LoginEvent event = new LoginEvent("userName", true);
+                        JAnalyticsInterface.onEvent(getContext(),event);
                         break;
                         default:
 

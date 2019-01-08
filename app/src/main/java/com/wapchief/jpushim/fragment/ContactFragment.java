@@ -1,38 +1,38 @@
 package com.wapchief.jpushim.fragment;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.activity.AddFriendsActivity;
 import com.wapchief.jpushim.activity.PullMsgListActivity;
 import com.wapchief.jpushim.activity.UserInfoActivity;
+import com.wapchief.jpushim.adapter.FriendsAdapter;
 import com.wapchief.jpushim.adapter.MessageRecyclerAdapter;
 import com.wapchief.jpushim.entity.MessageBean;
-import com.wapchief.jpushim.entity.UserStateBean;
 import com.wapchief.jpushim.entity.UserStateListBean;
 import com.wapchief.jpushim.framework.network.NetWorkManager;
-import com.wapchief.jpushim.view.MyAlertDialog;
+import com.wapchief.jpushim.framework.utils.TimeUtils;
+import com.wapchief.jpushim.view.EmptyView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
@@ -42,7 +42,6 @@ import butterknife.Unbinder;
 import cn.jpush.im.android.api.ContactManager;
 import cn.jpush.im.android.api.callback.GetUserInfoListCallback;
 import cn.jpush.im.android.api.model.UserInfo;
-import cn.jpush.im.api.BasicCallback;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,7 +51,7 @@ import retrofit2.Response;
  * 通讯录
  */
 
-public class ContactFragment extends Fragment {
+public class ContactFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.RequestLoadMoreListener {
 
 
     @BindView(R.id.fm_contact_rv)
@@ -62,8 +61,9 @@ public class ContactFragment extends Fragment {
     TextView mFmContactNo;
     @BindView(R.id.fm_contact_msg)
     RelativeLayout mFmContactMsg;
-    private List<MessageBean> data = new ArrayList<>();
-    private MessageRecyclerAdapter adapter;
+    @BindView(R.id.fm_contact_refresh)
+    SwipeRefreshLayout mFmContactRefresh;
+    private FriendsAdapter mFriendsAdapter;
     private UserInfo info;
     private String[] listUserName = new String[]{"1000", "1006"};
 
@@ -78,83 +78,67 @@ public class ContactFragment extends Fragment {
     }
 
     private void initView() {
+        mFmContactRefresh.setOnRefreshListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mFmContactRv.setLayoutManager(layoutManager);
-        adapter = new MessageRecyclerAdapter(data, getActivity());
+        mFriendsAdapter = new FriendsAdapter(FriendsAdapter.EnumMessageType.FRIENDS);
+        mFriendsAdapter.setOnLoadMoreListener(this, mFmContactRv);
+//        mFriendsAdapter.
         //分割线
         mFmContactRv.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        mFmContactRv.setAdapter(adapter);
+        mFmContactRv.setAdapter(mFriendsAdapter);
 //        initGetList();
         initItemOnClick();
+        initGetList();
     }
 
     /*监听item*/
     private void initItemOnClick() {
-        adapter.setOnItemClickListener(new MessageRecyclerAdapter.OnItemClickListener() {
+        mFriendsAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
-//                Log.e("initItem", data.get(position).getType() + "");
-                if (data.get(position).type == 3) {
-                    Intent intent = new Intent(getActivity(), UserInfoActivity.class);
-                    intent.putExtra("USERNAME", data.get(position).getUserName());
-                    startActivity(intent);
-                }
-            }
-
-            @Override
-            public void onItemLongClick(View view, final int position) {
-
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                UserInfo userInfo = (UserInfo) mFriendsAdapter.getData().get(position);
+                Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                intent.putExtra("USERNAME", userInfo.getUserName());
+                startActivity(intent);
             }
         });
+
     }
 
     @Override
     public void onResume() {
-        adapter.clear();
-        initGetList();
 //        isFriendStateList(listUserName);
         super.onResume();
     }
 
 
     /*获取好友列表*/
-    MessageBean bean;
-
     private void initGetList() {
         ContactManager.getFriendList(new GetUserInfoListCallback() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void gotResult(final int i, String s, List<UserInfo> list) {
-
                 if (i == 0) {
-                    Log.e("Log:好友数", "" + list
+                    LogUtils.e("Log:好友数" + list
                             .size());
 
                     info = list.get(i);
                     mFmContactNo.setVisibility(View.GONE);
                     mFmContactRv.setVisibility(View.VISIBLE);
-                    for (int j = 0; j < list.size(); j++) {
-                        bean = new MessageBean();
-                        bean.setTitle(list.get(j).getNickname());
-                        bean.setContent(list.get(j).getSignature());
-                        bean.setTime(com.wapchief.jpushim.framework.utils.TimeUtils.ms2date("MM-dd HH:mm", list.get(j).getmTime()));
-                        bean.setUserName(list.get(j).getUserName());
-                        bean.setImg(list.get(j).getAvatarFile().toURI().toString());
-                        bean.setType(3);
-                        data.add(bean);
-                    }
-                    Collections.reverse(list);
-                    Collections.reverse(data);
-                    adapter.notifyDataSetChanged();
-
-                    if (list.size()<=0){
+                    if (list.size() <= 0) {
                         mFmContactRv.setVisibility(View.GONE);
                         mFmContactNo.setVisibility(View.VISIBLE);
+                        mFriendsAdapter.setEmptyView(new EmptyView(getContext()));
                     }
-                }else {
+                    Collections.reverse(list);
+                    mFriendsAdapter.setNewData(list);
+                    mFriendsAdapter.loadMoreEnd();
+                } else {
                     mFmContactRv.setVisibility(View.GONE);
                     mFmContactNo.setVisibility(View.VISIBLE);
                 }
+                mFmContactRefresh.setRefreshing(false);
             }
         });
 
@@ -176,6 +160,7 @@ public class ContactFragment extends Fragment {
             case R.id.fm_contact_msg:
                 startActivity(new Intent(getActivity(), PullMsgListActivity.class));
                 break;
+                default:break;
         }
     }
 
@@ -199,4 +184,13 @@ public class ContactFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onLoadMoreRequested() {
+
+    }
+
+    @Override
+    public void onRefresh() {
+        initGetList();
+    }
 }

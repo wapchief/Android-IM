@@ -26,6 +26,8 @@ import com.wapchief.jpushim.framework.utils.TimeUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jiguang.analytics.android.api.CountEvent;
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetUserInfoCallback;
 import cn.jpush.im.android.api.model.Conversation;
@@ -101,6 +103,7 @@ public class UserInfoActivity extends BaseActivity {
         mTitleBarLeft.setBackground(getResources().getDrawable(R.drawable.shape_titlebar));
         mTitleBarRight.setBackground(getResources().getDrawable(R.drawable.shape_titlebar2));
         mTitleBarTitle.setText("个人资料");
+        JAnalyticsInterface.onPageStart(this,this.getClass().getCanonicalName());
     }
 
     /*获取用户资料*/
@@ -127,6 +130,8 @@ public class UserInfoActivity extends BaseActivity {
                         mUserinfoSignature.setText("签名：" + userInfo.getSignature());
                     }
                     mUserinfoRegion.setText(userInfo.getRegion() + "");
+                    CountEvent cEvent = new CountEvent("event_userId_"+userInfo.getUserID());
+                    JAnalyticsInterface.onEvent(getContext(),cEvent);
                 } else {
                 }
             }
@@ -165,6 +170,12 @@ public class UserInfoActivity extends BaseActivity {
         mTitleBarTitle.setText("");
         mBottomBarLeft.setVisibility(View.GONE);
         userName = getIntent().getStringExtra("USERNAME");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
     }
 
     @Override

@@ -261,4 +261,10 @@ public abstract class BaseActivity extends FragmentActivity implements View.OnCl
             progressDialog.dismiss();
         }
     }
+
+
+    /*返回上下文*/
+    public Context getContext() {
+        return mContext;
+    }
 }

@@ -45,53 +45,61 @@ greendao {
 }
 dependencies {
     //这里避免libs冲突，把libs注掉
-    compile fileTree(include: ['*.jar'], dir: 'lib')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:25.0.0'
-    compile 'com.android.support:cardview-v7:25.0.0'
-    compile 'com.android.support:design:25.0.0'
-    compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.bigkoo:svprogresshud:1.0.6'
-    compile 'com.android.support:multidex:1.0.1'
+    implementation fileTree(include: ['*.jar'], dir: 'lib')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:25.0.0'
+    implementation 'com.android.support:cardview-v7:25.0.0'
+    implementation 'com.android.support:design:25.0.0'
+    implementation 'com.google.code.gson:gson:2.2.4'
+    implementation 'com.bigkoo:svprogresshud:1.0.6'
+    implementation 'com.android.support:multidex:1.0.1'
     //极光
-    compile 'cn.jiguang.sdk:jpush:3.1.6'
-    compile 'cn.jiguang.sdk:jcore:1.2.5'
-    compile 'cn.jiguang.sdk:jmessage:2.7.1'
+    implementation 'cn.jiguang.sdk:jpush:3.1.6'
+    implementation 'cn.jiguang.sdk:jcore:1.2.5'
+    implementation 'cn.jiguang.sdk:jmessage:2.7.1'
+    //极光统计
+    implementation 'cn.jiguang.sdk:janalytics:1.1.1'
     //极光消息列表
-    compile 'cn.jiguang.imui:messagelist:0.4.3'
+    implementation 'cn.jiguang.imui:messagelist:0.4.3'
     //极光对话输入
-    compile 'cn.jiguang.imui:chatinput:0.5.7'
+    implementation 'cn.jiguang.imui:chatinput:0.5.7'
     //数据库框架
-    compile 'org.greenrobot:greendao:3.2.0'
+    implementation 'org.greenrobot:greendao:3.2.0'
     //数据库升级辅助类
-    compile 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
-    compile files('libs/jsms_android-1.2.2.jar')
-    compile 'com.jakewharton:butterknife:8.4.0'
+    implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
+    implementation files('libs/jsms_android-1.2.2.jar')
+    implementation 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
-    compile 'com.android.support:support-v4:25.0.0'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
+    implementation 'com.android.support:support-v4:25.0.0'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
     //RecyclerView
-    compile 'com.android.support:recyclerview-v7:25.0.0'
+    implementation 'com.android.support:recyclerview-v7:25.0.0'
     //RecyclerViewHeader
-    compile 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
+    implementation 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
     //下拉刷新库
-    compile 'in.srain.cube:ultra-ptr:1.0.11'
+    implementation 'in.srain.cube:ultra-ptr:1.0.11'
     //图片加载
-    compile 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
     //switchButton
-    compile 'com.kyleduo.switchbutton:library:1.4.6'
+    implementation 'com.kyleduo.switchbutton:library:1.4.6'
     //圆形头像控件
-    compile 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
     //选择器
-    compile 'com.contrarywind:Android-PickerView:3.2.5'
-    compile 'com.airbnb.android:lottie:2.2.0'
+    implementation 'com.contrarywind:Android-PickerView:3.2.5'
+    implementation 'com.airbnb.android:lottie:2.2.0'
     //网络访问
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     //键盘选择器，高仿qq
-    compile 'com.github.w446108264:XhsEmoticonsKeyboard:2.0.4'
+    implementation 'com.github.w446108264:XhsEmoticonsKeyboard:2.0.4'
     //工具类
-    compile 'com.blankj:utilcode:1.13.4'
+    implementation 'com.blankj:utilcode:1.13.4'
+    //adapter
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
+    //图形加载
+    implementation 'com.github.bumptech.glide:glide:4.0.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
+    implementation 'jp.wasabeef:glide-transformations:3.0.1'
 
 }

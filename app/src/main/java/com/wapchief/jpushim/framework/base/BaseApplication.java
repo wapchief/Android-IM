@@ -12,6 +12,7 @@ import com.wapchief.jpushim.framework.helper.MySQLiteOpenHelper;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import cn.jiguang.analytics.android.api.JAnalyticsInterface;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.eventbus.EventBus;
@@ -60,6 +61,9 @@ public class BaseApplication extends Application {
         Utils.init(this);
         //推送状态
         initJPush2();
+        //初始化统计
+        JAnalyticsInterface.init(mContext);
+        JAnalyticsInterface.setDebugMode(true);
 
     }
 

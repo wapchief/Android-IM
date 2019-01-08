@@ -27,10 +27,10 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:paddingRight="15dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:paddingRight="15dp"
             android:src="@mipmap/icon_right" />
     </RelativeLayout>
 
@@ -50,13 +50,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fm_contact_rv"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/fm_contact_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+            android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/fm_contact_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
 
         <TextView
             android:id="@+id/fm_contact_no"
