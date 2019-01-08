@@ -3,8 +3,6 @@ package com.wapchief.jpushim.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ClipData;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -15,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.BuildConfig;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.Display;
@@ -25,19 +22,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bigkoo.pickerview.OptionsPickerView;
 import com.bigkoo.pickerview.TimePickerView;
-import com.google.gson.jpush.Gson;
 import com.wapchief.jpushim.R;
 import com.wapchief.jpushim.entity.RegionBean;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
-import com.wapchief.jpushim.framework.utils.PhotoUtils;
 import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
-import com.wapchief.jpushim.greendao.model.User;
 
 import org.json.JSONArray;
 
@@ -46,10 +39,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -466,11 +457,11 @@ public class UserEditActivity extends BaseActivity {
         ArrayList<RegionBean> detail = new ArrayList<>();
         try {
             JSONArray data = new JSONArray(result);
-            Gson gson = new Gson();
-            for (int i = 0; i < data.length(); i++) {
-                RegionBean entity = gson.fromJson(data.optJSONObject(i).toString(), RegionBean.class);
-                detail.add(entity);
-            }
+//            Gson gson = new Gson();
+//            for (int i = 0; i < data.length(); i++) {
+//                RegionBean entity = gson.fromJson(data.optJSONObject(i).toString(), RegionBean.class);
+//                detail.add(entity);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -399,6 +399,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                         .placeholder(R.drawable.icon_user)
                         .into(imageView);
             }
+
         };
 
 
@@ -594,6 +595,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
 
     }
 
+    @Override
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
         if (oldh - h > 300) {
 //            mChatInput.setMenuContainerHeight(oldh - h);

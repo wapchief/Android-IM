@@ -2,6 +2,7 @@ package com.wapchief.jpushim.framework.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.blankj.utilcode.util.Utils;
 import com.github.yuweiguocn.library.greendao.MigrationHelper;
@@ -38,6 +39,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         baseApplication = this;
+        MultiDex.install(this);
         sharedPrefHelper = SharedPrefHelper.getInstance();
         sharedPrefHelper.setRoaming(true);
         //开启极光调试

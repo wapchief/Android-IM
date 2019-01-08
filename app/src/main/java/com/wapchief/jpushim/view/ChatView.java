@@ -18,9 +18,6 @@ import cn.jiguang.imui.chatinput.record.RecordVoiceButton;
 import cn.jiguang.imui.messages.MessageList;
 import cn.jiguang.imui.messages.MsgListAdapter;
 
-import static cn.jiguang.imui.chatinput.ChatInputView.KEYBOARD_STATE_HIDE;
-import static cn.jiguang.imui.chatinput.ChatInputView.KEYBOARD_STATE_INIT;
-import static cn.jiguang.imui.chatinput.ChatInputView.KEYBOARD_STATE_SHOW;
 
 
 public class ChatView extends RelativeLayout {
@@ -104,6 +101,7 @@ public class ChatView extends RelativeLayout {
         mSizeChangedListener = listener;
     }
 
+    @Override
     public void setOnTouchListener(OnTouchListener listener) {
         mMsgList.setOnTouchListener(listener);
     }
@@ -133,24 +131,24 @@ public class ChatView extends RelativeLayout {
             mHasInit = true;
             mHeight = b;
             if (null != mKeyboardListener) {
-                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_INIT);
+//                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_INIT);
             }
         } else {
             if (null != mKeyboardListener) {
-                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_INIT);
+//                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_INIT);
             }
             mHeight = mHeight < b ? b : mHeight;
         }
         if (mHasInit && mHeight > b) {
             mHasKeyboard = true;
             if (null != mKeyboardListener) {
-                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_SHOW);
+//                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_SHOW);
             }
         }
         if (mHasInit && mHasKeyboard && mHeight == b) {
             mHasKeyboard = false;
             if (null != mKeyboardListener) {
-                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_HIDE);
+//                mKeyboardListener.onKeyBoardStateChanged(KEYBOARD_STATE_HIDE);
             }
         }
     }

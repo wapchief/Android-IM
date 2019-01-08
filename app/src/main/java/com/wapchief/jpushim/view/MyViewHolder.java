@@ -36,11 +36,12 @@ public class MyViewHolder<MESSAGE extends IMessage>
         this.mMsgTv = (TextView)itemView.findViewById(cn.jiguang.imui.R.id.aurora_tv_msgitem_message);
         this.mDateTv = (TextView)itemView.findViewById(cn.jiguang.imui.R.id.aurora_tv_msgitem_date);
         this.mAvatarIv = (cn.jiguang.imui.view.CircleImageView)itemView.findViewById(cn.jiguang.imui.R.id.aurora_iv_msgitem_avatar);
-        this.mDisplayNameTv = (TextView)itemView.findViewById(cn.jiguang.imui.R.id.aurora_tv_msgitem_display_name);
+//        this.mDisplayNameTv = (TextView)itemView.findViewById(cn.jiguang.imui.R.id.aurora_tv_msgitem_display_name);
         this.mResendIb = (ImageButton)itemView.findViewById(cn.jiguang.imui.R.id.aurora_ib_msgitem_resend);
         this.mSendingPb = (ProgressBar)itemView.findViewById(cn.jiguang.imui.R.id.aurora_pb_msgitem_sending);
     }
 
+    @Override
     @SuppressLint("WrongConstant")
     public void onBind(final MESSAGE message) {
         this.mMsgTv.setText(message.getText());
@@ -95,6 +96,7 @@ public class MyViewHolder<MESSAGE extends IMessage>
             }
         });
         this.mMsgTv.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
             public boolean onLongClick(View view) {
                 if(MyViewHolder.this.mMsgLongClickListener != null) {
                     MyViewHolder.this.mMsgLongClickListener.onMessageLongClick(message);
@@ -113,6 +115,7 @@ public class MyViewHolder<MESSAGE extends IMessage>
         });
     }
 
+    @Override
     @SuppressLint("WrongConstant")
     public void applyStyle(MessageListStyle style) {
         this.mMsgTv.setMaxWidth((int)((float)style.getWindowWidth() * style.getBubbleMaxWidth()));
@@ -133,9 +136,9 @@ public class MyViewHolder<MESSAGE extends IMessage>
             this.mMsgTv.setTextColor(style.getReceiveBubbleTextColor());
             this.mMsgTv.setTextSize(style.getReceiveBubbleTextSize());
             this.mMsgTv.setPadding(style.getReceiveBubblePaddingLeft(), style.getReceiveBubblePaddingTop(), style.getReceiveBubblePaddingRight(), style.getReceiveBubblePaddingBottom());
-            if(style.getShowDisplayName() == 1) {
-                this.mDisplayNameTv.setVisibility(0);
-            }
+//            if(style.getShowDisplayName() == 1) {
+//                this.mDisplayNameTv.setVisibility(0);
+//            }
         }
 
         this.mDateTv.setTextSize(style.getDateTextSize());

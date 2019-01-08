@@ -1,5 +1,6 @@
 package com.wapchief.jpushim.entity;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import cn.jiguang.imui.commons.models.IMessage;
@@ -106,6 +107,10 @@ public class MyMessage implements IMessage {
         return progress;
     }
 
+    public HashMap<String, String> getExtras() {
+        return null;
+    }
+
     public void setTimeString(String timeString) {
         this.timeString = timeString;
     }
@@ -118,6 +123,36 @@ public class MyMessage implements IMessage {
     @Override
     public MessageType getType() {
         return type;
+//        if (message.getDirect() == MessageDirect.send) {
+//            switch (message.getContentType()) {
+//                case text:
+//                    return MessageType.SEND_TEXT;
+//                case image:
+//                    return MessageType.SEND_IMAGE;
+//                case video:
+//                    return MessageType.SEND_VIDEO;
+//                case voice:
+//                    return MessageType.SEND_VOICE;
+//                case location:
+//                    return MessageType.SEND_LOCATION;
+//                    default:break;
+//            }
+//        } else {
+//            switch (message.getContentType()) {
+//                case text:
+//                    return MessageType.RECEIVE_TEXT;
+//                case image:
+//                    return MessageType.RECEIVE_IMAGE;
+//                case video:
+//                    return MessageType.RECEIVE_VIDEO;
+//                case voice:
+//                    return MessageType.RECEIVE_VOICE;
+//                case location:
+//                    return MessageType.RECEIVE_LOCATION;
+//                    default:break;
+//            }
+//        }
+//        return null;
     }
 
     @Override
