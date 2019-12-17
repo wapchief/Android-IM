@@ -821,8 +821,8 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                 if (view.getId() == chatInputView.getInputView().getId()) {
 
                     if (chatInputView.getMenuState() == View.VISIBLE
-                            && !chatInputView.getSoftInputState()) {
-                        chatInputView.dismissMenuAndResetSoftMode();
+                            ) {
+                        chatInputView.dismissMenuLayout();
                         return false;
                     } else {
                         return false;
@@ -838,7 +838,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                         mWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
                                 | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
                         view.clearFocus();
-                        chatInputView.setSoftInputState(false);
+                        chatInputView.setAddStatesFromChildren(false);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

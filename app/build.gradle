@@ -12,10 +12,17 @@ android {
     defaultConfig {
         applicationId "com.wapchief.jpushim"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 4
         versionName "1.0.3"
         multiDexEnabled true
+
+        ndk {
+            //选择要添加的对应cpu类型的.so库。
+            abiFilters "armeabi-v7a"
+            // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
+        }
+
         manifestPlaceholders = [
                 JPUSH_PKGNAME: applicationId,
                 JPUSH_APPKEY : "b47a37f342eba5f9fbcd1961", //JPush上注册的包名对应的appkey.
@@ -47,9 +54,9 @@ dependencies {
     //这里避免libs冲突，把libs注掉
     implementation fileTree(include: ['*.jar'], dir: 'lib')
     testImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:appcompat-v7:25.0.0'
-    implementation 'com.android.support:cardview-v7:25.0.0'
-    implementation 'com.android.support:design:25.0.0'
+    implementation 'com.android.support:appcompat-v7:26.0.0'
+    implementation 'com.android.support:cardview-v7:26.0.0'
+    implementation 'com.android.support:design:26.0.0'
     implementation 'com.google.code.gson:gson:2.2.4'
     implementation 'com.bigkoo:svprogresshud:1.0.6'
     implementation 'com.android.support:multidex:1.0.1'
@@ -62,19 +69,19 @@ dependencies {
     //极光消息列表
     implementation 'cn.jiguang.imui:messagelist:0.4.3'
     //极光对话输入
-    implementation 'cn.jiguang.imui:chatinput:0.5.7'
+    implementation 'cn.jiguang.imui:chatinput:0.10.0'
     //数据库框架
     implementation 'org.greenrobot:greendao:3.2.0'
     //数据库升级辅助类
     implementation 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.4.0'
-    implementation files('libs/jsms_android-1.2.2.jar')
+//    implementation files('libs/jsms_android-1.2.2.jar')
     implementation 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.7.0'
-    implementation 'com.android.support:support-v4:25.0.0'
+    implementation 'com.android.support:support-v4:26.0.0'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
     //RecyclerView
-    implementation 'com.android.support:recyclerview-v7:25.0.0'
+    implementation 'com.android.support:recyclerview-v7:26.0.0'
     //RecyclerViewHeader
     implementation 'com.bartoszlipinski:recyclerviewheader2:2.0.1'
     //下拉刷新库
@@ -101,5 +108,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.0.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     implementation 'jp.wasabeef:glide-transformations:3.0.1'
-
+    implementation 'com.github.w446108264:AndroidEmoji:1.3'
 }
