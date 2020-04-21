@@ -2,7 +2,7 @@
 
 基于极光开发的聊天项目
 
-#### [Demo下载](http://fir.im/jim)
+#### [Demo下载](http://d.7short.com/jim)
 
 目前还有一款基于腾讯TIM开发的及时通讯也已经上传至GitHub，
 地址
