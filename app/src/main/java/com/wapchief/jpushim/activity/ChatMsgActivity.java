@@ -569,7 +569,6 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                 }
             }
         });
-
         mMsgList.setAdapter(mAdapter);
         mAdapter.getLayoutManager().scrollToPosition(0);
     }
