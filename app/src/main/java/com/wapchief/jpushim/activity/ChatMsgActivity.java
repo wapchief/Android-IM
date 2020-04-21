@@ -1,5 +1,6 @@
 package com.wapchief.jpushim.activity;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -26,6 +27,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.util.LogUtils;
 import com.blankj.utilcode.util.ToastUtils;
+import com.bumptech.glide.Glide;
 import com.squareup.picasso.Picasso;
 import com.wapchief.jpushim.MainActivity;
 import com.wapchief.jpushim.R;
@@ -35,6 +37,7 @@ import com.wapchief.jpushim.entity.UserStateBean;
 import com.wapchief.jpushim.framework.base.BaseActivity;
 import com.wapchief.jpushim.framework.helper.SharedPrefHelper;
 import com.wapchief.jpushim.framework.network.NetWorkManager;
+import com.wapchief.jpushim.framework.utils.GlideUtil;
 import com.wapchief.jpushim.framework.utils.StringUtils;
 import com.wapchief.jpushim.framework.utils.TimeUtils;
 import com.wapchief.jpushim.view.ChatView;
@@ -93,7 +96,7 @@ import static cn.jpush.im.android.api.enums.ContentType.prompt;
  */
 
 public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChangedListener,
-        View.OnTouchListener{
+        View.OnTouchListener {
     @BindView(R.id.title_bar_back)
     ImageView mTitleBarBack;
     @BindView(R.id.title_bar_title)
@@ -111,10 +114,6 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
     ChatInputView mChatInput;
     @BindView(R.id.chat_view)
     ChatView mChatView;
-    @BindView(R.id.chat_et)
-    EditText mChatEt;
-    @BindView(R.id.chat_send)
-    Button mChatSend;
     private SharedPrefHelper helper;
 
     // 状态栏的高度
@@ -139,6 +138,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
     private UserInfo userInfo;
     private String imgSend = "R.drawable.ironman";
     private String imgRecrive = "R.drawable.ironman";
+    private String imgReAvatar = "";
     MyMessage myMessage;
 
     InputMethodManager mManager;
@@ -153,9 +153,6 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
     protected void initView() {
         this.mManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         editTextHeight();
-//        mChatView.setKeyboardChangedListener(this);
-//        mChatView.setOnSizeChangedListener(this);
-//        mChatView.setOnTouchListener(this);
         helper = SharedPrefHelper.getInstance();
         mContext = ChatMsgActivity.this;
         userInfo = JMessageClient.getMyInfo();
@@ -173,24 +170,27 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
         View view1 = View.inflate(mContext, R.layout.item_send_photo, null);
         imageAvatarSend = (ImageView) view.findViewById(R.id.aurora_iv_msgitem_avatar);
         imageAvatarReceive = (ImageView) view1.findViewById(R.id.aurora_iv_msgitem_avatar);
-//        MessageBean bean = (MessageBean) getIntent().getSerializableExtra("bean");
-//        Log.e("beanSeriali", bean.getTitle() + "\n"+bean);
+
         try {
-            imgSend = userInfo.getAvatarFile().toURI().toString();
-            imgRecrive = StringUtils.isNull(conversation.getAvatarFile().toURI().toString()) ? "R.drawable.ironman" : conversation.getAvatarFile().toURI().toString();
+            imgSend = StringUtils.isNull(userInfo.getAvatarFile().toURI().toString()) ? "R.drawable.icon_user" : userInfo.getAvatarFile().toURI().toString();
+            imgRecrive = StringUtils.isNull(conversation.getAvatarFile().toURI().toString()) ? "R.drawable.icon_user" : conversation.getAvatarFile().toURI().toString();
 
         } catch (Exception e) {
+            e.printStackTrace();
         }
         mData = getMessages();
         mChatInput.setMenuContainerHeight(heightDifference);
         initTitleBar();
         initMsgAdapter();
-        imageLoader.loadImage(imageAvatarSend, userInfo.getAvatarFile().toURI().toString());
-        imageLoader.loadImage(imageAvatarReceive, imgRecrive);
+        imgReAvatar = getIntent().getStringExtra("AVATAR");
+        //发送者头像
+        GlideUtil.loadUserHeadImg(this, userInfo.getAvatarFile(), imageAvatarSend);
+        //对方头像
+        GlideUtil.loadUserHeadImg(this, imgReAvatar, imageAvatarReceive);
         mTitleBarBack.setVisibility(View.VISIBLE);
-//        initIsOnline();
         initInputView();
     }
+
     int heightDifference = 0;
 
     /*获取键盘的高度*/
@@ -211,6 +211,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
             }
         });
     }
+
     /*输入框操作*/
     private void initInputView() {
 
@@ -385,19 +386,13 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
         imageLoader = new ImageLoader() {
             @Override
             public void loadAvatarImage(ImageView imageView, String s) {
-                Picasso.with(getApplication())
-                        .load(s)
-                        .placeholder(R.drawable.icon_user)
-                        .into(imageView);
+                GlideUtil.loadUserHeadImg(mContext, s, imageView);
             }
 
             @Override
             public void loadImage(ImageView imageView, String s) {
                 //缩略图
-                Picasso.with(getApplication())
-                        .load(s)
-                        .placeholder(R.drawable.icon_user)
-                        .into(imageView);
+                GlideUtil.loadUserHeadImg(mContext, s, imageView);
             }
 
         };
@@ -660,11 +655,21 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
 
     }
 
+    /**
+     * 关闭键盘
+     */
     private void onHideKeyboard() {
         // 在这里处理软键盘收回的回调
-        Log.e("onHidekey = ", "dd");
-//        mChatInput.setMenuContainerHeight(-keyboardHeight);
+        try {
+            InputMethodManager inputMethodManage = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManage.hideSoftInputFromWindow(this
+                            .getCurrentFocus().getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     /*标题栏*/
     private void initTitleBar() {
@@ -687,7 +692,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
         ButterKnife.bind(this);
     }
 
-    @OnClick({R.id.title_bar_back,R.id.title_bar_title, R.id.title_options_tv, R.id.chat_send})
+    @OnClick({R.id.title_bar_back, R.id.title_bar_title, R.id.title_options_tv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_bar_title:
@@ -721,6 +726,8 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                                     startActivity(new Intent(ChatMsgActivity.this, MainActivity.class));
                                 }
                                 break;
+                            default:
+                                break;
                         }
                     }
                 });
@@ -728,8 +735,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                 dialog.dialogSize(200, 0, 0, 55);
 
                 break;
-            case R.id.chat_send:
-                sendMessage(mChatEt.getText().toString());
+            default:
                 break;
         }
     }
@@ -748,14 +754,18 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
             public void gotResult(int i, String s) {
                 if (i == 0) {
                     mAdapter.addToStart(myMessage, true);
-                    mChatEt.setText("");
+                    mChatInput.getInputView().setText("");
+                    mChatInput.dismissMenuLayout();
+                    mChatInput.dismissEmojiLayout();
+                    mChatInput.dismissPhotoLayout();
+                    mChatInput.dismissRecordVoiceLayout();
+                    onHideKeyboard();
                 } else {
                     Log.e("发送失败？", s);
                 }
             }
         });
         JMessageClient.sendMessage(message1);
-//        EventBus.getDefault().post(new MessageEvent(1,"",message1));
         if (mData != null) {
             mData.clear();
         }
@@ -821,7 +831,7 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                 if (view.getId() == chatInputView.getInputView().getId()) {
 
                     if (chatInputView.getMenuState() == View.VISIBLE
-                            ) {
+                    ) {
                         chatInputView.dismissMenuLayout();
                         return false;
                     } else {
@@ -843,6 +853,8 @@ public class ChatMsgActivity extends BaseActivity implements ChatView.OnSizeChan
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                break;
+            default:
                 break;
         }
         return false;

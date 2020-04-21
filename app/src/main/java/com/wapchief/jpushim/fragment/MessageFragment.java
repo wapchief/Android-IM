@@ -237,6 +237,7 @@ public class MessageFragment extends Fragment {
                     intent.putExtra("USERNAME", data.get(position).getUserName());
                     intent.putExtra("NAKENAME", data.get(position).getTitle());
                     intent.putExtra("MSGID", data.get(position).getMsgID());
+                    intent.putExtra("AVATAR",data.get(position).getImg());
                     intent.putExtra("position", position);
 //                    intent.putExtra("bean", data.get(position));
                     startActivity(intent);

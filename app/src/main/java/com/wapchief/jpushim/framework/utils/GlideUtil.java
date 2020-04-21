@@ -2,6 +2,7 @@ package com.wapchief.jpushim.framework.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -15,6 +16,8 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.wapchief.jpushim.R;
+
+import java.io.File;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
@@ -35,14 +38,45 @@ public class GlideUtil {
      * 加载用户头像
      *
      * @param context
-     * @param url
+     * @param file
      * @param imageView
      */
+    public static void loadUserHeadImg(Context context, File file, ImageView imageView) {
+        if (null == userHeadImgOptions) {
+            userHeadImgOptions = new RequestOptions()
+                    .placeholder(R.drawable.icon_user)
+                    .error(R.drawable.icon_user);
+        }
+        Glide.with(context)
+                .load(file)
+                .apply(userHeadImgOptions)
+                .into(imageView);
+    }
+
     public static void loadUserHeadImg(Context context, String url, ImageView imageView) {
         if (null == userHeadImgOptions) {
-            userHeadImgOptions = new RequestOptions().placeholder(R.drawable.icon_user);
+            userHeadImgOptions = new RequestOptions()
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .placeholder(R.drawable.icon_user)
+                    .error(R.drawable.icon_user);
         }
-        Glide.with(context).load(url).apply(userHeadImgOptions).into(imageView);
+        Glide.with(context)
+                .load(url)
+                .apply(userHeadImgOptions)
+                .into(imageView);
+    }
+
+    public static void loadUserHeadImg(Context context, Uri uri, ImageView imageView) {
+        if (null == userHeadImgOptions) {
+            userHeadImgOptions = new RequestOptions()
+                    .placeholder(R.drawable.icon_user)
+                    .error(R.drawable.icon_user);
+        }
+        Glide.with(context)
+                .load(uri)
+                .apply(userHeadImgOptions)
+                .into(imageView);
     }
 
 
@@ -101,7 +135,7 @@ public class GlideUtil {
                 .into(imageView);
     }
 
-    public static void loadCornerPicture(Context context, String imgUrl,ImageView imageView,  int resourceId) {
+    public static void loadCornerPicture(Context context, String imgUrl, ImageView imageView, int resourceId) {
         Glide.with(context)
                 .load(imgUrl)
                 .apply(new RequestOptions().error(resourceId))
@@ -136,7 +170,9 @@ public class GlideUtil {
                 .into(imageView);
     }
 
-    /**不使用缓存的图片*/
+    /**
+     * 不使用缓存的图片
+     */
     public static void loadPictureCacheNone(Context context, String imgUrl, ImageView imageView) {
         Glide.with(context)
                 .load(imgUrl)
@@ -146,7 +182,7 @@ public class GlideUtil {
                 .into(imageView);
     }
 
-    public static void loadPictureCacheNone(Context context, String imgUrl, int maskImgRes,ImageView imageView) {
+    public static void loadPictureCacheNone(Context context, String imgUrl, int maskImgRes, ImageView imageView) {
         Glide.with(context)
                 .load(imgUrl)
                 .apply(new RequestOptions().skipMemoryCache(true)

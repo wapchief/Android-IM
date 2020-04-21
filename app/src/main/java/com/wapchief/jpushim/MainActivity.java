@@ -163,7 +163,7 @@ public class MainActivity extends BaseActivity {
         File file;
         Log.e("login_type", "" + getIntent().getIntExtra("LOGINTYPE", 0));
         if (getIntent().getIntExtra("LOGINTYPE", 0) == 1) {
-            Bitmap bitmap = BitMapUtils.drawable2Bitmap(getResources().getDrawable(R.drawable.icon_user));
+                Bitmap bitmap = BitMapUtils.drawable2Bitmap(getResources().getDrawable(R.drawable.icon_user));
             //创建路径
             String path = Environment.getExternalStorageDirectory()
                     .getPath() + "/Pic";

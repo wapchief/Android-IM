@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/title"
-        android:layout_above="@+id/chat_bottom">
+        android:layout_marginBottom="98dp">
 
         <cn.jiguang.imui.messages.MessageList
             android:id="@+id/msg_list"
@@ -28,8 +28,12 @@
             app:dateTextSize="14sp"
             app:receiveBubblePaddingLeft="16dp"
             app:receiveBubblePaddingRight="8dp"
+            app:receiveBubblePaddingTop="4dp"
+            app:receiveBubblePaddingBottom="4dp"
             app:receiveTextColor="#ffffff"
             app:receiveTextSize="14sp"
+            app:sendBubblePaddingTop="4dp"
+            app:sendBubblePaddingBottom="4dp"
             app:sendBubblePaddingLeft="8dp"
             app:sendBubblePaddingRight="16dp"
             app:sendTextColor="#7587A8"
@@ -44,25 +48,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
-    
-    <LinearLayout
-        android:id="@+id/chat_bottom"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:background="@color/white"
-        android:layout_alignParentBottom="true">
-        <EditText
-            android:id="@+id/chat_et"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-        <Button
-            android:id="@+id/chat_send"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="发送"/>
-    </LinearLayout>
+
 </com.wapchief.jpushim.view.ChatView>

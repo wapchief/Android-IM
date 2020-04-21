@@ -103,7 +103,7 @@ public class UserInfoActivity extends BaseActivity {
         mTitleBarLeft.setBackground(getResources().getDrawable(R.drawable.shape_titlebar));
         mTitleBarRight.setBackground(getResources().getDrawable(R.drawable.shape_titlebar2));
         mTitleBarTitle.setText("个人资料");
-        JAnalyticsInterface.onPageStart(this,this.getClass().getCanonicalName());
+        JAnalyticsInterface.onPageStart(this, this.getClass().getCanonicalName());
     }
 
     /*获取用户资料*/
@@ -114,14 +114,13 @@ public class UserInfoActivity extends BaseActivity {
 //                Log.e("iiiiiiiii", getIntent().getStringExtra("USERNAME")+"\n"+getUserName+"\n"+userName+"\n" + userInfo);
                 if (i == 0) {
 //                    avtar = userInfo.getAvatarFile().toURI().toString();
-                    userInfo = userInfo;
                     Picasso.with(UserInfoActivity.this)
                             .load(userInfo.getAvatarFile())
                             .placeholder(R.mipmap.icon_user)
                             .into(mUserinfoAvatar);
-                    mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd",userInfo.getBirthday()));
+                    mUserinfoBirthday.setText(TimeUtils.ms2date("yyyy-MM-dd", userInfo.getBirthday()));
                     mUserinfoGender.setText(StringUtils.constant2String(userInfo.getGender() + ""));
-                    mUserinfoMtime.setText("上次活动："+TimeUtils.unix2Date("yyyy-MM-dd HH:mm",userInfo.getmTime()));
+                    mUserinfoMtime.setText("上次活动：" + TimeUtils.unix2Date("yyyy-MM-dd HH:mm", userInfo.getmTime()));
                     mUserinfoNikename.setText(userInfo.getNickname() + "");
                     mUserinfoUsername.setText(userInfo.getUserName() + "");
                     if (userInfo.getSignature().equals("")) {
@@ -130,8 +129,8 @@ public class UserInfoActivity extends BaseActivity {
                         mUserinfoSignature.setText("签名：" + userInfo.getSignature());
                     }
                     mUserinfoRegion.setText(userInfo.getRegion() + "");
-                    CountEvent cEvent = new CountEvent("event_userId_"+userInfo.getUserID());
-                    JAnalyticsInterface.onEvent(getContext(),cEvent);
+                    CountEvent cEvent = new CountEvent("event_userId_" + userInfo.getUserID());
+                    JAnalyticsInterface.onEvent(getContext(), cEvent);
                 } else {
                 }
             }
@@ -139,26 +138,6 @@ public class UserInfoActivity extends BaseActivity {
 
 
     }
-
-    /*滚动事件*/
-//    @SuppressLint("NewApi")
-//    private void initScroll() {
-//        mUserinfoScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-//            @Override
-//            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-////                Log.e("scroll===", i + " ," + i1 + " ," + i2 + " ," + i3);
-//                if (i1 > 460) {
-//                    mTitleBarLeft.setBackground(getResources().getDrawable(R.drawable.shape_titlebar));
-//                    mTitleBarRight.setBackground(getResources().getDrawable(R.drawable.shape_titlebar2));
-//                    mTitleBarTitle.setText("个人资料");
-//                } else {
-//                    mTitleBarLeft.setBackground(getResources().getDrawable(R.color.color_transparent));
-//                    mTitleBarRight.setBackground(getResources().getDrawable(R.color.color_transparent));
-//                    mTitleBarTitle.setText("");
-//                }
-//            }
-//        });
-//    }
 
     private void initBar() {
         helper = SharedPrefHelper.getInstance();
@@ -175,7 +154,7 @@ public class UserInfoActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        JAnalyticsInterface.onPageEnd(this,this.getClass().getCanonicalName());
+        JAnalyticsInterface.onPageEnd(this, this.getClass().getCanonicalName());
     }
 
     @Override
@@ -213,6 +192,8 @@ public class UserInfoActivity extends BaseActivity {
                 startActivity(intent);
 
 
+                break;
+            default:
                 break;
         }
     }
