@@ -41,3 +41,9 @@ http://www.jianshu.com/nb/11718325
 
 1、消息类型的多样化（语音、图片、表情）
 
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/wapchief/Android-IM.svg)](https://starchart.cc/wapchief/Android-IM)
+
+
